@@ -1,0 +1,23 @@
+{
+  "name": "MDRN SportsQ Stage 4 Resource Folder",
+  "version": "1.0",
+  "created_for_baseline": "1.0.1-stage3-gui-polish",
+  "intended_destination": "resources/stage4",
+  "files": [
+    "Install-Stage4-Resources.ps1",
+    "README.md",
+    "docs/INTEGRATION_NOTES.md",
+    "docs/SOURCE_VALIDATION_NOTES.md",
+    "docs/STAGE4_COMPLETION_GATE.md",
+    "policies/rights_policy.json",
+    "policies/source_trust_policy.json",
+    "schemas/media_asset.schema.json",
+    "schemas/rights_verification.schema.json",
+    "schemas/source_record.schema.json",
+    "seed/media_asset_register_template.csv",
+    "seed/official_football_sources.csv",
+    "seed/official_football_sources.json",
+    "seed/reusable_media_sources.csv",
+    "seed/reusable_media_sources.json"
+  ]
+}

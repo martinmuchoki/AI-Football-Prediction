@@ -1,0 +1,101 @@
+[
+  {
+    "source_id": "official-premier-league",
+    "name": "Premier League",
+    "category": "competition",
+    "scope": "Premier League",
+    "base_url": "https://www.premierleague.com/en",
+    "trust_class": "OFFICIAL",
+    "use_for": "fixtures, results, tables, competition news",
+    "media_reuse_default": "NO",
+    "notes": "Authoritative football-information source. Do not assume video/highlight reuse rights."
+  },
+  {
+    "source_id": "official-uefa",
+    "name": "UEFA",
+    "category": "governing_body",
+    "scope": "UEFA competitions / Champions League",
+    "base_url": "https://www.uefa.com/",
+    "trust_class": "OFFICIAL",
+    "use_for": "fixtures, results, competition news, official announcements",
+    "media_reuse_default": "NO",
+    "notes": "Authoritative information source. Media reuse requires separate rights basis."
+  },
+  {
+    "source_id": "official-fifa",
+    "name": "FIFA",
+    "category": "governing_body",
+    "scope": "FIFA competitions",
+    "base_url": "https://www.fifa.com/",
+    "trust_class": "OFFICIAL",
+    "use_for": "fixtures, results, competition news, official announcements",
+    "media_reuse_default": "NO",
+    "notes": "Authoritative information source. Media reuse requires separate rights basis."
+  },
+  {
+    "source_id": "club-arsenal",
+    "name": "Arsenal",
+    "category": "club",
+    "scope": "Arsenal",
+    "base_url": "https://www.arsenal.com/",
+    "trust_class": "OFFICIAL",
+    "use_for": "team news, injuries when published, interviews, fixtures",
+    "media_reuse_default": "NO",
+    "notes": "Use for information verification; club video is not automatically reusable."
+  },
+  {
+    "source_id": "club-manchester-united",
+    "name": "Manchester United",
+    "category": "club",
+    "scope": "Manchester United",
+    "base_url": "https://www.manutd.com/en",
+    "trust_class": "OFFICIAL",
+    "use_for": "team news, injuries when published, interviews, fixtures",
+    "media_reuse_default": "NO",
+    "notes": "Use for information verification; club video is not automatically reusable."
+  },
+  {
+    "source_id": "club-manchester-city",
+    "name": "Manchester City",
+    "category": "club",
+    "scope": "Manchester City",
+    "base_url": "https://www.mancity.com/",
+    "trust_class": "OFFICIAL",
+    "use_for": "team news, injuries when published, interviews, fixtures",
+    "media_reuse_default": "NO",
+    "notes": "Use for information verification; club video is not automatically reusable."
+  },
+  {
+    "source_id": "club-tottenham",
+    "name": "Tottenham Hotspur",
+    "category": "club",
+    "scope": "Tottenham Hotspur",
+    "base_url": "https://www.tottenhamhotspur.com/",
+    "trust_class": "OFFICIAL",
+    "use_for": "team news, injuries when published, interviews, fixtures",
+    "media_reuse_default": "NO",
+    "notes": "Use for information verification; club video is not automatically reusable."
+  },
+  {
+    "source_id": "club-chelsea",
+    "name": "Chelsea FC",
+    "category": "club",
+    "scope": "Chelsea",
+    "base_url": "https://www.chelseafc.com/",
+    "trust_class": "OFFICIAL",
+    "use_for": "team news, injuries when published, interviews, fixtures",
+    "media_reuse_default": "NO",
+    "notes": "Seeded as official club domain; verify individual media rights separately."
+  },
+  {
+    "source_id": "club-liverpool",
+    "name": "Liverpool FC",
+    "category": "club",
+    "scope": "Liverpool",
+    "base_url": "https://www.liverpoolfc.com/",
+    "trust_class": "OFFICIAL",
+    "use_for": "team news, injuries when published, interviews, fixtures",
+    "media_reuse_default": "NO",
+    "notes": "Seeded as official club domain; verify individual media rights separately."
+  }
+]

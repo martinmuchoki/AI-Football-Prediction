@@ -1,0 +1,170 @@
+from __future__ import annotations
+
+import argparse
+import asyncio
+from datetime import date
+
+from app.config import get_settings
+from app.db import SessionLocal, init_db
+from app.providers.api_football import ApiFootballClient
+from app.providers.live_score_api import LiveScoreApiClient
+from app.providers.football_data import FootballDataClient
+from app.services.fixture_ingestor import refresh_unfinished_results, sync_fixture_window
+from app.services.live_score_ingestor import sync_live_score_fixtures, sync_live_score_history
+from app.services.football_data_ingestor import sync_football_data_history
+
+
+def _date(value: str) -> date:
+    return date.fromisoformat(value)
+
+
+async def _sync_api_football(args) -> None:
+    settings = get_settings()
+    settings.require_api_key()
+    with SessionLocal() as session:
+        async with ApiFootballClient(settings) as client:
+            summary = await sync_fixture_window(
+                session,
+                client,
+                league=args.league,
+                season=args.season,
+                from_date=args.from_date,
+                to_date=args.to_date,
+            )
+    print(dict(summary))
+
+
+async def _refresh_api_football(args) -> None:
+    settings = get_settings()
+    settings.require_api_key()
+    with SessionLocal() as session:
+        async with ApiFootballClient(settings) as client:
+            summary = await refresh_unfinished_results(
+                session,
+                client,
+                lookback_hours=args.lookback_hours or settings.result_lookback_hours,
+            )
+    print(dict(summary))
+
+
+async def _sync_live_fixtures(args) -> None:
+    settings = get_settings()
+    settings.require_live_score_credentials()
+    with SessionLocal() as session:
+        async with LiveScoreApiClient(settings) as client:
+            summary = await sync_live_score_fixtures(
+                session,
+                client,
+                competition_id=args.competition,
+                season=args.season,
+                page=args.page,
+                start_page=args.start_page,
+                max_pages=args.max_pages,
+            )
+    print(dict(summary))
+
+
+async def _sync_live_history(args) -> None:
+    settings = get_settings()
+    settings.require_live_score_credentials()
+    with SessionLocal() as session:
+        async with LiveScoreApiClient(settings) as client:
+            summary = await sync_live_score_history(
+                session,
+                client,
+                competition_id=args.competition,
+                season=args.season,
+                from_date=args.from_date,
+                to_date=args.to_date,
+                page=args.page,
+                start_page=args.start_page,
+                max_pages=args.max_pages,
+            )
+    print(dict(summary))
+
+
+def _add_pagination_args(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--page",
+        type=int,
+        help="Fetch exactly one page (diagnostics/manual recovery).",
+    )
+    parser.add_argument(
+        "--start-page",
+        type=int,
+        default=1,
+        help="Starting page for automatic pagination; default 1.",
+    )
+    parser.add_argument(
+        "--max-pages",
+        type=int,
+        help="Safety limit for auto-pagination; defaults to LS_MAX_PAGES.",
+    )
+
+
+
+async def _sync_football_data_history(args) -> None:
+    settings = get_settings()
+    with SessionLocal() as session:
+        async with FootballDataClient(settings) as client:
+            summary = await sync_football_data_history(
+                session,
+                client,
+                season=args.season,
+                league_code=args.league,
+            )
+    print(dict(summary))
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(prog="ai-football")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    sub.add_parser("init-db")
+
+    sync = sub.add_parser("sync-fixtures", help="API-Football fixture sync")
+    sync.add_argument("--league", type=int, required=True)
+    sync.add_argument("--season", type=int, required=True)
+    sync.add_argument("--from", dest="from_date", type=_date, required=True)
+    sync.add_argument("--to", dest="to_date", type=_date, required=True)
+
+    refresh = sub.add_parser("refresh-results", help="API-Football result refresh")
+    refresh.add_argument("--lookback-hours", type=int)
+
+    live_fix = sub.add_parser(
+        "sync-live-fixtures",
+        help="Live Score API current fixture sync with automatic pagination/retry",
+    )
+    live_fix.add_argument("--competition", type=int, required=True)
+    live_fix.add_argument("--season", type=int, required=True)
+    _add_pagination_args(live_fix)
+
+    live_hist = sub.add_parser(
+        "sync-live-history",
+        help="Live Score API finished match sync with automatic pagination/retry",
+    )
+    live_hist.add_argument("--competition", type=int, required=True)
+    live_hist.add_argument("--season", type=int, required=True)
+    live_hist.add_argument("--from", dest="from_date", type=_date)
+    live_hist.add_argument("--to", dest="to_date", type=_date)
+    _add_pagination_args(live_hist)
+
+    args = parser.parse_args()
+
+    if args.command == "init-db":
+        init_db()
+        print("Database initialized.")
+    elif args.command == "sync-fixtures":
+        asyncio.run(_sync_api_football(args))
+    elif args.command == "refresh-results":
+        asyncio.run(_refresh_api_football(args))
+    elif args.command == "sync-live-fixtures":
+        asyncio.run(_sync_live_fixtures(args))
+    elif args.command == "sync-live-history":
+        asyncio.run(_sync_live_history(args))
+    elif args.command == "sync-football-data-history":
+        asyncio.run(_sync_football_data_history(args))
+
+
+if __name__ == "__main__":
+    main()

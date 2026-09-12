@@ -1,0 +1,192 @@
+
+==============================================================================
+CURRENT BASELINE
+==============================================================================
+app.__version__ = 1.0.3-stage5-scorecall
+database_dialect = sqlite
+
+==============================================================================
+STAGE 6 FILE EXISTENCE
+==============================================================================
+main.py: exists=True sha256=66137ce746a041a84712baa19e72a82309a72bc6c094943ca7136f8ebb044ecd
+sportsq_intelligence.py: exists=True sha256=764d27d50417d3c0e83c6dbf5ceb57696012fda712c6e11735ef2f69325def36
+sportsq_news_impact.py: exists=False
+test_sportsq_stage6_news_impact.py: exists=False
+
+==============================================================================
+APP.MAIN STAGE 6 ROUTES / MARKERS
+==============================================================================
+route_prefix_occurrences=1
+main_marker_occurrences=0
+
+SNIPPET 1
+0601:     }
+0602: 
+0603: @app.get(
+0604:     "/api/v1/sportsq/news-impact/{fixture_id}",
+0605:     dependencies=[Depends(_own_api_guard)],
+0606: )
+0607: def api_v1_sportsq_news_impact(
+0608:     fixture_id: int,
+0609:     competition: int = Query(default=2),
+0610:     season: int = Query(default=2026),
+0611: ) -> dict:
+0612:     with SessionLocal() as session:
+
+SNIPPET 2
+0604:     "/api/v1/sportsq/news-impact/{fixture_id}",
+0605:     dependencies=[Depends(_own_api_guard)],
+0606: )
+0607: def api_v1_sportsq_news_impact(
+0608:     fixture_id: int,
+0609:     competition: int = Query(default=2),
+0610:     season: int = Query(default=2026),
+0611: ) -> dict:
+0612:     with SessionLocal() as session:
+0613:         result = get_sportsq_intelligence(
+0614:             session,
+0615:             fixture_id=fixture_id,
+
+SNIPPET 3
+0622:     return {
+0623:         "status": "success",
+0624:         "fixture": item["fixture"],
+0625:         "sportsq_news_impact": item["sportsq_news_impact"],
+0626:         "historical_holdout_touched": False,
+0627:     }
+0628: 
+0629: @app.get(
+0630:     "/api/v1/sportsq/accuracy",
+0631:     dependencies=[Depends(_own_api_guard)],
+0632: )
+0633: def api_v1_sportsq_accuracy(
+
+==============================================================================
+SPORTSQ INTELLIGENCE STAGE 6 PATCH
+==============================================================================
+intel_marker_occurrences=0
+news_impact_service_import_occurrences=2
+_news_impact_call_with_session_occurrences=0
+
+SNIPPET 1
+0314: 
+0315:     return _form_index_from_matches([dict(row) for row in rows], int(team_id))
+0316: 
+0317: def _news_impact() -> dict[str, Any]:
+0318:     return {
+0319:         "status": "NO_STRUCTURED_TEAM_NEWS_INPUT",
+0320:         "impact_score": None,
+0321:         "direction": "UNVERIFIED",
+0322:         "verified": False,
+0323:         "note": (
+0324:             "No structured verified team-news feed is currently consumed by "
+0325:             "this intelligence layer. No injury/news impact is inferred or fabricated."
+
+SNIPPET 2
+0316: 
+0317: def _news_impact() -> dict[str, Any]:
+0318:     return {
+0319:         "status": "NO_STRUCTURED_TEAM_NEWS_INPUT",
+0320:         "impact_score": None,
+0321:         "direction": "UNVERIFIED",
+0322:         "verified": False,
+0323:         "note": (
+0324:             "No structured verified team-news feed is currently consumed by "
+0325:             "this intelligence layer. No injury/news impact is inferred or fabricated."
+0326:         ),
+0327:     }
+
+SNIPPET 3
+0539:             },
+0540:             "lookahead_protection": True,
+0541:         },
+0542:         "sportsq_news_impact": {
+0543:             "name": BRAND_HIERARCHY["news_impact"],
+0544:             **_news_impact(),
+0545:         },
+0546:         "prediction_lock": {
+0547:             "policy_version": row.get("policy_version"),
+0548:             "locked_at": (
+0549:                 row.get("locked_at").isoformat()
+0550:                 if isinstance(row.get("locked_at"), datetime)
+
+SNIPPET 4
+0736:             "window": FORM_WINDOW,
+0737:             "lookahead_protection": True,
+0738:         },
+0739:         "sportsq_news_impact": {
+0740:             "status": "NO_STRUCTURED_TEAM_NEWS_INPUT",
+0741:             "fabricated": False,
+0742:         },
+0743:         "accuracy": {
+0744:             "grading_module": "prediction_grading",
+0745:         },
+0746:         "safety": {
+0747:             "prediction_engine_rewritten": False,
+
+SNIPPET 5
+0737:             "lookahead_protection": True,
+0738:         },
+0739:         "sportsq_news_impact": {
+0740:             "status": "NO_STRUCTURED_TEAM_NEWS_INPUT",
+0741:             "fabricated": False,
+0742:         },
+0743:         "accuracy": {
+0744:             "grading_module": "prediction_grading",
+0745:         },
+0746:         "safety": {
+0747:             "prediction_engine_rewritten": False,
+0748:             "live_prediction_rows_modified": False,
+
+==============================================================================
+STAGE 6 SERVICE SYNTAX / SYMBOLS
+==============================================================================
+Stage 6 service file does not exist.
+
+==============================================================================
+STAGE 6 TEST SYNTAX / SYMBOLS
+==============================================================================
+Stage 6 test file does not exist.
+
+==============================================================================
+DATABASE STAGE 6 STATE
+==============================================================================
+sportsq_team_news_events_exists=False
+
+==============================================================================
+PROTECTED TABLE COUNTS
+==============================================================================
+live_predictions rows: 18
+sportsq_scorecall_locks rows: 18
+sportsq_sources rows: 17
+sportsq_media_assets rows: 0
+sportsq_rights_verifications rows: 0
+fixtures rows: 2268
+teams rows: 48
+
+==============================================================================
+HOLDOUT SCAN
+==============================================================================
+holdout_tables=[]
+holdout_files=[]
+
+==============================================================================
+STAGE 6 BACKUP DIRECTORIES
+==============================================================================
+No Stage 6 backup directories found.
+
+==============================================================================
+IMPORT CHECK
+==============================================================================
+import app.main=PASS
+runtime_stage6_routes=["/api/v1/sportsq/news-impact/{fixture_id}"]
+
+==============================================================================
+RECOVERY DECISION INPUTS
+==============================================================================
+This report is diagnostic only.
+Do not delete Stage 6 files/routes/tables based on this report alone.
+Use exact observed state to choose one of:
+  A. clean resume from valid partial Stage 6 components,
+  B. rollback from a verified Stage 6 pre-change backup,
+  C. surgical repair of only mismatched Stage 6 components.

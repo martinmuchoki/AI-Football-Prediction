@@ -1,0 +1,19 @@
+﻿MDRN SPORTSQ STAGE 7 INSTALL REPORT
+===================================
+STAGE7_INSTALL=PASS
+base_version=1.0.4-stage6-news-impact
+installed_version=1.0.5-stage7-fixture-lifecycle
+backup=D:\Mprojet\backups\AI-Football-before-v1.0.5-stage7-fixture-lifecycle-20260911-045114
+protected_state_before_sha256=86323D6A03BCC9D0D020E5AA7346126E01627CBD5C0B5F3B67D8F0C834E620AD
+protected_state_after_sha256=86323D6A03BCC9D0D020E5AA7346126E01627CBD5C0B5F3B67D8F0C834E620AD
+protected_stage6_state_identical=YES
+prediction_engine_rewritten=NO
+existing_prediction_lock_fields_rewritten=NO
+existing_scorecall_locks_rewritten=NO
+historical_holdout_touched=NO
+stage6_live_news_ingestion_enabled=NO
+social_auto_posting_enabled=NO
+lifecycle_scheduler_wired=YES
+lifecycle_audit_append_only=YES
+lifecycle_status_routes_read_only=YES
+live_network_calls_during_install=NO

@@ -1,0 +1,28 @@
+{
+  "policy_version": "1.0",
+  "hard_gate": "REUSE_VERIFIED",
+  "allowed_when": "reuse_verified == true",
+  "blocked_when": [
+    "licence unknown",
+    "commercial use not allowed",
+    "editing/modification required but licence forbids derivatives",
+    "rights holder/provenance materially uncertain",
+    "trademark/personality-rights review unresolved for intended use"
+  ],
+  "accepted_examples": [
+    "CC0 / Public Domain where no other restriction applies",
+    "CC BY with required attribution",
+    "CC BY-SA with attribution and ShareAlike compliance",
+    "Pexels licence subject to item-level third-party-rights check",
+    "Pixabay licence subject to prohibited uses and third-party-rights check",
+    "Coverr licence subject to brand/property checks",
+    "Mixkit Stock Video Free License"
+  ],
+  "normally_blocked_examples": [
+    "Standard YouTube licence",
+    "Creative Commons NonCommercial for monetized/commercial MDRN SportsQ",
+    "Creative Commons NoDerivatives when clipping/editing is required",
+    "Premier League/UEFA/FIFA/club highlight video without separate reuse permission",
+    "TikTok/Instagram reposts with no explicit reusable licence"
+  ]
+}

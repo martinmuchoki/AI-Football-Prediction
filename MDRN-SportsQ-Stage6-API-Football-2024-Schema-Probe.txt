@@ -1,0 +1,335 @@
+
+==============================================================================
+MDRN SPORTSQ - STAGE 6 API-FOOTBALL 2024 SCHEMA PROBE
+==============================================================================
+Local application version: 1.0.3-stage5-scorecall
+API base URL: https://v3.football.api-sports.io
+API key configured: YES (VALUE NOT DISPLAYED)
+League: 39
+Season: 2024
+
+==============================================================================
+1. COVERAGE
+==============================================================================
+{
+  "endpoint": "/leagues",
+  "params": {
+    "id": 39,
+    "season": 2024
+  },
+  "url_without_key": "https://v3.football.api-sports.io/leagues?id=39&season=2024",
+  "http_status": 200
+}
+{
+  "get": "leagues",
+  "parameters": {
+    "id": "39",
+    "season": "2024"
+  },
+  "errors": [],
+  "results": 1,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response_type": "list",
+  "response_count": 1,
+  "first_item_paths": [
+    "country",
+    "country.code",
+    "country.flag",
+    "country.name",
+    "league",
+    "league.id",
+    "league.logo",
+    "league.name",
+    "league.type",
+    "seasons",
+    "seasons[].coverage",
+    "seasons[].coverage.fixtures",
+    "seasons[].coverage.fixtures.events",
+    "seasons[].coverage.fixtures.lineups",
+    "seasons[].coverage.fixtures.statistics_fixtures",
+    "seasons[].coverage.fixtures.statistics_players",
+    "seasons[].coverage.injuries",
+    "seasons[].coverage.odds",
+    "seasons[].coverage.players",
+    "seasons[].coverage.predictions",
+    "seasons[].coverage.standings",
+    "seasons[].coverage.top_assists",
+    "seasons[].coverage.top_cards",
+    "seasons[].coverage.top_scorers",
+    "seasons[].current",
+    "seasons[].end",
+    "seasons[].start",
+    "seasons[].year"
+  ]
+}
+COVERAGE OBJECT:
+{
+  "fixtures": {
+    "events": true,
+    "lineups": true,
+    "statistics_fixtures": true,
+    "statistics_players": true
+  },
+  "standings": true,
+  "players": true,
+  "top_scorers": true,
+  "top_assists": true,
+  "top_cards": true,
+  "injuries": true,
+  "predictions": true,
+  "odds": false
+}
+
+==============================================================================
+2. 2024 PREMIER LEAGUE INJURIES
+==============================================================================
+{
+  "endpoint": "/injuries",
+  "params": {
+    "league": 39,
+    "season": 2024
+  },
+  "url_without_key": "https://v3.football.api-sports.io/injuries?league=39&season=2024",
+  "http_status": 200
+}
+{
+  "get": "injuries",
+  "parameters": {
+    "league": "39",
+    "season": "2024"
+  },
+  "errors": [],
+  "results": 3168,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response_type": "list",
+  "response_count": 3168,
+  "first_item_paths": [
+    "fixture",
+    "fixture.date",
+    "fixture.id",
+    "fixture.timestamp",
+    "fixture.timezone",
+    "league",
+    "league.country",
+    "league.flag",
+    "league.id",
+    "league.logo",
+    "league.name",
+    "league.season",
+    "player",
+    "player.id",
+    "player.name",
+    "player.photo",
+    "player.reason",
+    "player.type",
+    "team",
+    "team.id",
+    "team.logo",
+    "team.name"
+  ]
+}
+
+INJURY SAMPLE 1
+{
+  "player": {
+    "id": 153434,
+    "name": "W. Fish",
+    "photo": "https://media.api-sports.io/football/players/153434.png",
+    "type": "Missing Fixture",
+    "reason": "Ankle Injury"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+INJURY SAMPLE 2
+{
+  "player": {
+    "id": 288006,
+    "name": "R. Hojlund",
+    "photo": "https://media.api-sports.io/football/players/288006.png",
+    "type": "Missing Fixture",
+    "reason": "Muscle Injury"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+INJURY SAMPLE 3
+{
+  "player": {
+    "id": 37145,
+    "name": "T. Malacia",
+    "photo": "https://media.api-sports.io/football/players/37145.png",
+    "type": "Missing Fixture",
+    "reason": "Knee Injury"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+INJURY SAMPLE 4
+{
+  "player": {
+    "id": 891,
+    "name": "L. Shaw",
+    "photo": "https://media.api-sports.io/football/players/891.png",
+    "type": "Missing Fixture",
+    "reason": "Health problems"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+INJURY SAMPLE 5
+{
+  "player": {
+    "id": 342970,
+    "name": "L. Yoro",
+    "photo": "https://media.api-sports.io/football/players/342970.png",
+    "type": "Missing Fixture",
+    "reason": "Ankle Injury"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+==============================================================================
+3. FINISHED 2024 FIXTURES FOR LINEUP PROBE
+==============================================================================
+{
+  "endpoint": "/fixtures",
+  "params": {
+    "league": 39,
+    "season": 2024,
+    "last": 5
+  },
+  "url_without_key": "https://v3.football.api-sports.io/fixtures?league=39&season=2024&last=5",
+  "http_status": 200
+}
+{
+  "get": "fixtures",
+  "parameters": {
+    "league": "39",
+    "season": "2024",
+    "last": "5"
+  },
+  "errors": {
+    "plan": "Free plans do not have access to the Last parameter."
+  },
+  "results": 0,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response_type": "list",
+  "response_count": 0
+}
+
+==============================================================================
+4. HISTORICAL FIXTURE LINEUPS
+==============================================================================
+
+==============================================================================
+5. STAGE 6 ADAPTER DECISION
+==============================================================================
+historical_injury_items_available=True
+historical_lineup_items_available=False
+2026_live_ingestion_enabled=FALSE
+reason_2026_disabled=CURRENT_API_PLAN_DOES_NOT_ALLOW_2026
+database_modified=FALSE
+application_source_modified=FALSE
+api_key_displayed=FALSE
+Stage 6 injury adapter schema can be built from validated API-Football response structure.
+Do not finalize lineup adapter field mapping until a permitted historical fixture returns lineup data.

@@ -1,0 +1,186 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MDRN SportsQ</title>
+  <link rel="stylesheet" href="/sportsq/static/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">SQ</div>
+        <div>
+          <h1>MDRN SportsQ</h1>
+          <p>Football Intelligence</p>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav active" data-target="dashboard">Dashboard</button>
+        <button class="nav" data-target="content">Content Studio</button>
+        <button class="nav" data-target="publishing">Publishing Queue</button>
+        <button class="nav" data-target="connections">Connections</button>
+      </nav>
+
+      <div class="auth-box">
+        <label>API header name</label>
+        <input id="apiHeader" value="X-API-Key" autocomplete="off">
+        <label>API key</label>
+        <input id="apiKey" type="password" placeholder="Only if your API guard requires it" autocomplete="off">
+        <button id="saveAuth" class="secondary">Use for this session</button>
+        <small>The key stays in this browser tab only.</small>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">STAGE 3 • v1.0.1 GUI POLISH</p>
+          <h2>Content, GUI & Social Automation</h2>
+        </div>
+        <div id="apiState" class="pill">API not checked</div>
+      </header>
+
+      <section id="dashboard" class="view active">
+        <div class="grid four">
+          <article class="metric">
+            <span>SportsQ Predict</span>
+            <strong id="predictStatus">—</strong>
+          </article>
+          <article class="metric">
+            <span>SportsQ ScoreCall</span>
+            <strong id="scoreStatus">—</strong>
+          </article>
+          <article class="metric">
+            <span>SportsQ Confidence</span>
+            <strong id="confidenceStatus">—</strong>
+          </article>
+          <article class="metric">
+            <span>SportsQ Form Index</span>
+            <strong id="formStatus">—</strong>
+          </article>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">LATEST LOCKED INTELLIGENCE</p>
+              <h3>Match Predictions</h3>
+            </div>
+            <button id="refreshDashboard">Refresh</button>
+          </div>
+          <div id="predictionTable" class="cards-list"></div>
+        </div>
+
+        <div class="panel">
+          <p class="eyebrow">TRACK RECORD</p>
+          <h3>Results & Accuracy</h3>
+
+          <div class="grid four accuracy-grid">
+            <article class="metric compact">
+              <span>Locked</span>
+              <strong id="accuracyLocked">—</strong>
+            </article>
+            <article class="metric compact">
+              <span>Graded</span>
+              <strong id="accuracyGraded">—</strong>
+            </article>
+            <article class="metric compact">
+              <span>Pending</span>
+              <strong id="accuracyPending">—</strong>
+            </article>
+            <article class="metric compact">
+              <span>Accuracy</span>
+              <strong id="accuracyPercent">—</strong>
+            </article>
+          </div>
+
+          <div id="accuracyMessage" class="notice"></div>
+          <details class="technical-details">
+            <summary>Technical accuracy data</summary>
+            <pre id="accuracyBox">Loading…</pre>
+          </details>
+        </div>
+      </section>
+
+      <section id="content" class="view">
+        <div class="panel">
+          <p class="eyebrow">APPROVED MDRN SPORTSQ VISUAL SYSTEM</p>
+          <h3>Content Studio</h3>
+          <p class="muted">
+            Deep navy • electric lime • white. Prediction cards, results/accuracy,
+            verified team news, and static vertical Story/Reel output.
+          </p>
+
+          <div class="form-grid">
+            <label>Competition
+              <input id="competition" type="number" value="2">
+            </label>
+            <label>Season
+              <input id="season" type="number" value="2026">
+            </label>
+            <label>Prediction cards
+              <input id="limit" type="number" min="1" max="10" value="3">
+            </label>
+          </div>
+
+          <button id="generateContent">Generate Content Package</button>
+          <div id="generationStatus" class="notice"></div>
+          <div id="assetGallery" class="gallery"></div>
+        </div>
+      </section>
+
+      <section id="publishing" class="view">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">APPROVAL FIRST</p>
+              <h3>Publishing Queue</h3>
+            </div>
+            <button id="refreshQueue">Refresh</button>
+          </div>
+          <div id="queueList" class="cards-list"></div>
+        </div>
+      </section>
+
+      <section id="connections" class="view">
+        <div class="panel">
+          <p class="eyebrow">PLATFORM READINESS</p>
+          <h3>Social Connections</h3>
+          <p class="muted">
+            Live posting is never claimed until a platform-specific connector and
+            credentials have been verified. Secret values are not displayed.
+          </p>
+          <div id="connectionsList" class="grid two"></div>
+        </div>
+
+        <div class="panel warning">
+          <h3>Media-rights guardrail</h3>
+          <p>
+            Goal clips and other third-party video are excluded by default.
+            Attribution alone is not treated as permission or a licence.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="detailModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">FULL SPORTSQ INTELLIGENCE</p>
+          <h3 id="detailTitle">Match detail</h3>
+        </div>
+        <button class="secondary" data-close-modal>Close</button>
+      </div>
+      <div id="detailBody"></div>
+    </div>
+  </div>
+
+  <script src="/sportsq/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+
+==============================================================================
+MDRN SPORTSQ - STAGE 5 SCORECALL READ-ONLY INSPECTION
+==============================================================================
+APP VERSION
+1.0.2-stage4-source-rights
+
+==============================================================================
+DATABASE / SCORE-RELATED COLUMNS
+==============================================================================
+Database dialect: sqlite
+fixture_reconciliations: ['home_team', 'away_team', 'primary_score', 'secondary_score', 'result_status']
+fixtures: ['home_team_id', 'away_team_id', 'home_goals', 'away_goals', 'halftime_home', 'halftime_away', 'fulltime_home', 'fulltime_away', 'extratime_home', 'extratime_away', 'penalty_home', 'penalty_away', 'result_1x2']
+live_predictions: ['home_odds', 'away_odds', 'p_home', 'p_away', 'prediction', 'actual_result']
+market_safety_events: ['prediction_lock_allowed', 'prediction_gate_action']
+odds_snapshots: ['home_odds', 'away_odds', 'p_home', 'p_away']
+sportsq_media_assets: ['team_home', 'team_away']
+
+==============================================================================
+LIVE_PREDICTIONS STRUCTURE + SAMPLE
+==============================================================================
+id | type=INTEGER | nullable=False
+fixture_id | type=INTEGER | nullable=False
+provider | type=VARCHAR(40) | nullable=False
+provider_fixture_id | type=BIGINT | nullable=False
+competition_id | type=BIGINT | nullable=False
+season | type=INTEGER | nullable=False
+model_name | type=VARCHAR(80) | nullable=False
+policy_version | type=VARCHAR(80) | nullable=False
+market_source | type=VARCHAR(80) | nullable=False
+home_odds | type=FLOAT | nullable=False
+draw_odds | type=FLOAT | nullable=False
+away_odds | type=FLOAT | nullable=False
+market_overround | type=FLOAT | nullable=False
+p_home | type=FLOAT | nullable=False
+p_draw | type=FLOAT | nullable=False
+p_away | type=FLOAT | nullable=False
+prediction | type=VARCHAR(1) | nullable=False
+confidence | type=FLOAT | nullable=False
+threshold | type=FLOAT | nullable=False
+selector_label | type=VARCHAR(32) | nullable=False
+publish | type=BOOLEAN | nullable=False
+odds_snapshot_at | type=DATETIME | nullable=False
+locked_at | type=DATETIME | nullable=False
+kickoff_utc | type=DATETIME | nullable=False
+actual_result | type=VARCHAR(1) | nullable=True
+is_correct | type=BOOLEAN | nullable=True
+graded_at | type=DATETIME | nullable=True
+created_at | type=DATETIME | nullable=False
+sample_1: {"fixture_id": 19, "provider_fixture_id": 1877302, "prediction": "A", "confidence": 0.43217287, "publish": 0, "locked_at": "2026-09-09 01:26:34.317900"}
+sample_2: {"fixture_id": 18, "provider_fixture_id": 1877300, "prediction": "H", "confidence": 0.43232893, "publish": 0, "locked_at": "2026-09-09 01:26:34.317900"}
+sample_3: {"fixture_id": 16, "provider_fixture_id": 1877301, "prediction": "H", "confidence": 0.52902547, "publish": 0, "locked_at": "2026-09-09 01:26:34.317900"}
+sample_4: {"fixture_id": 15, "provider_fixture_id": 1877299, "prediction": "A", "confidence": 0.52200121, "publish": 0, "locked_at": "2026-09-09 01:26:34.317900"}
+sample_5: {"fixture_id": 14, "provider_fixture_id": 1877297, "prediction": "H", "confidence": 0.55138156, "publish": 0, "locked_at": "2026-09-09 01:26:34.317900"}
+
+==============================================================================
+FIXTURES SCORE / RESULT STRUCTURE
+==============================================================================
+home_team_id | type=INTEGER | nullable=False
+away_team_id | type=INTEGER | nullable=False
+kickoff_utc | type=DATETIME | nullable=False
+status_short | type=VARCHAR(20) | nullable=False
+status_long | type=VARCHAR(80) | nullable=True
+home_goals | type=INTEGER | nullable=True
+away_goals | type=INTEGER | nullable=True
+halftime_home | type=INTEGER | nullable=True
+halftime_away | type=INTEGER | nullable=True
+fulltime_home | type=INTEGER | nullable=True
+fulltime_away | type=INTEGER | nullable=True
+extratime_home | type=INTEGER | nullable=True
+extratime_away | type=INTEGER | nullable=True
+penalty_home | type=INTEGER | nullable=True
+penalty_away | type=INTEGER | nullable=True
+is_finished | type=BOOLEAN | nullable=False
+result_1x2 | type=VARCHAR(8) | nullable=True
+fixture_sample_1: {"home_team_id": 45, "away_team_id": 24, "kickoff_utc": "2023-05-28 15:30:00.000000", "status_short": "FT", "status_long": "Finished", "home_goals": 4, "away_goals": 4, "halftime_home": 2, "halftime_away": 2, "fulltime_home": 4, "fulltime_away": 4, "extratime_home": null, "extratime_away": null, "penalty_home": null, "penalty_away": null, "is_finished": 1, "result_1x2": "DRAW"}
+fixture_sample_2: {"home_team_id": 40, "away_team_id": 29, "kickoff_utc": "2023-05-28 15:30:00.000000", "status_short": "FT", "status_long": "Finished", "home_goals": 2, "away_goals": 1, "halftime_home": 1, "halftime_away": 1, "fulltime_home": 2, "fulltime_away": 1, "extratime_home": null, "extratime_away": null, "penalty_home": null, "penalty_away": null, "is_finished": 1, "result_1x2": "HOME"}
+fixture_sample_3: {"home_team_id": 46, "away_team_id": 31, "kickoff_utc": "2023-05-28 15:30:00.000000", "status_short": "FT", "status_long": "Finished", "home_goals": 2, "away_goals": 1, "halftime_home": 1, "halftime_away": 0, "fulltime_home": 2, "fulltime_away": 1, "extratime_home": null, "extratime_away": null, "penalty_home": null, "penalty_away": null, "is_finished": 1, "result_1x2": "HOME"}
+fixture_sample_4: {"home_team_id": 42, "away_team_id": 32, "kickoff_utc": "2023-05-28 15:30:00.000000", "status_short": "FT", "status_long": "Finished", "home_goals": 1, "away_goals": 4, "halftime_home": 0, "halftime_away": 1, "fulltime_home": 1, "fulltime_away": 4, "extratime_home": null, "extratime_away": null, "penalty_home": null, "penalty_away": null, "is_finished": 1, "result_1x2": "AWAY"}
+fixture_sample_5: {"home_team_id": 43, "away_team_id": 25, "kickoff_utc": "2023-05-28 15:30:00.000000", "status_short": "FT", "status_long": "Finished", "home_goals": 1, "away_goals": 0, "halftime_home": 0, "halftime_away": 0, "fulltime_home": 1, "fulltime_away": 0, "extratime_home": null, "extratime_away": null, "penalty_home": null, "penalty_away": null, "is_finished": 1, "result_1x2": "HOME"}
+fixture_sample_6: {"home_team_id": 37, "away_team_id": 38, "kickoff_utc": "2023-05-28 15:30:00.000000", "status_short": "FT", "status_long": "Finished", "home_goals": 1, "away_goals": 1, "halftime_home": 0, "halftime_away": 1, "fulltime_home": 1, "fulltime_away": 1, "extratime_home": null, "extratime_away": null, "penalty_home": null, "penalty_away": null, "is_finished": 1, "result_1x2": "DRAW"}
+fixture_sample_7: {"home_team_id": 36, "away_team_id": 27, "kickoff_utc": "2023-05-28 15:30:00.000000", "status_short": "FT", "status_long": "Finished", "home_goals": 1, "away_goals": 1, "halftime_home": 1, "halftime_away": 1, "fulltime_home": 1, "fulltime_away": 1, "extratime_home": null, "extratime_away": null, "penalty_home": null, "penalty_away": null, "is_finished": 1, "result_1x2": "DRAW"}
+fixture_sample_8: {"home_team_id": 39, "away_team_id": 35, "kickoff_utc": "2023-05-28 15:30:00.000000", "status_short": "FT", "status_long": "Finished", "home_goals": 1, "away_goals": 0, "halftime_home": 0, "halftime_away": 0, "fulltime_home": 1, "fulltime_away": 0, "extratime_home": null, "extratime_away": null, "penalty_home": null, "penalty_away": null, "is_finished": 1, "result_1x2": "HOME"}
+
+==============================================================================
+SCORECALL / SCORE / GOAL CODE SEARCH
+==============================================================================
+app/models.py: {'home_goals': 1, 'away_goals': 1}
+app/services/baseline_models.py: {'home_goals': 2, 'away_goals': 2, 'poisson': 15}
+app/services/ensemble_models.py: {'poisson': 8}
+app/services/feature_engineering.py: {'home_goals': 13, 'away_goals': 13}
+app/services/sportsq_intelligence.py: {'scorecall': 1, 'predicted_score': 2, 'home_score': 2, 'away_score': 2, 'home_goals': 7, 'away_goals': 7}
+app/services/sportsq_stage3.py: {'scorecall': 2}
+app/main.py: {'home_goals': 2, 'away_goals': 2}
+
+==============================================================================
+PUBLIC CALLABLE INVENTORY
+==============================================================================
+
+app.services.baseline_models
+  accuracy_score_3way(y_true: 'np.ndarray', probs: 'np.ndarray') -> 'float'
+  brier_score_3way(y_true: 'np.ndarray', probs: 'np.ndarray') -> 'float'
+  evaluate_baselines(*, train_path: 'str', validation_path: 'str', output_path: 'str') -> 'dict[str, Any]'
+  log_loss_3way(y_true: 'np.ndarray', probs: 'np.ndarray') -> 'float'
+  poisson_feature_columns(fields: 'Iterable[str]') -> 'list[str]'
+  production_feature_columns(fields: 'Iterable[str]') -> 'list[str]'
+
+app.services.ensemble_models
+  apply_temperature(probs: 'np.ndarray', temperature: 'float') -> 'np.ndarray'
+  blend_probabilities(model_probs: 'dict[str, np.ndarray]', weights: 'dict[str, float]') -> 'np.ndarray'
+  curated_feature_columns(fields: 'list[str]') -> 'list[str]'
+  evaluate_phase4_ensemble(*, fold1_train_path: 'str', fold1_validation_path: 'str', fold2_train_path: 'str', fold2_validation_path: 'str', output_path: 'str') -> 'dict[str, Any]'
+  fit_temperature(y_true: 'np.ndarray', probs: 'np.ndarray') -> 'tuple[float, float]'
+  optimize_blend_weights(y_true: 'np.ndarray', model_probs: 'dict[str, np.ndarray]', *, seed: 'int' = 42, candidates: 'int' = 6000) -> 'tuple[dict[str, float], float]'
+
+app.services.feature_engineering
+  build_feature_dataset(session: 'Session', *, output_path: 'str', provider: 'str' = 'football-data-csv', from_season: 'int', to_season: 'int') -> 'dict[str, Any]'
+  build_feature_rows(records: 'list[MatchRecord]') -> 'list[dict[str, Any]]'
+  load_match_records(session: 'Session', *, provider: 'str' = 'football-data-csv', from_season: 'int', to_season: 'int') -> 'list[MatchRecord]'
+
+app.services.live_prediction_engine
+  extract_pre_match_odds(raw: 'str | dict[str, Any] | None') -> 'tuple[float, float, float]'
+  fair_probabilities_from_decimal_odds(home: 'float', draw: 'float', away: 'float') -> 'tuple[float, float, float, float]'
+  generate_live_predictions(session: 'Session', *, competition_id: 'int', season: 'int', threshold: 'float' = 0.65, now: 'datetime | None' = None, limit: 'int | None' = None) -> 'dict[str, Any]'
+  list_live_predictions(session: 'Session', *, competition_id: 'int', season: 'int', high_confidence_only: 'bool' = False) -> 'list[dict[str, Any]]'
+
+app.services.prediction_grading
+  grade_live_predictions(session: 'Session', *, competition_id: 'int', season: 'int', now: 'datetime | None' = None) -> 'dict[str, Any]'
+  live_prediction_rows(session: 'Session', *, competition_id: 'int', season: 'int', high_confidence_only: 'bool' = False) -> 'list[dict[str, Any]]'
+  performance_summary(session: 'Session', *, competition_id: 'int', season: 'int', high_confidence_only: 'bool' = False) -> 'dict[str, Any]'
+
+app.services.sportsq_intelligence
+  get_sportsq_intelligence(session: 'Session', *, fixture_id: 'int', competition_id: 'int' = 2, season: 'int' = 2026) -> 'dict[str, Any]'
+  list_sportsq_intelligence(session: 'Session', *, competition_id: 'int' = 2, season: 'int' = 2026, limit: 'int' = 100) -> 'dict[str, Any]'
+  sportsq_accuracy_summary(session: 'Session', *, competition_id: 'int' = 2, season: 'int' = 2026) -> 'dict[str, Any]'
+  sportsq_capabilities(session: 'Session') -> 'dict[str, Any]'
+
+==============================================================================
+SPORTSQ SCORECALL CURRENT BEHAVIOUR
+==============================================================================
+{
+  "status": "success",
+  "count": 5,
+  "scorecall_samples": [
+    {
+      "fixture": {
+        "fixture_id": 1,
+        "provider_fixture_id": 1877284,
+        "home_team": "AFC Bournemouth",
+        "away_team": "Brentford",
+        "kickoff_utc": "2026-09-12 14:00:00.000000"
+      },
+      "scorecall": {
+        "name": "SportsQ ScoreCall",
+        "score": null,
+        "status": "NOT_EXPOSED_BY_EXISTING_LOCK",
+        "source": "not_exposed_by_existing_lock"
+      }
+    },
+    {
+      "fixture": {
+        "fixture_id": 2,
+        "provider_fixture_id": 1877285,
+        "home_team": "Liverpool",
+        "away_team": "Fulham",
+        "kickoff_utc": "2026-09-12 14:00:00.000000"
+      },
+      "scorecall": {
+        "name": "SportsQ ScoreCall",
+        "score": null,
+        "status": "NOT_EXPOSED_BY_EXISTING_LOCK",
+        "source": "not_exposed_by_existing_lock"
+      }
+    },
+    {
+      "fixture": {
+        "fixture_id": 3,
+        "provider_fixture_id": 1877286,
+        "home_team": "Chelsea",
+        "away_team": "Hull City",
+        "kickoff_utc": "2026-09-12 14:00:00.000000"
+      },
+      "scorecall": {
+        "name": "SportsQ ScoreCall",
+        "score": null,
+        "status": "NOT_EXPOSED_BY_EXISTING_LOCK",
+        "source": "not_exposed_by_existing_lock"
+      }
+    },
+    {
+      "fixture": {
+        "fixture_id": 4,
+        "provider_fixture_id": 1877287,
+        "home_team": "Crystal Palace",
+        "away_team": "Ipswich Town",
+        "kickoff_utc": "2026-09-12 14:00:00.000000"
+      },
+      "scorecall": {
+        "name": "SportsQ ScoreCall",
+        "score": null,
+        "status": "NOT_EXPOSED_BY_EXISTING_LOCK",
+        "source": "not_exposed_by_existing_lock"
+      }
+    },
+    {
+      "fixture": {
+        "fixture_id": 5,
+        "provider_fixture_id": 1877288,
+        "home_team": "Aston Villa",
+        "away_team": "Nottingham Forest",
+        "kickoff_utc": "2026-09-12 14:00:00.000000"
+      },
+      "scorecall": {
+        "name": "SportsQ ScoreCall",
+        "score": null,
+        "status": "NOT_EXPOSED_BY_EXISTING_LOCK",
+        "source": "not_exposed_by_existing_lock"
+      }
+    }
+  ]
+}
+
+==============================================================================
+HISTORICAL TRAINING / RESULT AVAILABILITY
+==============================================================================
+Fixture status candidates: ['status_short', 'is_finished', 'status_long']
+Fixture score candidates: ['away_goals', 'home_goals']
+
+==============================================================================
+RELEVANT TESTS
+==============================================================================
+test_baseline_models.py
+test_cli_baseline_command.py
+test_cli_ensemble_command.py
+test_cli_features_command.py
+test_cli_live_prediction_command.py
+test_ensemble_models.py
+test_feature_engineering.py
+test_fixture_reconciliation.py
+test_live_prediction_engine.py
+test_prediction_grading.py
+test_sportsq_intelligence.py
+test_sportsq_stage3.py
+test_sportsq_stage3_gui_polish.py
+test_sportsq_stage4.py
+
+==============================================================================
+PROTECTED STATE SNAPSHOT
+==============================================================================
+app/models.py | ab45e4e3f209424ed5decfcb46ff1a7e40b933383f34b3e0d19c403c1dee1571
+app/services/baseline_models.py | 26a07a2e798a09f0db218f732d8a29c2b576c33383c93c5739b92a5014213014
+app/services/ensemble_models.py | 762a6d1b7dff760c6f0026c158182493701cbe239335724051ed63b595d4e4bc
+app/services/feature_engineering.py | 244443c6ae96cb566645223eee44833d6a0d0ef21f3a529ea2f3413e92086081
+app/services/high_confidence_selector.py | 78af20c65ac59fb3eed6e57d2a2dde376b0c76f8d3727f076c113f6f8a7b90ce
+app/services/live_prediction_engine.py | c36a6d0f9089bb58c219a74fb1513e249949d363ec3bb6a5df4bc78c78e84192
+app/services/prediction_grading.py | 593300da77b912a9efa593f139f0652c2d263477ea164317969344ddbaa4f7e9
+app/services/social_content.py | 2678e8a9c000b077ecf495d727e509387985b774f27888787440c02d174f310c
+app/services/sportsq_intelligence.py | c769faef5dd721f333436f7dc1bac22921dbe62669df46d1f20b32c9ee1e7d4a
+app/services/sportsq_source_rights.py | cbda8ee8435219d5a8170c9a1a6608f887fcaf47e6e7c43809b003f2b49b5ecd
+live_predictions rows: 18
+fixtures rows: 2268
+sportsq_sources rows: 17
+sportsq_media_assets rows: 0
+sportsq_rights_verifications rows: 0
+holdout tables: []
+holdout files: []
+
+==============================================================================
+STAGE 5 DESIGN QUESTIONS
+==============================================================================
+1. Does an existing locked prediction already expose exact score data?
+2. Do fixtures contain enough historical home/away goals for score modelling?
+3. Can ScoreCall be added as a deterministic read-only layer without rewriting the existing 1X2 engine?
+4. Which score model is safest: empirical score matrix, Poisson, or an existing model output?
+5. How will ScoreCall be locked at prediction time so it cannot change after kickoff?
+6. How will ScoreCall grading remain separate from existing 1X2 grading?
+7. Can the final holdout remain completely untouched during development and tuning?
+
+==============================================================================
+RECOMMENDED NEXT STEP
+==============================================================================
+Do not implement ScoreCall until this inspection is reviewed.
+Preferred architecture: additive score model + strict temporal cutoff + separate ScoreCall lock evidence + no mutation of existing locked 1X2 predictions.

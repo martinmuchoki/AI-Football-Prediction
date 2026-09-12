@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MDRN SportsQ Rights Verification",
+  "type": "object",
+  "required": [
+    "reuse_verified",
+    "commercial_use_allowed",
+    "modification_allowed"
+  ],
+  "properties": {
+    "licence_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "commercial_use_allowed": {
+      "type": "boolean"
+    },
+    "modification_allowed": {
+      "type": "boolean"
+    },
+    "attribution_required": {
+      "type": "boolean"
+    },
+    "share_alike_required": {
+      "type": "boolean"
+    },
+    "trademark_check": {
+      "enum": [
+        "CLEAR",
+        "REVIEW",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "personality_rights_check": {
+      "enum": [
+        "CLEAR",
+        "REVIEW",
+        "BLOCKED",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "evidence_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "verified_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "reuse_verified": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

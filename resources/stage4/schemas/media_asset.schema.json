@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MDRN SportsQ Media Asset Record",
+  "type": "object",
+  "required": [
+    "asset_id",
+    "source_id",
+    "source_url",
+    "reuse_verified"
+  ],
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "team_home": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "team_away": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "match_date": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "media_type": {
+      "enum": [
+        "VIDEO",
+        "IMAGE",
+        "AUDIO",
+        "OTHER"
+      ]
+    },
+    "licence_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rights_holder": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "commercial_use_allowed": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "modification_allowed": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "attribution_required": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "attribution_text": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verified_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "verified_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "reuse_verified": {
+      "type": "boolean"
+    },
+    "verification_status": {
+      "enum": [
+        "VERIFIED",
+        "PENDING",
+        "BLOCKED",
+        "EXPIRED"
+      ]
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

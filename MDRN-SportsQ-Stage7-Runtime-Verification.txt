@@ -1,0 +1,424 @@
+
+==============================================================================
+1. INSTALLED VERSION
+==============================================================================
+app.__version__=1.0.5-stage7-fixture-lifecycle
+PASS: Installed version is 1.0.5-stage7-fixture-lifecycle
+
+==============================================================================
+2. STAGE 7 SERVICE / STATUS
+==============================================================================
+{
+  "fixture_rows_returned": 380,
+  "news_impact_status": {
+    "event_rows": 0,
+    "live_2026_ingestion_enabled": false,
+    "stage": 6
+  },
+  "stage7_status": {
+    "append_only_audit": true,
+    "brand": "MDRN SportsQ",
+    "competition_id": 2,
+    "content_handoff_ready": 18,
+    "fixture_rows_seen": 380,
+    "fixture_states": {
+      "COMPLETED_NO_LOCK": 30,
+      "PREMATCH_LOCKED_SCORECALL": 18,
+      "PREMATCH_PENDING_LOCK": 332
+    },
+    "generated_at": "2026-09-11T01:04:58.889551+00:00",
+    "history_adapter": {
+      "name": "sync_live_score_history",
+      "optional": [
+        "from_date",
+        "to_date",
+        "page",
+        "start_page",
+        "max_pages"
+      ],
+      "required": [
+        "session",
+        "client",
+        "competition_id",
+        "season"
+      ],
+      "signature": "(session: 'Session', client: 'LiveScoreApiClient', *, competition_id: 'int', season: 'int', from_date: 'date | None' = None, to_date: 'date | None' = None, page: 'int | None' = None, start_page: 'int' = 1, max_pages: 'int | None' = None) -> 'dict'",
+      "supported_by_stage7_adapter": true,
+      "unknown_required_parameters": []
+    },
+    "latest_run": null,
+    "product": "SportsQ Automated Fixture Lifecycle",
+    "safety": {
+      "existing_prediction_lock_fields_rewritten": false,
+      "existing_scorecall_locks_rewritten": false,
+      "historical_holdout_touched": false,
+      "prediction_engine_rewritten": false,
+      "social_auto_posting_enabled_by_stage7": false,
+      "stage6_live_news_ingestion_enabled_by_stage7": false
+    },
+    "season": 2026,
+    "stage": 7,
+    "status": "ready",
+    "table": "sportsq_fixture_lifecycle_runs",
+    "table_ready": true
+  }
+}
+PASS: Lifecycle service reports Stage 7
+PASS: Lifecycle service status is ready
+PASS: Lifecycle audit table is ready
+PASS: Lifecycle audit reports append-only protection
+PASS: Live Score history adapter signature is supported
+PASS: Stage 7 status confirms prediction engine not rewritten
+PASS: Stage 7 status confirms existing prediction lock fields are not rewritten
+PASS: Stage 7 status confirms existing ScoreCall locks are not rewritten
+PASS: Stage 7 status confirms historical holdout untouched
+PASS: Stage 7 did not enable Stage 6 live News Impact ingestion
+PASS: Stage 6 live 2026 News Impact ingestion remains disabled
+
+==============================================================================
+3. ROUTE VERIFICATION
+==============================================================================
+/api/v1/sportsq/stage7/status methods=['GET']
+PASS: Route exists: /api/v1/sportsq/stage7/status
+PASS: GET enabled: /api/v1/sportsq/stage7/status
+PASS: Route is read-only: /api/v1/sportsq/stage7/status
+/api/v1/sportsq/stage7/fixtures methods=['GET']
+PASS: Route exists: /api/v1/sportsq/stage7/fixtures
+PASS: GET enabled: /api/v1/sportsq/stage7/fixtures
+PASS: Route is read-only: /api/v1/sportsq/stage7/fixtures
+
+==============================================================================
+4. SCHEDULER WIRING / ORDER
+==============================================================================
+async def live_market_job() -> None:
+    reconciliation = await openfootball_reconciliation_job()
+    print(
+        "[reconciliation-before-market] "
+        f"status={reconciliation.get('status')}"
+    )
+
+    for competition, season in settings.live_score_competitions():
+        with SessionLocal() as session:
+
+            # Recover any crash gap where a safety event was persisted
+            # but incident lifecycle persistence did not complete.
+            try:
+                recovery = recover_incident_state_from_history(
+                    session,
+                    competition_id=competition,
+                    season=season,
+                )
+
+                print(
+                    f"[market-reliability-recovery] "
+                    f"competition={competition} "
+                    f"season={season} "
+                    f"status={recovery.get('status')} "
+                    f"processed={recovery.get('processed', 0)}"
+                )
+
+            except Exception as exc:
+                print(
+                    f"[market-reliability-recovery] "
+                    f"competition={competition} "
+                    f"season={season} "
+                    f"status=recovery_failed "
+                    f"detail={type(exc).__name__}"
+                )
+
+            result = await refresh_live_market(
+                session,
+                settings,
+                competition_id=competition,
+                season=season,
+            )
+            try:
+                stage7_lifecycle = await run_fixture_lifecycle_post_refresh(
+                    session,
+                    settings,
+                    competition_id=competition,
+                    season=season,
+                    market_result=result,
+                )
+            except Exception as exc:
+                stage7_lifecycle = {
+                    "stage": 7,
+                    "status": "isolated_failure",
+                    "detail": type(exc).__name__,
+                    "final_holdout_touched": False,
+                }
+                print(
+                    "[stage7-lifecycle] isolated_failure "
+                    f"detail={type(exc).__name__}"
+                )
+            if isinstance(result, dict):
+                result["stage7_lifecycle"] = stage7_lifecycle
+
+            print(
+                f"[market-refresh] "
+                f"competition={competition} "
+                f"season={season} {result}"
+            )
+
+            # Operational observability must never interrupt
+            # the core market-refresh path.
+            try:
+                safety = market_safety_status(
+                    session,
+                    competition_id=competition,
+                    season=season,
+                    source_stale_after_minutes=getattr(
+                        settings,
+                        "source_health_stale_after_minutes",
+                        180,
+                    ),
+                    reconciliation_stale_after_minutes=getattr(
+                        settings,
+                        "reconciliation_stale_after_minutes",
+                        180,
+                    ),
+                )
+
+                event = record_market_safety_event(
+                    session,
+                    snapshot=safety,
+                )
+
+                print(
+                    f"[market-safety] "
+                    f"competition={competition} "
+                    f"season={season} "
+                    f"status={event.get('overall_status')} "
+                    f"transition={event.get('transition')} "
+                    f"alert={event.get('alert_type')}"
+                )
+
+                # Incident lifecycle is operational observability.
+                # Failure here must never interrupt prediction refresh
+                # or transition-alert delivery.
+                try:
+                    incident_state = process_market_safety_incident(
+                        session,
+                        event=event,
+                    )
+
+                    event["incident"] = incident_state
+
+                    incident = dict(
+                        incident_state.get(
+                            "incident",
+                            {},
+                        )
+                        or {}
+                    )
+
+                    print(
+                        f"[market-safety-incident] "
+                        f"competition={competition} "
+                        f"season={season} "
+                        f"action={incident_state.get('action')} "
+                        f"incident_id={incident.get('id')} "
+                        f"status={incident.get('status')} "
+                        f"severity={incident.get('highest_severity')}"
+                    )
+
+                    # SLA evaluation runs on every observation, not only
+                    # transitions. Persisted stages guarantee one alert
+                    # per incident/stage.
+                    try:
+                        sla = await evaluate_and_dispatch_market_safety_sla(
+                            session,
+                            settings,
+                            incident=(
+                                incident
+                                if incident
+                                and incident.get("status") == "OPEN"
+                                else None
+                            ),
+                        )
+
+                        delivery = dict(
+                            sla.get(
+                                "delivery",
+                                {},
+                            )
+                            or {}
+                        )
+
+                        alert = dict(
+                            sla.get(
+                                "alert",
+                                {},
+                            )
+                            or {}
+                        )
+
+                        print(
+                            f"[market-safety-sla] "
+                            f"competition={competition} "
+                            f"season={season} "
+                            f"status={sla.get('status')} "
+                            f"stage={alert.get('stage')} "
+                            f"telegram={delivery.get('telegram_delivery_status', 'not_due')}"
+                        )
+
+                    except Exception as exc:
+                        print(
+                            f"[market-safety-sla] "
+                            f"competition={competition} "
+                            f"season={season} "
+                            f"status=sla_observability_failed "
+                            f"detail={type(exc).__name__}"
+                        )
+
+                except Exception as exc:
+                    print(
+                        f"[market-safety-incident] "
+                        f"competition={competition} "
+                        f"season={season} "
+                        f"status=incident_tracking_failed "
+                        f"detail={type(exc).__name__}"
+                    )
+
+                if event.get("alert_type"):
+                    try:
+                        delivery = await deliver_market_safety_alert(
+                            session,
+                            settings,
+                            event=event,
+                        )
+
+                        telegram = dict(
+                            delivery.get(
+                                "telegram",
+                                {},
+                            )
+                            or {}
+                        )
+
+                        print(
+                            f"[market-safety-alert] "
+                            f"competition={competition} "
+                            f"season={season} "
+                            f"webhook={delivery.get('delivery_status', delivery.get('status'))} "
+                            f"telegram={telegram.get('delivery_status', telegram.get('status', 'not_enabled'))} "
+                            f"attempts={delivery.get('attempts', 0)}"
+                        )
+
+                    except Exception as exc:
+                        print(
+                            f"[market-safety-alert] "
+                            f"competition={competition} "
+                            f"season={season} "
+                            f"status=delivery_audit_failed "
+                            f"detail={type(exc).__name__}"
+                        )
+
+            except Exception as exc:
+                print(
+                    f"[market-safety] "
+                    f"competition={competition} "
+                    f"season={season} "
+                    f"status=observability_failed "
+                    f"detail={type(exc).__name__}"
+                )
+
+PASS: Existing refresh_live_market call remains in live_market_job
+PASS: Stage 7 post-refresh lifecycle hook is wired
+PASS: Stage 7 lifecycle hook runs after existing market refresh
+PASS: Stage 7 scheduler result is exposed in scheduler cycle output
+PASS: Stage 7 hook failure is isolated from the existing market scheduler
+
+==============================================================================
+5. APPEND-ONLY AUDIT TABLE / TRIGGERS
+==============================================================================
+PASS: Audit table exists: sportsq_fixture_lifecycle_runs
+trigger_names=['trg_sportsq_fixture_lifecycle_runs_no_delete', 'trg_sportsq_fixture_lifecycle_runs_no_update']
+audit_rows=0
+bad_holdout_rows=0
+PASS: Append-only UPDATE protection trigger exists
+PASS: Append-only DELETE protection trigger exists
+PASS: No lifecycle audit row reports historical holdout access
+
+==============================================================================
+6. CURRENT FIXTURE LIFECYCLE CLASSIFICATION
+==============================================================================
+fixture_states={
+  "COMPLETED_NO_LOCK": 30,
+  "PREMATCH_LOCKED_SCORECALL": 18,
+  "PREMATCH_PENDING_LOCK": 332
+}
+PASS: All fixture lifecycle states are recognized Stage 7 states
+PASS: Lifecycle status fixture count matches lifecycle row query
+
+==============================================================================
+7. PROTECTED SERVICE HASHES
+==============================================================================
+app/services/baseline_models.py=26a07a2e798a09f0db218f732d8a29c2b576c33383c93c5739b92a5014213014
+PASS: Protected service unchanged: app/services/baseline_models.py
+app/services/ensemble_models.py=762a6d1b7dff760c6f0026c158182493701cbe239335724051ed63b595d4e4bc
+PASS: Protected service unchanged: app/services/ensemble_models.py
+app/services/feature_engineering.py=244443c6ae96cb566645223eee44833d6a0d0ef21f3a529ea2f3413e92086081
+PASS: Protected service unchanged: app/services/feature_engineering.py
+app/services/high_confidence_selector.py=78af20c65ac59fb3eed6e57d2a2dde376b0c76f8d3727f076c113f6f8a7b90ce
+PASS: Protected service unchanged: app/services/high_confidence_selector.py
+app/services/live_prediction_engine.py=c36a6d0f9089bb58c219a74fb1513e249949d363ec3bb6a5df4bc78c78e84192
+PASS: Protected service unchanged: app/services/live_prediction_engine.py
+app/services/prediction_grading.py=593300da77b912a9efa593f139f0652c2d263477ea164317969344ddbaa4f7e9
+PASS: Protected service unchanged: app/services/prediction_grading.py
+app/services/social_content.py=2678e8a9c000b077ecf495d727e509387985b774f27888787440c02d174f310c
+PASS: Protected service unchanged: app/services/social_content.py
+app/services/sportsq_intelligence.py=3487355e2198bb4b0a7f4eff4591720789cdf8c343c03f145e32da7d8464daef
+PASS: Protected service unchanged: app/services/sportsq_intelligence.py
+app/services/sportsq_source_rights.py=cbda8ee8435219d5a8170c9a1a6608f887fcaf47e6e7c43809b003f2b49b5ecd
+PASS: Protected service unchanged: app/services/sportsq_source_rights.py
+app/services/sportsq_scorecall.py=9f8af0581272a8aa1fc24630723b5230442a48f02ae38b9c8ce5f5f571ef51ab
+PASS: Protected service unchanged: app/services/sportsq_scorecall.py
+app/services/sportsq_news_impact.py=b1b24541fa8c9eb79e1853445d99fbf27adbd71b7500e6682f90496fb09078eb
+PASS: Protected service unchanged: app/services/sportsq_news_impact.py
+
+==============================================================================
+8. BASELINE IMMUTABLE LOCK COMPARISON
+==============================================================================
+current_db=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\data\ai_football.db
+backup_db=D:\Mprojet\backups\AI-Football-before-v1.0.5-stage7-fixture-lifecycle-20260911-045114\database-before-stage7.sqlite
+PASS: Current SQLite database is available
+PASS: Stage 7 pre-install SQLite backup is available
+PASS: Immutable LivePrediction lock columns are present in current and backup databases
+baseline_live_prediction_rows=18
+current_live_prediction_rows=18
+changed_baseline_live_prediction_ids=[]
+missing_baseline_live_prediction_ids=[]
+PASS: All pre-Stage-7 immutable LivePrediction lock fields remain unchanged
+PASS: No pre-Stage-7 LivePrediction lock row was deleted
+PASS: ScoreCall schema matches the pre-Stage-7 backup
+baseline_scorecall_rows=18
+current_scorecall_rows=18
+changed_baseline_scorecall_ids=[]
+missing_baseline_scorecall_ids=[]
+PASS: All pre-Stage-7 ScoreCall locks remain unchanged
+PASS: No pre-Stage-7 ScoreCall lock row was deleted
+
+==============================================================================
+9. HOLDOUT SAFETY
+==============================================================================
+holdout_tables=[]
+holdout_files=[]
+PASS: No holdout database tables appeared
+PASS: No holdout files appeared
+
+==============================================================================
+10. RUNTIME VERIFICATION DECISION
+==============================================================================
+STAGE7_RUNTIME_VERIFICATION=PASS
+installed_version=1.0.5-stage7-fixture-lifecycle
+stage7_service_ready=YES
+scheduler_wiring_verified=YES
+lifecycle_audit_append_only=YES
+lifecycle_routes_read_only=YES
+protected_prediction_lock_fields_preserved=YES
+protected_scorecall_locks_preserved=YES
+historical_holdout_touched=NO
+stage6_live_news_ingestion_enabled=NO
+live_provider_calls_made=NO
+database_modified_by_verification=NO

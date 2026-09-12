@@ -1,0 +1,428 @@
+
+==============================================================================
+1. PRE-FLIGHT
+==============================================================================
+app.__version__=1.0.5-stage7-fixture-lifecycle
+database=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\data\ai_football.db
+backup=D:\Mprojet\backups\AI-Football-Stage7-Controlled-Live-20260911-050843\ai_football-before-controlled-live.sqlite
+competition_id=2
+season=2026
+live_provider_calls_enabled=YES
+market_safety_alert_delivery_invoked=NO
+social_posting_invoked=NO
+PASS: Installed version is 1.0.5-stage7-fixture-lifecycle
+PASS: Controlled live rollback target is SQLite
+PASS: SQLite database exists
+
+==============================================================================
+2. DATABASE BACKUP / BASELINE SNAPSHOT
+==============================================================================
+before_counts={"data_sources": 4, "fixture_reconciliations": 380, "fixtures": 2268, "live_predictions": 18, "odds_snapshots": 21, "source_observations": 1674, "source_snapshots": 1, "sportsq_fixture_lifecycle_runs": 0, "sportsq_scorecall_locks": 18, "sportsq_team_news_events": 0, "sync_runs": 81, "teams": 48}
+before_holdout_tables=[]
+PASS: No holdout database tables exist before live cycle
+before_holdout_files=[]
+PASS: No holdout files exist before live cycle
+
+==============================================================================
+3. CONTROLLED LIVE CYCLE
+==============================================================================
+reconciliation={
+  "final_holdout_touched": false,
+  "results": [
+    {
+      "competition_id": 2,
+      "final_holdout_touched": false,
+      "fixture_agreement_rate": 0.994737,
+      "overall_counts": {
+        "MATCH": 378,
+        "SOURCE_LAG": 2
+      },
+      "quality_gate": "WARN",
+      "season": 2026,
+      "season_label": "2026-27",
+      "status": "success"
+    }
+  ],
+  "status": "success"
+}
+lifecycle={
+  "audit_error": null,
+  "audit_persisted": true,
+  "brand": "MDRN SportsQ",
+  "competition_id": 2,
+  "content_handoff_ready": 18,
+  "existing_prediction_locks_rewritten": false,
+  "existing_scorecall_locks_rewritten": false,
+  "final_holdout_touched": false,
+  "finished_at": "2026-09-11T01:08:56.114742+00:00",
+  "fixture_states": {
+    "COMPLETED_NO_LOCK": 30,
+    "PREMATCH_LOCKED_SCORECALL": 18,
+    "PREMATCH_PENDING_LOCK": 332
+  },
+  "grading": {
+    "status": "success",
+    "summary": {
+      "candidates": 0,
+      "competition_id": 2,
+      "final_holdout_touched": false,
+      "graded_at": "2026-09-11T01:08:55.403170+00:00",
+      "graded_new": 0,
+      "season": 2026,
+      "skipped_invalid_result": 0,
+      "status": "success"
+    }
+  },
+  "market_status": "partial",
+  "prediction_engine_rewritten": false,
+  "product": "SportsQ Automated Fixture Lifecycle",
+  "result_refresh": {
+    "signature": {
+      "name": "sync_live_score_history",
+      "optional": [
+        "from_date",
+        "to_date",
+        "page",
+        "start_page",
+        "max_pages"
+      ],
+      "required": [
+        "session",
+        "client",
+        "competition_id",
+        "season"
+      ],
+      "signature": "(session: 'Session', client: 'LiveScoreApiClient', *, competition_id: 'int', season: 'int', from_date: 'date | None' = None, to_date: 'date | None' = None, page: 'int | None' = None, start_page: 'int' = 1, max_pages: 'int | None' = None) -> 'dict'",
+      "supported_by_stage7_adapter": true,
+      "unknown_required_parameters": []
+    },
+    "status": "success",
+    "summary": {
+      "competition_id": 2,
+      "errors": [],
+      "failed_page": null,
+      "first_page": 1,
+      "inserted": 0,
+      "last_successful_page": 1,
+      "pages_processed": 1,
+      "pagination_guard_triggered": false,
+      "received": 0,
+      "rejected": 0,
+      "resume_page": null,
+      "season": 2026,
+      "status": "success",
+      "stopped_at_max_pages": false,
+      "updated": 0
+    }
+  },
+  "run_key": "stage7-a0c09aebc079470082b8d2f6c0f403a3",
+  "scorecall": {
+    "status": "success",
+    "summary": {
+      "already_locked": 18,
+      "already_started": 0,
+      "before_prediction_lock": 0,
+      "competition_id": 2,
+      "examined": 18,
+      "final_holdout_touched": false,
+      "insufficient_history": 0,
+      "invalid_prediction": 0,
+      "live_predictions_modified": false,
+      "locked_new": 0,
+      "locks": [],
+      "model_name": "sportsq-scorecall-lock-conditioned-poisson",
+      "model_version": "1.0",
+      "season": 2026,
+      "status": "success"
+    }
+  },
+  "season": 2026,
+  "social_auto_posting_performed": false,
+  "stage": 7,
+  "stage6_live_news_ingestion_enabled": false,
+  "started_at": "2026-09-11T01:08:55.403170+00:00",
+  "status": "success"
+}
+PASS: Live lifecycle response reports Stage 7
+PASS: Live lifecycle audit row was persisted
+PASS: Live lifecycle response reports no holdout access
+PASS: Live lifecycle reports no rewrite of existing prediction locks
+PASS: Live lifecycle reports no rewrite of existing ScoreCall locks
+PASS: Stage 7 live cycle did not enable Stage 6 live News Impact ingestion
+PASS: Stage 7 live cycle did not perform social posting
+market_status=partial
+lifecycle_status=success
+WARN: Market refresh completed partially. Inspect provider/reconciliation detail before closing Stage 7 live validation.
+
+==============================================================================
+4. POST-CYCLE DATABASE SNAPSHOT
+==============================================================================
+after_counts={"data_sources": 4, "fixture_reconciliations": 380, "fixtures": 2268, "live_predictions": 18, "odds_snapshots": 21, "source_observations": 1674, "source_snapshots": 1, "sportsq_fixture_lifecycle_runs": 1, "sportsq_scorecall_locks": 18, "sportsq_team_news_events": 0, "sync_runs": 94, "teams": 48}
+after_holdout_tables=[]
+COUNT_DELTA data_sources: 4 -> 4 (delta=+0)
+COUNT_DELTA fixture_reconciliations: 380 -> 380 (delta=+0)
+COUNT_DELTA fixtures: 2268 -> 2268 (delta=+0)
+COUNT_DELTA live_predictions: 18 -> 18 (delta=+0)
+COUNT_DELTA odds_snapshots: 21 -> 21 (delta=+0)
+COUNT_DELTA source_observations: 1674 -> 1674 (delta=+0)
+COUNT_DELTA source_snapshots: 1 -> 1 (delta=+0)
+COUNT_DELTA sportsq_fixture_lifecycle_runs: 0 -> 1 (delta=+1)
+COUNT_DELTA sportsq_scorecall_locks: 18 -> 18 (delta=+0)
+COUNT_DELTA sportsq_team_news_events: 0 -> 0 (delta=+0)
+COUNT_DELTA sync_runs: 81 -> 94 (delta=+13)
+COUNT_DELTA teams: 48 -> 48 (delta=+0)
+
+==============================================================================
+5. IMMUTABLE BASELINE VERIFICATION
+==============================================================================
+changed_preexisting_live_prediction_lock_ids=[]
+missing_preexisting_live_prediction_lock_ids=[]
+changed_preexisting_scorecall_ids=[]
+missing_preexisting_scorecall_ids=[]
+PASS: All pre-cycle LivePrediction lock fields remain unchanged
+PASS: No pre-cycle LivePrediction row was deleted
+PASS: All pre-cycle ScoreCall lock rows remain unchanged
+PASS: No pre-cycle ScoreCall lock row was deleted
+
+==============================================================================
+6. NEW LOCK / SCORECALL INVARIANTS
+==============================================================================
+new_live_prediction_ids=[]
+new_scorecall_ids=[]
+
+==============================================================================
+7. GRADING / AUDIT / NEWS SAFETY
+==============================================================================
+newly_graded_prediction_ids=[]
+final_lifecycle_status={
+  "append_only_audit": true,
+  "brand": "MDRN SportsQ",
+  "competition_id": 2,
+  "content_handoff_ready": 18,
+  "fixture_rows_seen": 380,
+  "fixture_states": {
+    "COMPLETED_NO_LOCK": 30,
+    "PREMATCH_LOCKED_SCORECALL": 18,
+    "PREMATCH_PENDING_LOCK": 332
+  },
+  "generated_at": "2026-09-11T01:08:56.135984+00:00",
+  "history_adapter": {
+    "name": "sync_live_score_history",
+    "optional": [
+      "from_date",
+      "to_date",
+      "page",
+      "start_page",
+      "max_pages"
+    ],
+    "required": [
+      "session",
+      "client",
+      "competition_id",
+      "season"
+    ],
+    "signature": "(session: 'Session', client: 'LiveScoreApiClient', *, competition_id: 'int', season: 'int', from_date: 'date | None' = None, to_date: 'date | None' = None, page: 'int | None' = None, start_page: 'int' = 1, max_pages: 'int | None' = None) -> 'dict'",
+    "supported_by_stage7_adapter": true,
+    "unknown_required_parameters": []
+  },
+  "latest_run": {
+    "competition_id": 2,
+    "content_ready_count": 18,
+    "created_at": "2026-09-11T01:08:56.114742+00:00",
+    "detail": {
+      "content_handoff": {
+        "auto_generation_performed": false,
+        "ready_count": 18
+      },
+      "errors": [],
+      "fixture_states": {
+        "COMPLETED_NO_LOCK": 30,
+        "PREMATCH_LOCKED_SCORECALL": 18,
+        "PREMATCH_PENDING_LOCK": 332
+      },
+      "grading": {
+        "status": "success",
+        "summary": {
+          "candidates": 0,
+          "competition_id": 2,
+          "final_holdout_touched": false,
+          "graded_at": "2026-09-11T01:08:55.403170+00:00",
+          "graded_new": 0,
+          "season": 2026,
+          "skipped_invalid_result": 0,
+          "status": "success"
+        }
+      },
+      "market": {
+        "competition_id": 2,
+        "final_holdout_touched": false,
+        "fixture_sync": {
+          "failed_page": null,
+          "inserted": 0,
+          "pages_processed": 12,
+          "received": 350,
+          "rejected": 0,
+          "status": "success",
+          "updated": 350
+        },
+        "odds_history": {
+          "captured_new": 0,
+          "missing_or_invalid_odds": 332,
+          "unchanged": 18
+        },
+        "prediction_lock": {
+          "already_locked": 18,
+          "block_reason": null,
+          "blocked": false,
+          "high_confidence_new": 0,
+          "locked_new": 0,
+          "pass_new": 0
+        },
+        "provider": "live-score-api",
+        "reconciliation_quality": {
+          "action": "ALLOW_DEGRADED",
+          "age_minutes": 0.0,
+          "fixture_agreement_rate": 0.994737,
+          "freshness": "FRESH",
+          "last_checked_at": "2026-09-11T01:08:46.237621",
+          "overall_counts": {
+            "MATCH": 378,
+            "SOURCE_LAG": 2
+          },
+          "quality_gate": "WARN",
+          "reported_quality_gate": "WARN",
+          "stale_after_minutes": 180,
+          "status": "success"
+        },
+        "refreshed_at": "2026-09-11T01:08:46.316797+00:00",
+        "season": 2026,
+        "status": "partial"
+      },
+      "result_refresh": {
+        "signature": {
+          "name": "sync_live_score_history",
+          "optional": [
+            "from_date",
+            "to_date",
+            "page",
+            "start_page",
+            "max_pages"
+          ],
+          "required": [
+            "session",
+            "client",
+            "competition_id",
+            "season"
+          ],
+          "signature": "(session: 'Session', client: 'LiveScoreApiClient', *, competition_id: 'int', season: 'int', from_date: 'date | None' = None, to_date: 'date | None' = None, page: 'int | None' = None, start_page: 'int' = 1, max_pages: 'int | None' = None) -> 'dict'",
+          "supported_by_stage7_adapter": true,
+          "unknown_required_parameters": []
+        },
+        "status": "success",
+        "summary": {
+          "competition_id": 2,
+          "errors": [],
+          "failed_page": null,
+          "first_page": 1,
+          "inserted": 0,
+          "last_successful_page": 1,
+          "pages_processed": 1,
+          "pagination_guard_triggered": false,
+          "received": 0,
+          "rejected": 0,
+          "resume_page": null,
+          "season": 2026,
+          "status": "success",
+          "stopped_at_max_pages": false,
+          "updated": 0
+        }
+      },
+      "safety": {
+        "existing_prediction_locks_rewritten": false,
+        "existing_scorecall_locks_rewritten": false,
+        "historical_holdout_touched": false,
+        "prediction_engine_rewritten": false,
+        "social_auto_posting_performed": false,
+        "stage6_live_news_ingestion_enabled": false
+      },
+      "scorecall": {
+        "status": "success",
+        "summary": {
+          "already_locked": 18,
+          "already_started": 0,
+          "before_prediction_lock": 0,
+          "competition_id": 2,
+          "examined": 18,
+          "final_holdout_touched": false,
+          "insufficient_history": 0,
+          "invalid_prediction": 0,
+          "live_predictions_modified": false,
+          "locked_new": 0,
+          "locks": [],
+          "model_name": "sportsq-scorecall-lock-conditioned-poisson",
+          "model_version": "1.0",
+          "season": 2026,
+          "status": "success"
+        }
+      }
+    },
+    "final_holdout_touched": false,
+    "finished_at": "2026-09-11T01:08:56.114742+00:00",
+    "graded_new": 0,
+    "id": 1,
+    "market_status": "partial",
+    "prediction_locked_new": 0,
+    "result_refresh_status": "success",
+    "run_key": "stage7-a0c09aebc079470082b8d2f6c0f403a3",
+    "scorecall_locked_new": 0,
+    "season": 2026,
+    "started_at": "2026-09-11T01:08:55.403170+00:00",
+    "status": "success"
+  },
+  "product": "SportsQ Automated Fixture Lifecycle",
+  "safety": {
+    "existing_prediction_lock_fields_rewritten": false,
+    "existing_scorecall_locks_rewritten": false,
+    "historical_holdout_touched": false,
+    "prediction_engine_rewritten": false,
+    "social_auto_posting_enabled_by_stage7": false,
+    "stage6_live_news_ingestion_enabled_by_stage7": false
+  },
+  "season": 2026,
+  "stage": 7,
+  "status": "ready",
+  "table": "sportsq_fixture_lifecycle_runs",
+  "table_ready": true
+}
+final_news_status={
+  "event_rows": 0,
+  "live_2026_ingestion_enabled": false,
+  "stage": 6
+}
+PASS: Exactly one append-only Stage 7 lifecycle audit row was added
+PASS: Stage 6 2026 live News Impact ingestion remains disabled after live cycle
+PASS: No holdout database tables appeared during live cycle
+after_holdout_files=[]
+PASS: No holdout files appeared during live cycle
+
+==============================================================================
+8. CONTROLLED LIVE DECISION
+==============================================================================
+STAGE7_CONTROLLED_LIVE_CYCLE=PASS_SAFE_DEGRADED
+installed_version=1.0.5-stage7-fixture-lifecycle
+market_status=partial
+lifecycle_status=success
+new_live_predictions=0
+new_scorecall_locks=0
+newly_graded_predictions=0
+lifecycle_audit_rows_added=1
+preexisting_prediction_lock_fields_preserved=YES
+preexisting_scorecall_locks_preserved=YES
+historical_holdout_touched=NO
+stage6_live_news_ingestion_enabled=NO
+market_safety_alert_delivery_invoked=NO
+social_posting_invoked=NO
+database_rollback_performed=NO
+live_provider_calls_made=YES
+warning_count=1
+WARNING_1=Market refresh completed partially. Inspect provider/reconciliation detail before closing Stage 7 live validation.

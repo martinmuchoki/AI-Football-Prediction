@@ -1,0 +1,25 @@
+{
+  "policy_version": "1.0",
+  "classes": {
+    "OFFICIAL": {
+      "score": 100,
+      "allowed_for_fact_verification": true,
+      "allowed_for_media_reuse": false
+    },
+    "TRUSTED": {
+      "score": 80,
+      "allowed_for_fact_verification": true,
+      "allowed_for_media_reuse": false
+    },
+    "OPEN_MEDIA": {
+      "score": 70,
+      "allowed_for_fact_verification": false,
+      "allowed_for_media_reuse": "PER_ITEM_RIGHTS_CHECK"
+    },
+    "UNVERIFIED": {
+      "score": 0,
+      "allowed_for_fact_verification": false,
+      "allowed_for_media_reuse": false
+    }
+  }
+}

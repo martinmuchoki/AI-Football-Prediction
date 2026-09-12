@@ -1,0 +1,2453 @@
+
+==============================================================================
+MDRN SPORTSQ - STAGE 5 IMPLEMENTATION INSPECTION
+==============================================================================
+APP VERSION
+1.0.2-stage4-source-rights
+
+==============================================================================
+FIXTURES COMPLETE COLUMN MAP
+==============================================================================
+id | type=INTEGER | nullable=False
+provider | type=VARCHAR(40) | nullable=False
+provider_fixture_id | type=BIGINT | nullable=False
+league_season_id | type=INTEGER | nullable=False
+home_team_id | type=INTEGER | nullable=False
+away_team_id | type=INTEGER | nullable=False
+kickoff_utc | type=DATETIME | nullable=False
+timezone | type=VARCHAR(64) | nullable=True
+round_name | type=VARCHAR(120) | nullable=True
+referee | type=VARCHAR(200) | nullable=True
+venue_id | type=BIGINT | nullable=True
+venue_name | type=VARCHAR(200) | nullable=True
+venue_city | type=VARCHAR(160) | nullable=True
+status_short | type=VARCHAR(20) | nullable=False
+status_long | type=VARCHAR(80) | nullable=True
+elapsed | type=INTEGER | nullable=True
+home_goals | type=INTEGER | nullable=True
+away_goals | type=INTEGER | nullable=True
+halftime_home | type=INTEGER | nullable=True
+halftime_away | type=INTEGER | nullable=True
+fulltime_home | type=INTEGER | nullable=True
+fulltime_away | type=INTEGER | nullable=True
+extratime_home | type=INTEGER | nullable=True
+extratime_away | type=INTEGER | nullable=True
+penalty_home | type=INTEGER | nullable=True
+penalty_away | type=INTEGER | nullable=True
+is_finished | type=BOOLEAN | nullable=False
+result_1x2 | type=VARCHAR(8) | nullable=True
+raw_json | type=TEXT | nullable=False
+provider_updated_at | type=DATETIME | nullable=True
+created_at | type=DATETIME | nullable=False
+updated_at | type=DATETIME | nullable=False
+
+==============================================================================
+TEAMS COMPLETE COLUMN MAP
+==============================================================================
+id | type=INTEGER | nullable=False
+provider | type=VARCHAR(40) | nullable=False
+provider_team_id | type=BIGINT | nullable=False
+name | type=VARCHAR(200) | nullable=False
+code | type=VARCHAR(20) | nullable=True
+country | type=VARCHAR(120) | nullable=True
+logo_url | type=TEXT | nullable=True
+created_at | type=DATETIME | nullable=False
+updated_at | type=DATETIME | nullable=False
+
+==============================================================================
+LIVE_PREDICTIONS INDEX / UNIQUE CONSTRAINTS
+==============================================================================
+PK: {"constrained_columns": ["id"], "name": null}
+UNIQUE: [{"name": "uq_live_prediction_fixture_policy", "column_names": ["fixture_id", "policy_version"]}]
+INDEXES: [{"name": "ix_live_predictions_kickoff", "column_names": ["kickoff_utc"], "unique": 0, "dialect_options": {}}, {"name": "ix_live_predictions_locked", "column_names": ["locked_at"], "unique": 0, "dialect_options": {}}, {"name": "ix_live_predictions_publish", "column_names": ["publish"], "unique": 0, "dialect_options": {}}]
+
+==============================================================================
+FIXTURE HISTORY BY COMPETITION / SEASON
+==============================================================================
+Competition/season grouping columns not found.
+
+==============================================================================
+CURRENT LIVE PREDICTION TARGETS + HISTORICAL DEPTH
+==============================================================================
+{"live_prediction_id": 1, "fixture_id": 1, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.37181734702395863, "p_draw": 0.27339510810585194, "p_away": 0.3547875448701895, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-12 14:00:00.000000", "home_team_id": 1, "away_team_id": 2, "history_before_kickoff": {"home_team_history": 39, "away_team_history": 40, "league_history": 1918}}
+{"live_prediction_id": 2, "fixture_id": 2, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.6480218281036835, "p_draw": 0.19645293315143245, "p_away": 0.15552523874488403, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-12 14:00:00.000000", "home_team_id": 3, "away_team_id": 4, "history_before_kickoff": {"home_team_history": 39, "away_team_history": 40, "league_history": 1918}}
+{"live_prediction_id": 3, "fixture_id": 3, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.7510668563300142, "p_draw": 0.17069701280227595, "p_away": 0.07823613086770981, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-12 14:00:00.000000", "home_team_id": 5, "away_team_id": 6, "history_before_kickoff": {"home_team_history": 41, "away_team_history": 3, "league_history": 1918}}
+{"live_prediction_id": 4, "fixture_id": 4, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.4998173182316405, "p_draw": 0.25685056631348196, "p_away": 0.24333211545487762, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-12 14:00:00.000000", "home_team_id": 7, "away_team_id": 8, "history_before_kickoff": {"home_team_history": 40, "away_team_history": 3, "league_history": 1918}}
+{"live_prediction_id": 5, "fixture_id": 5, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.4533333333333333, "p_draw": 0.2733333333333333, "p_away": 0.2733333333333333, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-12 14:00:00.000000", "home_team_id": 9, "away_team_id": 10, "history_before_kickoff": {"home_team_history": 39, "away_team_history": 40, "league_history": 1918}}
+{"live_prediction_id": 6, "fixture_id": 6, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.46646341463414637, "p_draw": 0.27439024390243905, "p_away": 0.25914634146341464, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-12 16:30:00.000000", "home_team_id": 11, "away_team_id": 12, "history_before_kickoff": {"home_team_history": 40, "away_team_history": 41, "league_history": 1918}}
+{"live_prediction_id": 7, "fixture_id": 7, "competition_id": 2, "season": 2026, "prediction": "A", "p_home": 0.14285714285714288, "p_draw": 0.23809523809523814, "p_away": 0.6190476190476191, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-12 19:00:00.000000", "home_team_id": 13, "away_team_id": 14, "history_before_kickoff": {"home_team_history": 40, "away_team_history": 40, "league_history": 1918}}
+{"live_prediction_id": 8, "fixture_id": 8, "competition_id": 2, "season": 2026, "prediction": "A", "p_home": 0.23401264933239635, "p_draw": 0.26001405481377377, "p_away": 0.5059732958538299, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-13 13:00:00.000000", "home_team_id": 15, "away_team_id": 16, "history_before_kickoff": {"home_team_history": 3, "away_team_history": 39, "league_history": 1918}}
+{"live_prediction_id": 9, "fixture_id": 9, "competition_id": 2, "season": 2026, "prediction": "A", "p_home": 0.30973451327433627, "p_draw": 0.24778761061946902, "p_away": 0.4424778761061947, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-13 15:30:00.000000", "home_team_id": 17, "away_team_id": 18, "history_before_kickoff": {"home_team_history": 40, "away_team_history": 39, "league_history": 1918}}
+{"live_prediction_id": 10, "fixture_id": 10, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.4049281314168378, "p_draw": 0.27392197125256673, "p_away": 0.3211498973305955, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-14 19:00:00.000000", "home_team_id": 19, "away_team_id": 20, "history_before_kickoff": {"home_team_history": 41, "away_team_history": 40, "league_history": 1918}}
+{"live_prediction_id": 11, "fixture_id": 11, "competition_id": 2, "season": 2026, "prediction": "A", "p_home": 0.3547875448701895, "p_draw": 0.27339510810585194, "p_away": 0.37181734702395863, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-18 19:00:00.000000", "home_team_id": 2, "away_team_id": 5, "history_before_kickoff": {"home_team_history": 40, "away_team_history": 41, "league_history": 1918}}
+{"live_prediction_id": 12, "fixture_id": 12, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.40414507772020725, "p_draw": 0.2860103626943005, "p_away": 0.3098445595854922, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-19 11:30:00.000000", "home_team_id": 11, "away_team_id": 9, "history_before_kickoff": {"home_team_history": 40, "away_team_history": 39, "league_history": 1918}}
+{"live_prediction_id": 13, "fixture_id": 13, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.670391061452514, "p_draw": 0.19553072625698326, "p_away": 0.1340782122905028, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-19 14:00:00.000000", "home_team_id": 20, "away_team_id": 6, "history_before_kickoff": {"home_team_history": 40, "away_team_history": 3, "league_history": 1918}}
+{"live_prediction_id": 14, "fixture_id": 14, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.5513815585221982, "p_draw": 0.2533374728345234, "p_away": 0.1952809686432785, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-19 14:00:00.000000", "home_team_id": 12, "away_team_id": 8, "history_before_kickoff": {"home_team_history": 41, "away_team_history": 3, "league_history": 1918}}
+{"live_prediction_id": 15, "fixture_id": 15, "competition_id": 2, "season": 2026, "prediction": "A", "p_home": 0.21699819168173598, "p_draw": 0.26100060277275466, "p_away": 0.5220012055455093, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-19 14:00:00.000000", "home_team_id": 16, "away_team_id": 14, "history_before_kickoff": {"home_team_history": 39, "away_team_history": 40, "league_history": 1918}}
+{"live_prediction_id": 16, "fixture_id": 16, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.5290254704654596, "p_draw": 0.2571651592540429, "p_away": 0.21380937028049754, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-19 16:30:00.000000", "home_team_id": 10, "away_team_id": 15, "history_before_kickoff": {"home_team_history": 40, "away_team_history": 3, "league_history": 1918}}
+{"live_prediction_id": 17, "fixture_id": 18, "competition_id": 2, "season": 2026, "prediction": "H", "p_home": 0.4323289327824247, "p_draw": 0.2816688501461252, "p_away": 0.2860022170714502, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-20 13:00:00.000000", "home_team_id": 19, "away_team_id": 7, "history_before_kickoff": {"home_team_history": 41, "away_team_history": 40, "league_history": 1918}}
+{"live_prediction_id": 18, "fixture_id": 19, "competition_id": 2, "season": 2026, "prediction": "A", "p_home": 0.3097238895558223, "p_draw": 0.2581032412965186, "p_away": 0.43217286914765907, "locked_at": "2026-09-09 01:26:34.317900", "kickoff_utc": "2026-09-20 13:00:00.000000", "home_team_id": 1, "away_team_id": 3, "history_before_kickoff": {"home_team_history": 39, "away_team_history": 39, "league_history": 1918}}
+
+==============================================================================
+SPORTSQ INTELLIGENCE SCORECALL ANCHORS
+==============================================================================
+
+NEEDLE: SportsQ ScoreCall
+0001: from __future__ import annotations
+0002: 
+0003: import importlib
+0004: import inspect as pyinspect
+0005: import math
+0006: from datetime import datetime
+0007: from typing import Any
+0008: 
+0009: from sqlalchemy import inspect, text
+0010: from sqlalchemy.orm import Session
+0011: 
+0012: BRAND_HIERARCHY = {
+0013:     "brand": "MDRN SportsQ",
+0014:     "predict": "SportsQ Predict",
+0015:     "score_call": "SportsQ ScoreCall",
+0016:     "confidence": "SportsQ Confidence",
+0017:     "news_impact": "SportsQ News Impact",
+0018:     "form_index": "SportsQ Form Index",
+0019: }
+0020: 
+0021: FORM_WINDOW = 5
+0022: 
+0023: CORE_INTELLIGENCE_MODULES = (
+0024:     "baseline_models",
+0025:     "ensemble_models",
+0026:     "feature_engineering",
+0027:     "high_confidence_selector",
+0028:     "live_prediction_engine",
+0029:     "prediction_grading",
+0030:     "social_content",
+0031: )
+
+NEEDLE: predicted_score
+0038:     "home_probability", "home_prob", "prob_home", "p_home",
+0039:     "home_win_probability", "model_home_probability",
+0040: )
+0041: DRAW_PROBABILITY_FIELDS = (
+0042:     "draw_probability", "draw_prob", "prob_draw", "p_draw",
+0043:     "model_draw_probability",
+0044: )
+0045: AWAY_PROBABILITY_FIELDS = (
+0046:     "away_probability", "away_prob", "prob_away", "p_away",
+0047:     "away_win_probability", "model_away_probability",
+0048: )
+0049: CONFIDENCE_FIELDS = (
+0050:     "confidence", "confidence_pct", "confidence_percent",
+0051:     "model_confidence", "prediction_confidence",
+0052: )
+0053: SCORE_STRING_FIELDS = (
+0054:     "score_call", "predicted_score", "score_prediction",
+0055:     "predicted_scoreline",
+0056: )
+0057: SCORE_PAIR_FIELDS = (
+0058:     ("predicted_home_goals", "predicted_away_goals"),
+0059:     ("predicted_home_score", "predicted_away_score"),
+0060:     ("home_score_prediction", "away_score_prediction"),
+0061: )
+0062: 
+0063: def _table_names(session: Session) -> set[str]:
+0064:     return set(inspect(session.get_bind()).get_table_names())
+0065: 
+0066: def _columns(session: Session, table: str) -> set[str]:
+0067:     return {
+0068:         column["name"]
+0069:         for column in inspect(session.get_bind()).get_columns(table)
+0070:     }
+---
+0039:     "home_win_probability", "model_home_probability",
+0040: )
+0041: DRAW_PROBABILITY_FIELDS = (
+0042:     "draw_probability", "draw_prob", "prob_draw", "p_draw",
+0043:     "model_draw_probability",
+0044: )
+0045: AWAY_PROBABILITY_FIELDS = (
+0046:     "away_probability", "away_prob", "prob_away", "p_away",
+0047:     "away_win_probability", "model_away_probability",
+0048: )
+0049: CONFIDENCE_FIELDS = (
+0050:     "confidence", "confidence_pct", "confidence_percent",
+0051:     "model_confidence", "prediction_confidence",
+0052: )
+0053: SCORE_STRING_FIELDS = (
+0054:     "score_call", "predicted_score", "score_prediction",
+0055:     "predicted_scoreline",
+0056: )
+0057: SCORE_PAIR_FIELDS = (
+0058:     ("predicted_home_goals", "predicted_away_goals"),
+0059:     ("predicted_home_score", "predicted_away_score"),
+0060:     ("home_score_prediction", "away_score_prediction"),
+0061: )
+0062: 
+0063: def _table_names(session: Session) -> set[str]:
+0064:     return set(inspect(session.get_bind()).get_table_names())
+0065: 
+0066: def _columns(session: Session, table: str) -> set[str]:
+0067:     return {
+0068:         column["name"]
+0069:         for column in inspect(session.get_bind()).get_columns(table)
+0070:     }
+0071: 
+
+NEEDLE: home_score
+0043:     "model_draw_probability",
+0044: )
+0045: AWAY_PROBABILITY_FIELDS = (
+0046:     "away_probability", "away_prob", "prob_away", "p_away",
+0047:     "away_win_probability", "model_away_probability",
+0048: )
+0049: CONFIDENCE_FIELDS = (
+0050:     "confidence", "confidence_pct", "confidence_percent",
+0051:     "model_confidence", "prediction_confidence",
+0052: )
+0053: SCORE_STRING_FIELDS = (
+0054:     "score_call", "predicted_score", "score_prediction",
+0055:     "predicted_scoreline",
+0056: )
+0057: SCORE_PAIR_FIELDS = (
+0058:     ("predicted_home_goals", "predicted_away_goals"),
+0059:     ("predicted_home_score", "predicted_away_score"),
+0060:     ("home_score_prediction", "away_score_prediction"),
+0061: )
+0062: 
+0063: def _table_names(session: Session) -> set[str]:
+0064:     return set(inspect(session.get_bind()).get_table_names())
+0065: 
+0066: def _columns(session: Session, table: str) -> set[str]:
+0067:     return {
+0068:         column["name"]
+0069:         for column in inspect(session.get_bind()).get_columns(table)
+0070:     }
+0071: 
+0072: def _value(row: dict[str, Any], names: tuple[str, ...]) -> Any:
+0073:     for name in names:
+0074:         if name not in row:
+0075:             continue
+---
+0044: )
+0045: AWAY_PROBABILITY_FIELDS = (
+0046:     "away_probability", "away_prob", "prob_away", "p_away",
+0047:     "away_win_probability", "model_away_probability",
+0048: )
+0049: CONFIDENCE_FIELDS = (
+0050:     "confidence", "confidence_pct", "confidence_percent",
+0051:     "model_confidence", "prediction_confidence",
+0052: )
+0053: SCORE_STRING_FIELDS = (
+0054:     "score_call", "predicted_score", "score_prediction",
+0055:     "predicted_scoreline",
+0056: )
+0057: SCORE_PAIR_FIELDS = (
+0058:     ("predicted_home_goals", "predicted_away_goals"),
+0059:     ("predicted_home_score", "predicted_away_score"),
+0060:     ("home_score_prediction", "away_score_prediction"),
+0061: )
+0062: 
+0063: def _table_names(session: Session) -> set[str]:
+0064:     return set(inspect(session.get_bind()).get_table_names())
+0065: 
+0066: def _columns(session: Session, table: str) -> set[str]:
+0067:     return {
+0068:         column["name"]
+0069:         for column in inspect(session.get_bind()).get_columns(table)
+0070:     }
+0071: 
+0072: def _value(row: dict[str, Any], names: tuple[str, ...]) -> Any:
+0073:     for name in names:
+0074:         if name not in row:
+0075:             continue
+0076:         value = row[name]
+
+NEEDLE: away_score
+0043:     "model_draw_probability",
+0044: )
+0045: AWAY_PROBABILITY_FIELDS = (
+0046:     "away_probability", "away_prob", "prob_away", "p_away",
+0047:     "away_win_probability", "model_away_probability",
+0048: )
+0049: CONFIDENCE_FIELDS = (
+0050:     "confidence", "confidence_pct", "confidence_percent",
+0051:     "model_confidence", "prediction_confidence",
+0052: )
+0053: SCORE_STRING_FIELDS = (
+0054:     "score_call", "predicted_score", "score_prediction",
+0055:     "predicted_scoreline",
+0056: )
+0057: SCORE_PAIR_FIELDS = (
+0058:     ("predicted_home_goals", "predicted_away_goals"),
+0059:     ("predicted_home_score", "predicted_away_score"),
+0060:     ("home_score_prediction", "away_score_prediction"),
+0061: )
+0062: 
+0063: def _table_names(session: Session) -> set[str]:
+0064:     return set(inspect(session.get_bind()).get_table_names())
+0065: 
+0066: def _columns(session: Session, table: str) -> set[str]:
+0067:     return {
+0068:         column["name"]
+0069:         for column in inspect(session.get_bind()).get_columns(table)
+0070:     }
+0071: 
+0072: def _value(row: dict[str, Any], names: tuple[str, ...]) -> Any:
+0073:     for name in names:
+0074:         if name not in row:
+0075:             continue
+---
+0044: )
+0045: AWAY_PROBABILITY_FIELDS = (
+0046:     "away_probability", "away_prob", "prob_away", "p_away",
+0047:     "away_win_probability", "model_away_probability",
+0048: )
+0049: CONFIDENCE_FIELDS = (
+0050:     "confidence", "confidence_pct", "confidence_percent",
+0051:     "model_confidence", "prediction_confidence",
+0052: )
+0053: SCORE_STRING_FIELDS = (
+0054:     "score_call", "predicted_score", "score_prediction",
+0055:     "predicted_scoreline",
+0056: )
+0057: SCORE_PAIR_FIELDS = (
+0058:     ("predicted_home_goals", "predicted_away_goals"),
+0059:     ("predicted_home_score", "predicted_away_score"),
+0060:     ("home_score_prediction", "away_score_prediction"),
+0061: )
+0062: 
+0063: def _table_names(session: Session) -> set[str]:
+0064:     return set(inspect(session.get_bind()).get_table_names())
+0065: 
+0066: def _columns(session: Session, table: str) -> set[str]:
+0067:     return {
+0068:         column["name"]
+0069:         for column in inspect(session.get_bind()).get_columns(table)
+0070:     }
+0071: 
+0072: def _value(row: dict[str, Any], names: tuple[str, ...]) -> Any:
+0073:     for name in names:
+0074:         if name not in row:
+0075:             continue
+0076:         value = row[name]
+
+NEEDLE: NOT_EXPOSED_BY_EXISTING_LOCK
+0117:     if value is None:
+0118:         return None
+0119:     raw = str(value).strip().upper()
+0120:     return {
+0121:         "1": "HOME", "H": "HOME", "HOME": "HOME", "HOME WIN": "HOME",
+0122:         "X": "DRAW", "D": "DRAW", "DRAW": "DRAW",
+0123:         "2": "AWAY", "A": "AWAY", "AWAY": "AWAY", "AWAY WIN": "AWAY",
+0124:     }.get(raw)
+0125: 
+0126: def _prediction_label(row: dict[str, Any]) -> tuple[str | None, str]:
+0127:     direct = _normalise_1x2(_value(row, PREDICTION_FIELDS))
+0128:     if direct is not None:
+0129:         return direct, "existing_locked_prediction"
+0130:     probabilities = _probabilities(row)
+0131:     if probabilities:
+0132:         return max(probabilities, key=probabilities.get), "existing_locked_probabilities"
+0133:     return None, "not_exposed_by_existing_lock"
+0134: 
+0135: def _confidence_percent(row: dict[str, Any]) -> tuple[float | None, str]:
+0136:     direct = _to_float(_value(row, CONFIDENCE_FIELDS))
+0137:     if direct is not None:
+0138:         if direct <= 1.0:
+0139:             direct *= 100.0
+0140:         return round(max(0.0, min(100.0, direct)), 2), "existing_locked_confidence"
+0141:     probabilities = _probabilities(row)
+0142:     if probabilities:
+0143:         return round(max(probabilities.values()) * 100.0, 2), "existing_locked_probabilities"
+0144:     return None, "not_exposed_by_existing_lock"
+0145: 
+0146: def _confidence_band(percent: float | None) -> str:
+0147:     if percent is None:
+0148:         return "UNAVAILABLE"
+0149:     if percent >= 65:
+---
+0128:     if direct is not None:
+0129:         return direct, "existing_locked_prediction"
+0130:     probabilities = _probabilities(row)
+0131:     if probabilities:
+0132:         return max(probabilities, key=probabilities.get), "existing_locked_probabilities"
+0133:     return None, "not_exposed_by_existing_lock"
+0134: 
+0135: def _confidence_percent(row: dict[str, Any]) -> tuple[float | None, str]:
+0136:     direct = _to_float(_value(row, CONFIDENCE_FIELDS))
+0137:     if direct is not None:
+0138:         if direct <= 1.0:
+0139:             direct *= 100.0
+0140:         return round(max(0.0, min(100.0, direct)), 2), "existing_locked_confidence"
+0141:     probabilities = _probabilities(row)
+0142:     if probabilities:
+0143:         return round(max(probabilities.values()) * 100.0, 2), "existing_locked_probabilities"
+0144:     return None, "not_exposed_by_existing_lock"
+0145: 
+0146: def _confidence_band(percent: float | None) -> str:
+0147:     if percent is None:
+0148:         return "UNAVAILABLE"
+0149:     if percent >= 65:
+0150:         return "HIGH"
+0151:     if percent >= 55:
+0152:         return "MEDIUM"
+0153:     return "LOW"
+0154: 
+0155: def _score_call(row: dict[str, Any]) -> tuple[str | None, str]:
+0156:     direct = _value(row, SCORE_STRING_FIELDS)
+0157:     if direct is not None:
+0158:         return str(direct), "existing_locked_score_call"
+0159:     for home_field, away_field in SCORE_PAIR_FIELDS:
+0160:         if home_field not in row or away_field not in row:
+---
+0154: 
+0155: def _score_call(row: dict[str, Any]) -> tuple[str | None, str]:
+0156:     direct = _value(row, SCORE_STRING_FIELDS)
+0157:     if direct is not None:
+0158:         return str(direct), "existing_locked_score_call"
+0159:     for home_field, away_field in SCORE_PAIR_FIELDS:
+0160:         if home_field not in row or away_field not in row:
+0161:             continue
+0162:         home = row.get(home_field)
+0163:         away = row.get(away_field)
+0164:         if home is None or away is None:
+0165:             continue
+0166:         try:
+0167:             return f"{int(home)}-{int(away)}", "existing_locked_score_call"
+0168:         except (TypeError, ValueError):
+0169:             continue
+0170:     return None, "not_exposed_by_existing_lock"
+0171: 
+0172: def _form_band(value: float | None) -> str:
+0173:     if value is None:
+0174:         return "UNAVAILABLE"
+0175:     if value >= 75:
+0176:         return "EXCELLENT"
+0177:     if value >= 60:
+0178:         return "STRONG"
+0179:     if value >= 45:
+0180:         return "MIXED"
+0181:     if value >= 30:
+0182:         return "WEAK"
+0183:     return "POOR"
+0184: 
+0185: def _form_index_from_matches(
+0186:     matches: list[dict[str, Any]],
+---
+0487:                 else str(kickoff) if kickoff is not None else None
+0488:             ),
+0489:         },
+0490:         "sportsq_predict": {
+0491:             "name": BRAND_HIERARCHY["predict"],
+0492:             "prediction": prediction,
+0493:             "status": "AVAILABLE" if prediction is not None else "UNAVAILABLE",
+0494:             "source": prediction_source,
+0495:             "probabilities": probabilities,
+0496:         },
+0497:         "sportsq_score_call": {
+0498:             "name": BRAND_HIERARCHY["score_call"],
+0499:             "score": score_call,
+0500:             "status": (
+0501:                 "AVAILABLE"
+0502:                 if score_call is not None
+0503:                 else "NOT_EXPOSED_BY_EXISTING_LOCK"
+0504:             ),
+0505:             "source": score_source,
+0506:         },
+0507:         "sportsq_confidence": {
+0508:             "name": BRAND_HIERARCHY["confidence"],
+0509:             "percent": confidence,
+0510:             "band": _confidence_band(confidence),
+0511:             "status": "AVAILABLE" if confidence is not None else "UNAVAILABLE",
+0512:             "source": confidence_source,
+0513:         },
+0514:         "sportsq_form_index": {
+0515:             "name": BRAND_HIERARCHY["form_index"],
+0516:             "window": FORM_WINDOW,
+0517:             "method": (
+0518:                 "75% recent points + 25% recent goal-difference, "
+0519:                 "using finished matches strictly before target kickoff"
+
+==============================================================================
+LIVE PREDICTION LOCK CREATION ANCHORS
+==============================================================================
+
+NEEDLE: LivePrediction(
+0150:             p_home, p_draw, p_away, overround = fair_probabilities_from_decimal_odds(
+0151:                 home_odds, draw_odds, away_odds
+0152:             )
+0153:         except ValueError:
+0154:             summary["missing_or_invalid_odds"] += 1
+0155:             continue
+0156: 
+0157:         decision = select_prediction(
+0158:             p_home,
+0159:             p_draw,
+0160:             p_away,
+0161:             threshold=threshold,
+0162:         )
+0163: 
+0164:         prediction = LivePrediction(
+0165:             fixture_id=fixture.id,
+0166:             provider=PROVIDER,
+0167:             provider_fixture_id=fixture.provider_fixture_id,
+0168:             competition_id=league.provider_league_id,
+0169:             season=league.season,
+0170:             model_name=MODEL_NAME,
+0171:             policy_version=POLICY_VERSION,
+0172:             market_source=MARKET_SOURCE,
+0173:             home_odds=home_odds,
+0174:             draw_odds=draw_odds,
+0175:             away_odds=away_odds,
+0176:             market_overround=overround,
+0177:             p_home=p_home,
+0178:             p_draw=p_draw,
+
+NEEDLE: locked_at
+0172:             market_source=MARKET_SOURCE,
+0173:             home_odds=home_odds,
+0174:             draw_odds=draw_odds,
+0175:             away_odds=away_odds,
+0176:             market_overround=overround,
+0177:             p_home=p_home,
+0178:             p_draw=p_draw,
+0179:             p_away=p_away,
+0180:             prediction=decision.prediction,
+0181:             confidence=decision.confidence,
+0182:             threshold=decision.threshold,
+0183:             selector_label=decision.label,
+0184:             publish=decision.publish,
+0185:             odds_snapshot_at=now_utc,
+0186:             locked_at=now_utc,
+0187:             kickoff_utc=kickoff,
+0188:         )
+0189:         session.add(prediction)
+0190:         summary["locked_new"] += 1
+0191:         if decision.publish:
+0192:             summary["high_confidence"] += 1
+0193:         else:
+0194:             summary["pass"] += 1
+0195: 
+0196:         summary["predictions"].append({
+0197:             "fixture_id": fixture.provider_fixture_id,
+0198:             "home": str(home_name),
+0199:             "away": str(away_name),
+0200:             "kickoff_utc": kickoff.isoformat(),
+---
+0197:             "fixture_id": fixture.provider_fixture_id,
+0198:             "home": str(home_name),
+0199:             "away": str(away_name),
+0200:             "kickoff_utc": kickoff.isoformat(),
+0201:             "odds": {"H": home_odds, "D": draw_odds, "A": away_odds},
+0202:             "fair_probabilities": {
+0203:                 "H": round(p_home, 6),
+0204:                 "D": round(p_draw, 6),
+0205:                 "A": round(p_away, 6),
+0206:             },
+0207:             "prediction": decision.prediction,
+0208:             "confidence": decision.confidence,
+0209:             "label": decision.label,
+0210:             "publish": decision.publish,
+0211:             "locked_at": now_utc.isoformat(),
+0212:         })
+0213: 
+0214:     session.commit()
+0215:     return summary
+0216: 
+0217: 
+0218: def list_live_predictions(
+0219:     session: Session,
+0220:     *,
+0221:     competition_id: int,
+0222:     season: int,
+0223:     high_confidence_only: bool = False,
+0224: ) -> list[dict[str, Any]]:
+0225:     Home = aliased(Team)
+---
+0239:     if high_confidence_only:
+0240:         stmt = stmt.where(LivePrediction.publish.is_(True))
+0241: 
+0242:     rows = []
+0243:     for pred, home_name, away_name in session.execute(stmt).all():
+0244:         rows.append({
+0245:             "fixture_id": pred.provider_fixture_id,
+0246:             "home": str(home_name),
+0247:             "away": str(away_name),
+0248:             "kickoff_utc": _utc(pred.kickoff_utc).isoformat(),
+0249:             "prediction": pred.prediction,
+0250:             "confidence": round(float(pred.confidence), 6),
+0251:             "label": pred.selector_label,
+0252:             "publish": bool(pred.publish),
+0253:             "locked_at": _utc(pred.locked_at).isoformat(),
+0254:         })
+0255:     return rows
+
+NEEDLE: session.add
+0175:             away_odds=away_odds,
+0176:             market_overround=overround,
+0177:             p_home=p_home,
+0178:             p_draw=p_draw,
+0179:             p_away=p_away,
+0180:             prediction=decision.prediction,
+0181:             confidence=decision.confidence,
+0182:             threshold=decision.threshold,
+0183:             selector_label=decision.label,
+0184:             publish=decision.publish,
+0185:             odds_snapshot_at=now_utc,
+0186:             locked_at=now_utc,
+0187:             kickoff_utc=kickoff,
+0188:         )
+0189:         session.add(prediction)
+0190:         summary["locked_new"] += 1
+0191:         if decision.publish:
+0192:             summary["high_confidence"] += 1
+0193:         else:
+0194:             summary["pass"] += 1
+0195: 
+0196:         summary["predictions"].append({
+0197:             "fixture_id": fixture.provider_fixture_id,
+0198:             "home": str(home_name),
+0199:             "away": str(away_name),
+0200:             "kickoff_utc": kickoff.isoformat(),
+0201:             "odds": {"H": home_odds, "D": draw_odds, "A": away_odds},
+0202:             "fair_probabilities": {
+0203:                 "H": round(p_home, 6),
+
+NEEDLE: existing
+0071: 
+0072: 
+0073: def generate_live_predictions(
+0074:     session: Session,
+0075:     *,
+0076:     competition_id: int,
+0077:     season: int,
+0078:     threshold: float = DEFAULT_THRESHOLD,
+0079:     now: datetime | None = None,
+0080:     limit: int | None = None,
+0081: ) -> dict[str, Any]:
+0082:     """Create immutable opening-market predictions for upcoming fixtures.
+0083: 
+0084:     Only fixtures from the requested Live Score competition/season are considered.
+0085:     Existing rows for the frozen policy are skipped, never updated. This makes the
+0086:     first captured pre-match odds snapshot auditable and leakage-safe.
+0087:     """
+0088:     now_utc = _utc(now or datetime.now(timezone.utc))
+0089: 
+0090:     Home = aliased(Team)
+0091:     Away = aliased(Team)
+0092:     stmt = (
+0093:         select(Fixture, LeagueSeason, Home.name, Away.name)
+0094:         .join(LeagueSeason, Fixture.league_season_id == LeagueSeason.id)
+0095:         .join(Home, Fixture.home_team_id == Home.id)
+0096:         .join(Away, Fixture.away_team_id == Away.id)
+0097:         .where(
+0098:             Fixture.provider == PROVIDER,
+0099:             LeagueSeason.provider == PROVIDER,
+---
+0124:         "missing_or_invalid_odds": 0,
+0125:         "already_started": 0,
+0126:         "high_confidence": 0,
+0127:         "pass": 0,
+0128:         "predictions": [],
+0129:         "final_holdout_touched": False,
+0130:     }
+0131: 
+0132:     for fixture, league, home_name, away_name in candidates:
+0133:         kickoff = _utc(fixture.kickoff_utc)
+0134:         if kickoff <= now_utc:
+0135:             summary["already_started"] += 1
+0136:             continue
+0137: 
+0138:         existing = session.scalar(
+0139:             select(LivePrediction).where(
+0140:                 LivePrediction.fixture_id == fixture.id,
+0141:                 LivePrediction.policy_version == POLICY_VERSION,
+0142:             )
+0143:         )
+0144:         if existing is not None:
+0145:             summary["already_locked"] += 1
+0146:             continue
+0147: 
+0148:         try:
+0149:             home_odds, draw_odds, away_odds = extract_pre_match_odds(fixture.raw_json)
+0150:             p_home, p_draw, p_away, overround = fair_probabilities_from_decimal_odds(
+0151:                 home_odds, draw_odds, away_odds
+0152:             )
+---
+0130:     }
+0131: 
+0132:     for fixture, league, home_name, away_name in candidates:
+0133:         kickoff = _utc(fixture.kickoff_utc)
+0134:         if kickoff <= now_utc:
+0135:             summary["already_started"] += 1
+0136:             continue
+0137: 
+0138:         existing = session.scalar(
+0139:             select(LivePrediction).where(
+0140:                 LivePrediction.fixture_id == fixture.id,
+0141:                 LivePrediction.policy_version == POLICY_VERSION,
+0142:             )
+0143:         )
+0144:         if existing is not None:
+0145:             summary["already_locked"] += 1
+0146:             continue
+0147: 
+0148:         try:
+0149:             home_odds, draw_odds, away_odds = extract_pre_match_odds(fixture.raw_json)
+0150:             p_home, p_draw, p_away, overround = fair_probabilities_from_decimal_odds(
+0151:                 home_odds, draw_odds, away_odds
+0152:             )
+0153:         except ValueError:
+0154:             summary["missing_or_invalid_odds"] += 1
+0155:             continue
+0156: 
+0157:         decision = select_prediction(
+0158:             p_home,
+
+NEEDLE: fixture_id
+0126:         "high_confidence": 0,
+0127:         "pass": 0,
+0128:         "predictions": [],
+0129:         "final_holdout_touched": False,
+0130:     }
+0131: 
+0132:     for fixture, league, home_name, away_name in candidates:
+0133:         kickoff = _utc(fixture.kickoff_utc)
+0134:         if kickoff <= now_utc:
+0135:             summary["already_started"] += 1
+0136:             continue
+0137: 
+0138:         existing = session.scalar(
+0139:             select(LivePrediction).where(
+0140:                 LivePrediction.fixture_id == fixture.id,
+0141:                 LivePrediction.policy_version == POLICY_VERSION,
+0142:             )
+0143:         )
+0144:         if existing is not None:
+0145:             summary["already_locked"] += 1
+0146:             continue
+0147: 
+0148:         try:
+0149:             home_odds, draw_odds, away_odds = extract_pre_match_odds(fixture.raw_json)
+0150:             p_home, p_draw, p_away, overround = fair_probabilities_from_decimal_odds(
+0151:                 home_odds, draw_odds, away_odds
+0152:             )
+0153:         except ValueError:
+0154:             summary["missing_or_invalid_odds"] += 1
+---
+0151:                 home_odds, draw_odds, away_odds
+0152:             )
+0153:         except ValueError:
+0154:             summary["missing_or_invalid_odds"] += 1
+0155:             continue
+0156: 
+0157:         decision = select_prediction(
+0158:             p_home,
+0159:             p_draw,
+0160:             p_away,
+0161:             threshold=threshold,
+0162:         )
+0163: 
+0164:         prediction = LivePrediction(
+0165:             fixture_id=fixture.id,
+0166:             provider=PROVIDER,
+0167:             provider_fixture_id=fixture.provider_fixture_id,
+0168:             competition_id=league.provider_league_id,
+0169:             season=league.season,
+0170:             model_name=MODEL_NAME,
+0171:             policy_version=POLICY_VERSION,
+0172:             market_source=MARKET_SOURCE,
+0173:             home_odds=home_odds,
+0174:             draw_odds=draw_odds,
+0175:             away_odds=away_odds,
+0176:             market_overround=overround,
+0177:             p_home=p_home,
+0178:             p_draw=p_draw,
+0179:             p_away=p_away,
+---
+0153:         except ValueError:
+0154:             summary["missing_or_invalid_odds"] += 1
+0155:             continue
+0156: 
+0157:         decision = select_prediction(
+0158:             p_home,
+0159:             p_draw,
+0160:             p_away,
+0161:             threshold=threshold,
+0162:         )
+0163: 
+0164:         prediction = LivePrediction(
+0165:             fixture_id=fixture.id,
+0166:             provider=PROVIDER,
+0167:             provider_fixture_id=fixture.provider_fixture_id,
+0168:             competition_id=league.provider_league_id,
+0169:             season=league.season,
+0170:             model_name=MODEL_NAME,
+0171:             policy_version=POLICY_VERSION,
+0172:             market_source=MARKET_SOURCE,
+0173:             home_odds=home_odds,
+0174:             draw_odds=draw_odds,
+0175:             away_odds=away_odds,
+0176:             market_overround=overround,
+0177:             p_home=p_home,
+0178:             p_draw=p_draw,
+0179:             p_away=p_away,
+0180:             prediction=decision.prediction,
+0181:             confidence=decision.confidence,
+---
+0183:             selector_label=decision.label,
+0184:             publish=decision.publish,
+0185:             odds_snapshot_at=now_utc,
+0186:             locked_at=now_utc,
+0187:             kickoff_utc=kickoff,
+0188:         )
+0189:         session.add(prediction)
+0190:         summary["locked_new"] += 1
+0191:         if decision.publish:
+0192:             summary["high_confidence"] += 1
+0193:         else:
+0194:             summary["pass"] += 1
+0195: 
+0196:         summary["predictions"].append({
+0197:             "fixture_id": fixture.provider_fixture_id,
+0198:             "home": str(home_name),
+0199:             "away": str(away_name),
+0200:             "kickoff_utc": kickoff.isoformat(),
+0201:             "odds": {"H": home_odds, "D": draw_odds, "A": away_odds},
+0202:             "fair_probabilities": {
+0203:                 "H": round(p_home, 6),
+0204:                 "D": round(p_draw, 6),
+0205:                 "A": round(p_away, 6),
+0206:             },
+0207:             "prediction": decision.prediction,
+0208:             "confidence": decision.confidence,
+0209:             "label": decision.label,
+0210:             "publish": decision.publish,
+0211:             "locked_at": now_utc.isoformat(),
+---
+0215:     return summary
+0216: 
+0217: 
+0218: def list_live_predictions(
+0219:     session: Session,
+0220:     *,
+0221:     competition_id: int,
+0222:     season: int,
+0223:     high_confidence_only: bool = False,
+0224: ) -> list[dict[str, Any]]:
+0225:     Home = aliased(Team)
+0226:     Away = aliased(Team)
+0227:     stmt = (
+0228:         select(LivePrediction, Home.name, Away.name)
+0229:         .join(Fixture, LivePrediction.fixture_id == Fixture.id)
+0230:         .join(Home, Fixture.home_team_id == Home.id)
+0231:         .join(Away, Fixture.away_team_id == Away.id)
+0232:         .where(
+0233:             LivePrediction.competition_id == int(competition_id),
+0234:             LivePrediction.season == int(season),
+0235:             LivePrediction.policy_version == POLICY_VERSION,
+0236:         )
+0237:         .order_by(LivePrediction.kickoff_utc, LivePrediction.id)
+0238:     )
+0239:     if high_confidence_only:
+0240:         stmt = stmt.where(LivePrediction.publish.is_(True))
+0241: 
+0242:     rows = []
+0243:     for pred, home_name, away_name in session.execute(stmt).all():
+
+==============================================================================
+BASELINE POISSON IMPLEMENTATION ANCHORS
+==============================================================================
+
+NEEDLE: Poisson
+0001: from __future__ import annotations
+0002: 
+0003: import csv
+0004: import json
+0005: import math
+0006: from collections import Counter
+0007: from pathlib import Path
+0008: from typing import Any, Iterable
+0009: 
+0010: import numpy as np
+0011: from sklearn.impute import SimpleImputer
+0012: from sklearn.linear_model import LogisticRegression, PoissonRegressor
+0013: from sklearn.pipeline import Pipeline
+0014: from sklearn.preprocessing import StandardScaler
+0015: 
+0016: 
+0017: CLASS_NAMES = ("H", "D", "A")
+0018: ID_COLUMNS = {
+0019:     "fixture_id",
+0020:     "provider_fixture_id",
+0021:     "season",
+0022:     "kickoff_utc",
+0023:     "home_team",
+0024:     "away_team",
+0025: }
+0026: TARGET_COLUMNS = {
+0027:     "target_result",
+0028:     "target_class",
+0029:     "target_home_goals",
+0030:     "target_away_goals",
+---
+0165:     """
+0166:     Deployment-oriented feature set.
+0167: 
+0168:     Closing odds and odds-movement fields are intentionally excluded because
+0169:     the live prediction may be published before a true closing market exists.
+0170:     Targets and identifiers are always excluded.
+0171:     """
+0172:     result: list[str] = []
+0173:     for name in fields:
+0174:         if name in ID_COLUMNS or name in TARGET_COLUMNS:
+0175:             continue
+0176:         lower = name.lower()
+0177:         if "close" in lower or lower.endswith("_prob_move") or "_prob_move" in lower:
+0178:             continue
+0179:         result.append(name)
+0180:     return result
+0181: 
+0182: 
+0183: def poisson_feature_columns(fields: Iterable[str]) -> list[str]:
+0184:     """
+0185:     Team/statistical inputs only. All bookmaker fields are excluded so the
+0186:     Poisson baseline remains a football-strength model rather than a market model.
+0187:     """
+0188:     result = []
+0189:     for name in production_feature_columns(fields):
+0190:         if name.startswith("market_"):
+0191:             continue
+0192:         result.append(name)
+0193:     return result
+0194: 
+0195: 
+0196: def _matrix(rows: list[dict[str, str]], columns: list[str]) -> np.ndarray:
+0197:     return np.asarray(
+0198:         [[_float(row.get(column)) for column in columns] for row in rows],
+0199:         dtype=float,
+0200:     )
+0201: 
+---
+0168:     Closing odds and odds-movement fields are intentionally excluded because
+0169:     the live prediction may be published before a true closing market exists.
+0170:     Targets and identifiers are always excluded.
+0171:     """
+0172:     result: list[str] = []
+0173:     for name in fields:
+0174:         if name in ID_COLUMNS or name in TARGET_COLUMNS:
+0175:             continue
+0176:         lower = name.lower()
+0177:         if "close" in lower or lower.endswith("_prob_move") or "_prob_move" in lower:
+0178:             continue
+0179:         result.append(name)
+0180:     return result
+0181: 
+0182: 
+0183: def poisson_feature_columns(fields: Iterable[str]) -> list[str]:
+0184:     """
+0185:     Team/statistical inputs only. All bookmaker fields are excluded so the
+0186:     Poisson baseline remains a football-strength model rather than a market model.
+0187:     """
+0188:     result = []
+0189:     for name in production_feature_columns(fields):
+0190:         if name.startswith("market_"):
+0191:             continue
+0192:         result.append(name)
+0193:     return result
+0194: 
+0195: 
+0196: def _matrix(rows: list[dict[str, str]], columns: list[str]) -> np.ndarray:
+0197:     return np.asarray(
+0198:         [[_float(row.get(column)) for column in columns] for row in rows],
+0199:         dtype=float,
+0200:     )
+0201: 
+0202: 
+0203: def _poisson_outcome_probs(home_lambda: np.ndarray, away_lambda: np.ndarray) -> np.ndarray:
+0204:     output: list[tuple[float, float, float]] = []
+---
+0185:     Team/statistical inputs only. All bookmaker fields are excluded so the
+0186:     Poisson baseline remains a football-strength model rather than a market model.
+0187:     """
+0188:     result = []
+0189:     for name in production_feature_columns(fields):
+0190:         if name.startswith("market_"):
+0191:             continue
+0192:         result.append(name)
+0193:     return result
+0194: 
+0195: 
+0196: def _matrix(rows: list[dict[str, str]], columns: list[str]) -> np.ndarray:
+0197:     return np.asarray(
+0198:         [[_float(row.get(column)) for column in columns] for row in rows],
+0199:         dtype=float,
+0200:     )
+0201: 
+0202: 
+0203: def _poisson_outcome_probs(home_lambda: np.ndarray, away_lambda: np.ndarray) -> np.ndarray:
+0204:     output: list[tuple[float, float, float]] = []
+0205:     max_goals = 10
+0206: 
+0207:     for h_lam, a_lam in zip(home_lambda, away_lambda):
+0208:         h_lam = float(np.clip(h_lam, 0.08, 6.0))
+0209:         a_lam = float(np.clip(a_lam, 0.08, 6.0))
+0210: 
+0211:         hp = [
+0212:             math.exp(-h_lam) * (h_lam ** k) / math.factorial(k)
+0213:             for k in range(max_goals + 1)
+0214:         ]
+0215:         ap = [
+0216:             math.exp(-a_lam) * (a_lam ** k) / math.factorial(k)
+0217:             for k in range(max_goals + 1)
+0218:         ]
+0219: 
+0220:         home = draw = away = 0.0
+0221:         for hg, p_h in enumerate(hp):
+---
+0222:             for ag, p_a in enumerate(ap):
+0223:                 value = p_h * p_a
+0224:                 if hg > ag:
+0225:                     home += value
+0226:                 elif hg == ag:
+0227:                     draw += value
+0228:                 else:
+0229:                     away += value
+0230: 
+0231:         total = home + draw + away
+0232:         if total <= 0:
+0233:             output.append((1 / 3, 1 / 3, 1 / 3))
+0234:         else:
+0235:             output.append((home / total, draw / total, away / total))
+0236: 
+0237:     return _normalize_probability_rows(np.asarray(output, dtype=float))
+0238: 
+0239: 
+0240: def _fit_poisson(
+0241:     train_rows: list[dict[str, str]],
+0242:     validation_rows: list[dict[str, str]],
+0243:     fields: list[str],
+0244: ) -> tuple[np.ndarray, dict[str, Any]]:
+0245:     columns = poisson_feature_columns(fields)
+0246:     x_train = _matrix(train_rows, columns)
+0247:     x_val = _matrix(validation_rows, columns)
+0248:     y_home = _goal_target(train_rows, "target_home_goals")
+0249:     y_away = _goal_target(train_rows, "target_away_goals")
+0250: 
+0251:     def make_model() -> Pipeline:
+0252:         return Pipeline(
+0253:             [
+0254:                 ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
+0255:                 ("scaler", StandardScaler()),
+0256:                 ("model", PoissonRegressor(alpha=1.0, max_iter=1000)),
+0257:             ]
+0258:         )
+
+NEEDLE: poisson
+0001: from __future__ import annotations
+0002: 
+0003: import csv
+0004: import json
+0005: import math
+0006: from collections import Counter
+0007: from pathlib import Path
+0008: from typing import Any, Iterable
+0009: 
+0010: import numpy as np
+0011: from sklearn.impute import SimpleImputer
+0012: from sklearn.linear_model import LogisticRegression, PoissonRegressor
+0013: from sklearn.pipeline import Pipeline
+0014: from sklearn.preprocessing import StandardScaler
+0015: 
+0016: 
+0017: CLASS_NAMES = ("H", "D", "A")
+0018: ID_COLUMNS = {
+0019:     "fixture_id",
+0020:     "provider_fixture_id",
+0021:     "season",
+0022:     "kickoff_utc",
+0023:     "home_team",
+0024:     "away_team",
+0025: }
+0026: TARGET_COLUMNS = {
+0027:     "target_result",
+0028:     "target_class",
+0029:     "target_home_goals",
+0030:     "target_away_goals",
+---
+0165:     """
+0166:     Deployment-oriented feature set.
+0167: 
+0168:     Closing odds and odds-movement fields are intentionally excluded because
+0169:     the live prediction may be published before a true closing market exists.
+0170:     Targets and identifiers are always excluded.
+0171:     """
+0172:     result: list[str] = []
+0173:     for name in fields:
+0174:         if name in ID_COLUMNS or name in TARGET_COLUMNS:
+0175:             continue
+0176:         lower = name.lower()
+0177:         if "close" in lower or lower.endswith("_prob_move") or "_prob_move" in lower:
+0178:             continue
+0179:         result.append(name)
+0180:     return result
+0181: 
+0182: 
+0183: def poisson_feature_columns(fields: Iterable[str]) -> list[str]:
+0184:     """
+0185:     Team/statistical inputs only. All bookmaker fields are excluded so the
+0186:     Poisson baseline remains a football-strength model rather than a market model.
+0187:     """
+0188:     result = []
+0189:     for name in production_feature_columns(fields):
+0190:         if name.startswith("market_"):
+0191:             continue
+0192:         result.append(name)
+0193:     return result
+0194: 
+0195: 
+0196: def _matrix(rows: list[dict[str, str]], columns: list[str]) -> np.ndarray:
+0197:     return np.asarray(
+0198:         [[_float(row.get(column)) for column in columns] for row in rows],
+0199:         dtype=float,
+0200:     )
+0201: 
+---
+0168:     Closing odds and odds-movement fields are intentionally excluded because
+0169:     the live prediction may be published before a true closing market exists.
+0170:     Targets and identifiers are always excluded.
+0171:     """
+0172:     result: list[str] = []
+0173:     for name in fields:
+0174:         if name in ID_COLUMNS or name in TARGET_COLUMNS:
+0175:             continue
+0176:         lower = name.lower()
+0177:         if "close" in lower or lower.endswith("_prob_move") or "_prob_move" in lower:
+0178:             continue
+0179:         result.append(name)
+0180:     return result
+0181: 
+0182: 
+0183: def poisson_feature_columns(fields: Iterable[str]) -> list[str]:
+0184:     """
+0185:     Team/statistical inputs only. All bookmaker fields are excluded so the
+0186:     Poisson baseline remains a football-strength model rather than a market model.
+0187:     """
+0188:     result = []
+0189:     for name in production_feature_columns(fields):
+0190:         if name.startswith("market_"):
+0191:             continue
+0192:         result.append(name)
+0193:     return result
+0194: 
+0195: 
+0196: def _matrix(rows: list[dict[str, str]], columns: list[str]) -> np.ndarray:
+0197:     return np.asarray(
+0198:         [[_float(row.get(column)) for column in columns] for row in rows],
+0199:         dtype=float,
+0200:     )
+0201: 
+0202: 
+0203: def _poisson_outcome_probs(home_lambda: np.ndarray, away_lambda: np.ndarray) -> np.ndarray:
+0204:     output: list[tuple[float, float, float]] = []
+---
+0185:     Team/statistical inputs only. All bookmaker fields are excluded so the
+0186:     Poisson baseline remains a football-strength model rather than a market model.
+0187:     """
+0188:     result = []
+0189:     for name in production_feature_columns(fields):
+0190:         if name.startswith("market_"):
+0191:             continue
+0192:         result.append(name)
+0193:     return result
+0194: 
+0195: 
+0196: def _matrix(rows: list[dict[str, str]], columns: list[str]) -> np.ndarray:
+0197:     return np.asarray(
+0198:         [[_float(row.get(column)) for column in columns] for row in rows],
+0199:         dtype=float,
+0200:     )
+0201: 
+0202: 
+0203: def _poisson_outcome_probs(home_lambda: np.ndarray, away_lambda: np.ndarray) -> np.ndarray:
+0204:     output: list[tuple[float, float, float]] = []
+0205:     max_goals = 10
+0206: 
+0207:     for h_lam, a_lam in zip(home_lambda, away_lambda):
+0208:         h_lam = float(np.clip(h_lam, 0.08, 6.0))
+0209:         a_lam = float(np.clip(a_lam, 0.08, 6.0))
+0210: 
+0211:         hp = [
+0212:             math.exp(-h_lam) * (h_lam ** k) / math.factorial(k)
+0213:             for k in range(max_goals + 1)
+0214:         ]
+0215:         ap = [
+0216:             math.exp(-a_lam) * (a_lam ** k) / math.factorial(k)
+0217:             for k in range(max_goals + 1)
+0218:         ]
+0219: 
+0220:         home = draw = away = 0.0
+0221:         for hg, p_h in enumerate(hp):
+---
+0222:             for ag, p_a in enumerate(ap):
+0223:                 value = p_h * p_a
+0224:                 if hg > ag:
+0225:                     home += value
+0226:                 elif hg == ag:
+0227:                     draw += value
+0228:                 else:
+0229:                     away += value
+0230: 
+0231:         total = home + draw + away
+0232:         if total <= 0:
+0233:             output.append((1 / 3, 1 / 3, 1 / 3))
+0234:         else:
+0235:             output.append((home / total, draw / total, away / total))
+0236: 
+0237:     return _normalize_probability_rows(np.asarray(output, dtype=float))
+0238: 
+0239: 
+0240: def _fit_poisson(
+0241:     train_rows: list[dict[str, str]],
+0242:     validation_rows: list[dict[str, str]],
+0243:     fields: list[str],
+0244: ) -> tuple[np.ndarray, dict[str, Any]]:
+0245:     columns = poisson_feature_columns(fields)
+0246:     x_train = _matrix(train_rows, columns)
+0247:     x_val = _matrix(validation_rows, columns)
+0248:     y_home = _goal_target(train_rows, "target_home_goals")
+0249:     y_away = _goal_target(train_rows, "target_away_goals")
+0250: 
+0251:     def make_model() -> Pipeline:
+0252:         return Pipeline(
+0253:             [
+0254:                 ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
+0255:                 ("scaler", StandardScaler()),
+0256:                 ("model", PoissonRegressor(alpha=1.0, max_iter=1000)),
+0257:             ]
+0258:         )
+
+NEEDLE: home_goals
+0011: from sklearn.impute import SimpleImputer
+0012: from sklearn.linear_model import LogisticRegression, PoissonRegressor
+0013: from sklearn.pipeline import Pipeline
+0014: from sklearn.preprocessing import StandardScaler
+0015: 
+0016: 
+0017: CLASS_NAMES = ("H", "D", "A")
+0018: ID_COLUMNS = {
+0019:     "fixture_id",
+0020:     "provider_fixture_id",
+0021:     "season",
+0022:     "kickoff_utc",
+0023:     "home_team",
+0024:     "away_team",
+0025: }
+0026: TARGET_COLUMNS = {
+0027:     "target_result",
+0028:     "target_class",
+0029:     "target_home_goals",
+0030:     "target_away_goals",
+0031: }
+0032: 
+0033: 
+0034: def _read_csv(path: str | Path) -> tuple[list[dict[str, str]], list[str]]:
+0035:     file_path = Path(path).expanduser().resolve()
+0036:     if not file_path.exists():
+0037:         raise FileNotFoundError(f"Dataset not found: {file_path}")
+0038:     with file_path.open("r", encoding="utf-8-sig", newline="") as handle:
+0039:         reader = csv.DictReader(handle)
+0040:         rows = list(reader)
+0041:         fields = list(reader.fieldnames or [])
+0042:     if not rows:
+0043:         raise ValueError(f"Dataset is empty: {file_path}")
+0044:     return rows, fields
+0045: 
+0046: 
+0047: def _float(value: Any) -> float:
+---
+0230: 
+0231:         total = home + draw + away
+0232:         if total <= 0:
+0233:             output.append((1 / 3, 1 / 3, 1 / 3))
+0234:         else:
+0235:             output.append((home / total, draw / total, away / total))
+0236: 
+0237:     return _normalize_probability_rows(np.asarray(output, dtype=float))
+0238: 
+0239: 
+0240: def _fit_poisson(
+0241:     train_rows: list[dict[str, str]],
+0242:     validation_rows: list[dict[str, str]],
+0243:     fields: list[str],
+0244: ) -> tuple[np.ndarray, dict[str, Any]]:
+0245:     columns = poisson_feature_columns(fields)
+0246:     x_train = _matrix(train_rows, columns)
+0247:     x_val = _matrix(validation_rows, columns)
+0248:     y_home = _goal_target(train_rows, "target_home_goals")
+0249:     y_away = _goal_target(train_rows, "target_away_goals")
+0250: 
+0251:     def make_model() -> Pipeline:
+0252:         return Pipeline(
+0253:             [
+0254:                 ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
+0255:                 ("scaler", StandardScaler()),
+0256:                 ("model", PoissonRegressor(alpha=1.0, max_iter=1000)),
+0257:             ]
+0258:         )
+0259: 
+0260:     home_model = make_model()
+0261:     away_model = make_model()
+0262:     home_model.fit(x_train, y_home)
+0263:     away_model.fit(x_train, y_away)
+0264: 
+0265:     home_lambda = home_model.predict(x_val)
+0266:     away_lambda = away_model.predict(x_val)
+
+NEEDLE: away_goals
+0012: from sklearn.linear_model import LogisticRegression, PoissonRegressor
+0013: from sklearn.pipeline import Pipeline
+0014: from sklearn.preprocessing import StandardScaler
+0015: 
+0016: 
+0017: CLASS_NAMES = ("H", "D", "A")
+0018: ID_COLUMNS = {
+0019:     "fixture_id",
+0020:     "provider_fixture_id",
+0021:     "season",
+0022:     "kickoff_utc",
+0023:     "home_team",
+0024:     "away_team",
+0025: }
+0026: TARGET_COLUMNS = {
+0027:     "target_result",
+0028:     "target_class",
+0029:     "target_home_goals",
+0030:     "target_away_goals",
+0031: }
+0032: 
+0033: 
+0034: def _read_csv(path: str | Path) -> tuple[list[dict[str, str]], list[str]]:
+0035:     file_path = Path(path).expanduser().resolve()
+0036:     if not file_path.exists():
+0037:         raise FileNotFoundError(f"Dataset not found: {file_path}")
+0038:     with file_path.open("r", encoding="utf-8-sig", newline="") as handle:
+0039:         reader = csv.DictReader(handle)
+0040:         rows = list(reader)
+0041:         fields = list(reader.fieldnames or [])
+0042:     if not rows:
+0043:         raise ValueError(f"Dataset is empty: {file_path}")
+0044:     return rows, fields
+0045: 
+0046: 
+0047: def _float(value: Any) -> float:
+0048:     text = "" if value is None else str(value).strip()
+---
+0231:         total = home + draw + away
+0232:         if total <= 0:
+0233:             output.append((1 / 3, 1 / 3, 1 / 3))
+0234:         else:
+0235:             output.append((home / total, draw / total, away / total))
+0236: 
+0237:     return _normalize_probability_rows(np.asarray(output, dtype=float))
+0238: 
+0239: 
+0240: def _fit_poisson(
+0241:     train_rows: list[dict[str, str]],
+0242:     validation_rows: list[dict[str, str]],
+0243:     fields: list[str],
+0244: ) -> tuple[np.ndarray, dict[str, Any]]:
+0245:     columns = poisson_feature_columns(fields)
+0246:     x_train = _matrix(train_rows, columns)
+0247:     x_val = _matrix(validation_rows, columns)
+0248:     y_home = _goal_target(train_rows, "target_home_goals")
+0249:     y_away = _goal_target(train_rows, "target_away_goals")
+0250: 
+0251:     def make_model() -> Pipeline:
+0252:         return Pipeline(
+0253:             [
+0254:                 ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
+0255:                 ("scaler", StandardScaler()),
+0256:                 ("model", PoissonRegressor(alpha=1.0, max_iter=1000)),
+0257:             ]
+0258:         )
+0259: 
+0260:     home_model = make_model()
+0261:     away_model = make_model()
+0262:     home_model.fit(x_train, y_home)
+0263:     away_model.fit(x_train, y_away)
+0264: 
+0265:     home_lambda = home_model.predict(x_val)
+0266:     away_lambda = away_model.predict(x_val)
+0267:     probs = _poisson_outcome_probs(home_lambda, away_lambda)
+
+==============================================================================
+FEATURE ENGINEERING GOAL / TEMPORAL ANCHORS
+==============================================================================
+
+NEEDLE: home_goals
+0139: 
+0140: def _days_since(previous: datetime | None, current: datetime) -> float | None:
+0141:     if previous is None:
+0142:         return None
+0143:     seconds = (current - previous).total_seconds()
+0144:     return round(max(seconds, 0.0) / 86400.0, 6)
+0145: 
+0146: 
+0147: def _elo_expected(home_elo: float, away_elo: float) -> float:
+0148:     adjusted_home = home_elo + ELO_HOME_ADVANTAGE
+0149:     return 1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home) / 400.0))
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+---
+0141:     if previous is None:
+0142:         return None
+0143:     seconds = (current - previous).total_seconds()
+0144:     return round(max(seconds, 0.0) / 86400.0, 6)
+0145: 
+0146: 
+0147: def _elo_expected(home_elo: float, away_elo: float) -> float:
+0148:     adjusted_home = home_elo + ELO_HOME_ADVANTAGE
+0149:     return 1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home) / 400.0))
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+0168:     return "D", 1
+0169: 
+---
+0143:     seconds = (current - previous).total_seconds()
+0144:     return round(max(seconds, 0.0) / 86400.0, 6)
+0145: 
+0146: 
+0147: def _elo_expected(home_elo: float, away_elo: float) -> float:
+0148:     adjusted_home = home_elo + ELO_HOME_ADVANTAGE
+0149:     return 1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home) / 400.0))
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+0168:     return "D", 1
+0169: 
+0170: 
+0171: def load_match_records(
+---
+0148:     adjusted_home = home_elo + ELO_HOME_ADVANTAGE
+0149:     return 1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home) / 400.0))
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+0168:     return "D", 1
+0169: 
+0170: 
+0171: def load_match_records(
+0172:     session: Session,
+0173:     *,
+0174:     provider: str = HISTORY_PROVIDER,
+0175:     from_season: int,
+0176:     to_season: int,
+---
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+0168:     return "D", 1
+0169: 
+0170: 
+0171: def load_match_records(
+0172:     session: Session,
+0173:     *,
+0174:     provider: str = HISTORY_PROVIDER,
+0175:     from_season: int,
+0176:     to_season: int,
+0177: ) -> list[MatchRecord]:
+0178:     Home = aliased(Team)
+
+NEEDLE: away_goals
+0139: 
+0140: def _days_since(previous: datetime | None, current: datetime) -> float | None:
+0141:     if previous is None:
+0142:         return None
+0143:     seconds = (current - previous).total_seconds()
+0144:     return round(max(seconds, 0.0) / 86400.0, 6)
+0145: 
+0146: 
+0147: def _elo_expected(home_elo: float, away_elo: float) -> float:
+0148:     adjusted_home = home_elo + ELO_HOME_ADVANTAGE
+0149:     return 1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home) / 400.0))
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+---
+0141:     if previous is None:
+0142:         return None
+0143:     seconds = (current - previous).total_seconds()
+0144:     return round(max(seconds, 0.0) / 86400.0, 6)
+0145: 
+0146: 
+0147: def _elo_expected(home_elo: float, away_elo: float) -> float:
+0148:     adjusted_home = home_elo + ELO_HOME_ADVANTAGE
+0149:     return 1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home) / 400.0))
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+0168:     return "D", 1
+0169: 
+---
+0143:     seconds = (current - previous).total_seconds()
+0144:     return round(max(seconds, 0.0) / 86400.0, 6)
+0145: 
+0146: 
+0147: def _elo_expected(home_elo: float, away_elo: float) -> float:
+0148:     adjusted_home = home_elo + ELO_HOME_ADVANTAGE
+0149:     return 1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home) / 400.0))
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+0168:     return "D", 1
+0169: 
+0170: 
+0171: def load_match_records(
+---
+0148:     adjusted_home = home_elo + ELO_HOME_ADVANTAGE
+0149:     return 1.0 / (1.0 + 10.0 ** ((away_elo - adjusted_home) / 400.0))
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+0168:     return "D", 1
+0169: 
+0170: 
+0171: def load_match_records(
+0172:     session: Session,
+0173:     *,
+0174:     provider: str = HISTORY_PROVIDER,
+0175:     from_season: int,
+0176:     to_season: int,
+---
+0150: 
+0151: 
+0152: def _fixture_outcome_score(fixture: Fixture) -> float:
+0153:     if fixture.home_goals is None or fixture.away_goals is None:
+0154:         raise ValueError("Finished fixture is missing full-time goals")
+0155:     if fixture.home_goals > fixture.away_goals:
+0156:         return 1.0
+0157:     if fixture.home_goals < fixture.away_goals:
+0158:         return 0.0
+0159:     return 0.5
+0160: 
+0161: 
+0162: def _target_code(result: str | None, home_goals: int, away_goals: int) -> tuple[str, int]:
+0163:     normalized = (result or "").upper()
+0164:     if normalized == "HOME" or home_goals > away_goals:
+0165:         return "H", 0
+0166:     if normalized == "AWAY" or home_goals < away_goals:
+0167:         return "A", 2
+0168:     return "D", 1
+0169: 
+0170: 
+0171: def load_match_records(
+0172:     session: Session,
+0173:     *,
+0174:     provider: str = HISTORY_PROVIDER,
+0175:     from_season: int,
+0176:     to_season: int,
+0177: ) -> list[MatchRecord]:
+0178:     Home = aliased(Team)
+
+NEEDLE: kickoff
+0178:     Home = aliased(Team)
+0179:     Away = aliased(Team)
+0180:     stmt = (
+0181:         select(Fixture, LeagueSeason.season, Home.name, Away.name)
+0182:         .join(LeagueSeason, Fixture.league_season_id == LeagueSeason.id)
+0183:         .join(Home, Fixture.home_team_id == Home.id)
+0184:         .join(Away, Fixture.away_team_id == Away.id)
+0185:         .where(
+0186:             Fixture.provider == provider,
+0187:             LeagueSeason.provider == provider,
+0188:             LeagueSeason.season >= from_season,
+0189:             LeagueSeason.season <= to_season,
+0190:             Fixture.is_finished.is_(True),
+0191:         )
+0192:         .order_by(LeagueSeason.season, Fixture.kickoff_utc, Fixture.id)
+0193:     )
+0194:     records: list[MatchRecord] = []
+0195:     for fixture, season, home_name, away_name in session.execute(stmt).all():
+0196:         records.append(
+0197:             MatchRecord(
+0198:                 fixture=fixture,
+0199:                 season=int(season),
+0200:                 home_name=str(home_name),
+0201:                 away_name=str(away_name),
+0202:                 raw=_safe_json(fixture.raw_json),
+0203:             )
+0204:         )
+0205:     return records
+0206: 
+---
+0306:         home_expected = _elo_expected(home_elo, away_elo)
+0307:         home_mp = int(matches_played[home_id])
+0308:         away_mp = int(matches_played[away_id])
+0309: 
+0310:         target_result, target_class = _target_code(
+0311:             fixture.result_1x2,
+0312:             fixture.home_goals,
+0313:             fixture.away_goals,
+0314:         )
+0315: 
+0316:         row: dict[str, Any] = {
+0317:             "fixture_id": fixture.id,
+0318:             "provider_fixture_id": fixture.provider_fixture_id,
+0319:             "season": record.season,
+0320:             "kickoff_utc": fixture.kickoff_utc.isoformat(),
+0321:             "home_team": record.home_name,
+0322:             "away_team": record.away_name,
+0323:             "home_matches_played": home_mp,
+0324:             "away_matches_played": away_mp,
+0325:             "season_progress": round(min((home_mp + away_mp) / 76.0, 1.0), 6),
+0326:             "home_rest_days": _days_since(last_played.get(home_id), fixture.kickoff_utc),
+0327:             "away_rest_days": _days_since(last_played.get(away_id), fixture.kickoff_utc),
+0328:             "home_elo_pre": round(home_elo, 6),
+0329:             "away_elo_pre": round(away_elo, 6),
+0330:             "elo_diff_pre": round(home_elo - away_elo, 6),
+0331:             "elo_home_expected": round(home_expected, 8),
+0332:         }
+0333: 
+0334:         for window in WINDOWS:
+---
+0312:             fixture.home_goals,
+0313:             fixture.away_goals,
+0314:         )
+0315: 
+0316:         row: dict[str, Any] = {
+0317:             "fixture_id": fixture.id,
+0318:             "provider_fixture_id": fixture.provider_fixture_id,
+0319:             "season": record.season,
+0320:             "kickoff_utc": fixture.kickoff_utc.isoformat(),
+0321:             "home_team": record.home_name,
+0322:             "away_team": record.away_name,
+0323:             "home_matches_played": home_mp,
+0324:             "away_matches_played": away_mp,
+0325:             "season_progress": round(min((home_mp + away_mp) / 76.0, 1.0), 6),
+0326:             "home_rest_days": _days_since(last_played.get(home_id), fixture.kickoff_utc),
+0327:             "away_rest_days": _days_since(last_played.get(away_id), fixture.kickoff_utc),
+0328:             "home_elo_pre": round(home_elo, 6),
+0329:             "away_elo_pre": round(away_elo, 6),
+0330:             "elo_diff_pre": round(home_elo - away_elo, 6),
+0331:             "elo_home_expected": round(home_expected, 8),
+0332:         }
+0333: 
+0334:         for window in WINDOWS:
+0335:             hs = _history_summary(home_hist, window)
+0336:             aw = _history_summary(away_hist, window)
+0337:             for key, value in hs.items():
+0338:                 row[f"home_form{window}_{key}"] = value
+0339:             for key, value in aw.items():
+0340:                 row[f"away_form{window}_{key}"] = value
+---
+0313:             fixture.away_goals,
+0314:         )
+0315: 
+0316:         row: dict[str, Any] = {
+0317:             "fixture_id": fixture.id,
+0318:             "provider_fixture_id": fixture.provider_fixture_id,
+0319:             "season": record.season,
+0320:             "kickoff_utc": fixture.kickoff_utc.isoformat(),
+0321:             "home_team": record.home_name,
+0322:             "away_team": record.away_name,
+0323:             "home_matches_played": home_mp,
+0324:             "away_matches_played": away_mp,
+0325:             "season_progress": round(min((home_mp + away_mp) / 76.0, 1.0), 6),
+0326:             "home_rest_days": _days_since(last_played.get(home_id), fixture.kickoff_utc),
+0327:             "away_rest_days": _days_since(last_played.get(away_id), fixture.kickoff_utc),
+0328:             "home_elo_pre": round(home_elo, 6),
+0329:             "away_elo_pre": round(away_elo, 6),
+0330:             "elo_diff_pre": round(home_elo - away_elo, 6),
+0331:             "elo_home_expected": round(home_expected, 8),
+0332:         }
+0333: 
+0334:         for window in WINDOWS:
+0335:             hs = _history_summary(home_hist, window)
+0336:             aw = _history_summary(away_hist, window)
+0337:             for key, value in hs.items():
+0338:                 row[f"home_form{window}_{key}"] = value
+0339:             for key, value in aw.items():
+0340:                 row[f"away_form{window}_{key}"] = value
+0341:             for key in (
+---
+0374:             is_home=True,
+0375:             gf=fixture.home_goals,
+0376:             ga=fixture.away_goals,
+0377:         )
+0378:         away_event = _team_event(
+0379:             record.raw,
+0380:             is_home=False,
+0381:             gf=fixture.away_goals,
+0382:             ga=fixture.home_goals,
+0383:         )
+0384:         overall[home_id].append(home_event)
+0385:         overall[away_id].append(away_event)
+0386:         venue[(home_id, "home")].append(home_event)
+0387:         venue[(away_id, "away")].append(away_event)
+0388:         last_played[home_id] = fixture.kickoff_utc
+0389:         last_played[away_id] = fixture.kickoff_utc
+0390:         matches_played[home_id] += 1
+0391:         matches_played[away_id] += 1
+0392: 
+0393:         actual = _fixture_outcome_score(fixture)
+0394:         delta = ELO_K * (actual - home_expected)
+0395:         elo[home_id] = home_elo + delta
+0396:         elo[away_id] = away_elo - delta
+0397: 
+0398:     return rows
+0399: 
+0400: 
+0401: def build_feature_dataset(
+0402:     session: Session,
+
+NEEDLE: sort
+0441:             "Rolling team state and Elo are read before each fixture and updated only after the fixture row is emitted. "
+0442:             "Current-match shots/cards/corners/goals are never used as predictors for that same match. "
+0443:             "Market odds fields are pre-match bookmaker data."
+0444:         ),
+0445:         "season_reset_policy": "Team rolling state and Elo reset at each EPL season boundary.",
+0446:         "elo": {
+0447:             "initial": ELO_INITIAL,
+0448:             "k": ELO_K,
+0449:             "home_advantage": ELO_HOME_ADVANTAGE,
+0450:         },
+0451:         "windows": list(WINDOWS),
+0452:         "output": str(path),
+0453:     }
+0454:     meta_path = path.with_suffix(path.suffix + ".meta.json")
+0455:     meta_path.write_text(json.dumps(metadata, indent=2, sort_keys=True), encoding="utf-8")
+0456: 
+0457:     return {
+0458:         "status": "success",
+0459:         "provider": provider,
+0460:         "from_season": from_season,
+0461:         "to_season": to_season,
+0462:         "records_loaded": len(records),
+0463:         "rows_written": len(rows),
+0464:         "columns": len(columns),
+0465:         "feature_columns": len(feature_columns),
+0466:         "output": str(path),
+0467:         "metadata": str(meta_path),
+0468:     }
+
+NEEDLE: rolling
+0427:     target_columns = ["target_result", "target_class", "target_home_goals", "target_away_goals"]
+0428:     id_columns = ["fixture_id", "provider_fixture_id", "season", "kickoff_utc", "home_team", "away_team"]
+0429:     feature_columns = [c for c in columns if c not in target_columns and c not in id_columns]
+0430:     metadata = {
+0431:         "version": "0.2.0-phase2-feature-engine",
+0432:         "provider": provider,
+0433:         "from_season": from_season,
+0434:         "to_season": to_season,
+0435:         "rows": len(rows),
+0436:         "columns": len(columns),
+0437:         "feature_columns": len(feature_columns),
+0438:         "id_columns": id_columns,
+0439:         "target_columns": target_columns,
+0440:         "leakage_policy": (
+0441:             "Rolling team state and Elo are read before each fixture and updated only after the fixture row is emitted. "
+0442:             "Current-match shots/cards/corners/goals are never used as predictors for that same match. "
+0443:             "Market odds fields are pre-match bookmaker data."
+0444:         ),
+0445:         "season_reset_policy": "Team rolling state and Elo reset at each EPL season boundary.",
+0446:         "elo": {
+0447:             "initial": ELO_INITIAL,
+0448:             "k": ELO_K,
+0449:             "home_advantage": ELO_HOME_ADVANTAGE,
+0450:         },
+0451:         "windows": list(WINDOWS),
+0452:         "output": str(path),
+0453:     }
+0454:     meta_path = path.with_suffix(path.suffix + ".meta.json")
+0455:     meta_path.write_text(json.dumps(metadata, indent=2, sort_keys=True), encoding="utf-8")
+---
+0431:         "version": "0.2.0-phase2-feature-engine",
+0432:         "provider": provider,
+0433:         "from_season": from_season,
+0434:         "to_season": to_season,
+0435:         "rows": len(rows),
+0436:         "columns": len(columns),
+0437:         "feature_columns": len(feature_columns),
+0438:         "id_columns": id_columns,
+0439:         "target_columns": target_columns,
+0440:         "leakage_policy": (
+0441:             "Rolling team state and Elo are read before each fixture and updated only after the fixture row is emitted. "
+0442:             "Current-match shots/cards/corners/goals are never used as predictors for that same match. "
+0443:             "Market odds fields are pre-match bookmaker data."
+0444:         ),
+0445:         "season_reset_policy": "Team rolling state and Elo reset at each EPL season boundary.",
+0446:         "elo": {
+0447:             "initial": ELO_INITIAL,
+0448:             "k": ELO_K,
+0449:             "home_advantage": ELO_HOME_ADVANTAGE,
+0450:         },
+0451:         "windows": list(WINDOWS),
+0452:         "output": str(path),
+0453:     }
+0454:     meta_path = path.with_suffix(path.suffix + ".meta.json")
+0455:     meta_path.write_text(json.dumps(metadata, indent=2, sort_keys=True), encoding="utf-8")
+0456: 
+0457:     return {
+0458:         "status": "success",
+0459:         "provider": provider,
+
+==============================================================================
+SPORTSQ INTELLIGENCE FUNCTION BOUNDARIES
+==============================================================================
+_table_names: lines 63-64
+_columns: lines 66-70
+_value: lines 72-82
+_to_float: lines 84-91
+_probability_value: lines 93-99
+_probabilities: lines 101-114
+_normalise_1x2: lines 116-124
+_prediction_label: lines 126-133
+_confidence_percent: lines 135-144
+_confidence_band: lines 146-153
+_score_call: lines 155-170
+_form_band: lines 172-183
+_form_index_from_matches: lines 185-253
+_fixture: lines 255-270
+_team_name: lines 272-279
+_recent_team_form: lines 281-315
+_news_impact: lines 317-327
+_module_status: lines 329-338
+_invoke_existing: lines 340-364
+_raw_prediction_rows: lines 366-382
+_existing_prediction_rows: lines 384-416
+_row_fixture_id: lines 418-425
+_intelligence_item: lines 427-551
+list_sportsq_intelligence: lines 553-579
+get_sportsq_intelligence: lines 581-622
+sportsq_accuracy_summary: lines 624-656
+sportsq_capabilities: lines 658-741
+
+==============================================================================
+CURRENT SCORECALL TEST ANCHORS
+==============================================================================
+
+FILE: test_sportsq_intelligence.py
+
+NEEDLE: ScoreCall
+0006:     _confidence_band,
+0007:     _form_index_from_matches,
+0008:     _normalise_1x2,
+0009:     _score_call,
+0010:     sportsq_capabilities,
+0011: )
+0012: 
+0013: def test_brand_hierarchy_is_official():
+0014:     assert BRAND_HIERARCHY["brand"] == "MDRN SportsQ"
+0015:     assert BRAND_HIERARCHY["predict"] == "SportsQ Predict"
+0016:     assert BRAND_HIERARCHY["score_call"] == "SportsQ ScoreCall"
+0017:     assert BRAND_HIERARCHY["confidence"] == "SportsQ Confidence"
+0018:     assert BRAND_HIERARCHY["news_impact"] == "SportsQ News Impact"
+0019:     assert BRAND_HIERARCHY["form_index"] == "SportsQ Form Index"
+0020: 
+0021: def test_1x2_normalization():
+0022:     assert _normalise_1x2("1") == "HOME"
+0023:     assert _normalise_1x2("H") == "HOME"
+0024:     assert _normalise_1x2("home") == "HOME"
+0025:     assert _normalise_1x2("X") == "DRAW"
+0026:     assert _normalise_1x2("draw") == "DRAW"
+
+NEEDLE: score_call
+0001: from __future__ import annotations
+0002: 
+0003: from app.main import app
+0004: from app.services.sportsq_intelligence import (
+0005:     BRAND_HIERARCHY,
+0006:     _confidence_band,
+0007:     _form_index_from_matches,
+0008:     _normalise_1x2,
+0009:     _score_call,
+0010:     sportsq_capabilities,
+0011: )
+0012: 
+0013: def test_brand_hierarchy_is_official():
+0014:     assert BRAND_HIERARCHY["brand"] == "MDRN SportsQ"
+0015:     assert BRAND_HIERARCHY["predict"] == "SportsQ Predict"
+0016:     assert BRAND_HIERARCHY["score_call"] == "SportsQ ScoreCall"
+0017:     assert BRAND_HIERARCHY["confidence"] == "SportsQ Confidence"
+0018:     assert BRAND_HIERARCHY["news_impact"] == "SportsQ News Impact"
+0019:     assert BRAND_HIERARCHY["form_index"] == "SportsQ Form Index"
+---
+0006:     _confidence_band,
+0007:     _form_index_from_matches,
+0008:     _normalise_1x2,
+0009:     _score_call,
+0010:     sportsq_capabilities,
+0011: )
+0012: 
+0013: def test_brand_hierarchy_is_official():
+0014:     assert BRAND_HIERARCHY["brand"] == "MDRN SportsQ"
+0015:     assert BRAND_HIERARCHY["predict"] == "SportsQ Predict"
+0016:     assert BRAND_HIERARCHY["score_call"] == "SportsQ ScoreCall"
+0017:     assert BRAND_HIERARCHY["confidence"] == "SportsQ Confidence"
+0018:     assert BRAND_HIERARCHY["news_impact"] == "SportsQ News Impact"
+0019:     assert BRAND_HIERARCHY["form_index"] == "SportsQ Form Index"
+0020: 
+0021: def test_1x2_normalization():
+0022:     assert _normalise_1x2("1") == "HOME"
+0023:     assert _normalise_1x2("H") == "HOME"
+0024:     assert _normalise_1x2("home") == "HOME"
+0025:     assert _normalise_1x2("X") == "DRAW"
+0026:     assert _normalise_1x2("draw") == "DRAW"
+---
+0026:     assert _normalise_1x2("draw") == "DRAW"
+0027:     assert _normalise_1x2("2") == "AWAY"
+0028:     assert _normalise_1x2("A") == "AWAY"
+0029: 
+0030: def test_confidence_bands():
+0031:     assert _confidence_band(70) == "HIGH"
+0032:     assert _confidence_band(60) == "MEDIUM"
+0033:     assert _confidence_band(50) == "LOW"
+0034:     assert _confidence_band(None) == "UNAVAILABLE"
+0035: 
+0036: def test_score_call_does_not_fabricate():
+0037:     score, source = _score_call({
+0038:         "home_probability": 0.60,
+0039:         "draw_probability": 0.25,
+0040:         "away_probability": 0.15,
+0041:     })
+0042:     assert score is None
+0043:     assert source == "not_exposed_by_existing_lock"
+0044: 
+0045: def test_score_call_uses_existing_locked_score():
+0046:     score, source = _score_call({
+---
+0027:     assert _normalise_1x2("2") == "AWAY"
+0028:     assert _normalise_1x2("A") == "AWAY"
+0029: 
+0030: def test_confidence_bands():
+0031:     assert _confidence_band(70) == "HIGH"
+0032:     assert _confidence_band(60) == "MEDIUM"
+0033:     assert _confidence_band(50) == "LOW"
+0034:     assert _confidence_band(None) == "UNAVAILABLE"
+0035: 
+0036: def test_score_call_does_not_fabricate():
+0037:     score, source = _score_call({
+0038:         "home_probability": 0.60,
+0039:         "draw_probability": 0.25,
+0040:         "away_probability": 0.15,
+0041:     })
+0042:     assert score is None
+0043:     assert source == "not_exposed_by_existing_lock"
+0044: 
+0045: def test_score_call_uses_existing_locked_score():
+0046:     score, source = _score_call({
+0047:         "predicted_home_goals": 2,
+---
+0035: 
+0036: def test_score_call_does_not_fabricate():
+0037:     score, source = _score_call({
+0038:         "home_probability": 0.60,
+0039:         "draw_probability": 0.25,
+0040:         "away_probability": 0.15,
+0041:     })
+0042:     assert score is None
+0043:     assert source == "not_exposed_by_existing_lock"
+0044: 
+0045: def test_score_call_uses_existing_locked_score():
+0046:     score, source = _score_call({
+0047:         "predicted_home_goals": 2,
+0048:         "predicted_away_goals": 1,
+0049:     })
+0050:     assert score == "2-1"
+0051:     assert source == "existing_locked_score_call"
+0052: 
+0053: def test_form_index_uses_only_supplied_prior_matches():
+0054:     matches = [
+0055:         {"home_team_id": 1, "away_team_id": 2, "home_goals": 2, "away_goals": 0},
+
+NEEDLE: NOT_EXPOSED_BY_EXISTING_LOCK
+0033:     assert _confidence_band(50) == "LOW"
+0034:     assert _confidence_band(None) == "UNAVAILABLE"
+0035: 
+0036: def test_score_call_does_not_fabricate():
+0037:     score, source = _score_call({
+0038:         "home_probability": 0.60,
+0039:         "draw_probability": 0.25,
+0040:         "away_probability": 0.15,
+0041:     })
+0042:     assert score is None
+0043:     assert source == "not_exposed_by_existing_lock"
+0044: 
+0045: def test_score_call_uses_existing_locked_score():
+0046:     score, source = _score_call({
+0047:         "predicted_home_goals": 2,
+0048:         "predicted_away_goals": 1,
+0049:     })
+0050:     assert score == "2-1"
+0051:     assert source == "existing_locked_score_call"
+0052: 
+0053: def test_form_index_uses_only_supplied_prior_matches():
+
+NEEDLE: score
+0001: from __future__ import annotations
+0002: 
+0003: from app.main import app
+0004: from app.services.sportsq_intelligence import (
+0005:     BRAND_HIERARCHY,
+0006:     _confidence_band,
+0007:     _form_index_from_matches,
+0008:     _normalise_1x2,
+0009:     _score_call,
+0010:     sportsq_capabilities,
+0011: )
+0012: 
+0013: def test_brand_hierarchy_is_official():
+0014:     assert BRAND_HIERARCHY["brand"] == "MDRN SportsQ"
+0015:     assert BRAND_HIERARCHY["predict"] == "SportsQ Predict"
+0016:     assert BRAND_HIERARCHY["score_call"] == "SportsQ ScoreCall"
+0017:     assert BRAND_HIERARCHY["confidence"] == "SportsQ Confidence"
+0018:     assert BRAND_HIERARCHY["news_impact"] == "SportsQ News Impact"
+0019:     assert BRAND_HIERARCHY["form_index"] == "SportsQ Form Index"
+---
+0006:     _confidence_band,
+0007:     _form_index_from_matches,
+0008:     _normalise_1x2,
+0009:     _score_call,
+0010:     sportsq_capabilities,
+0011: )
+0012: 
+0013: def test_brand_hierarchy_is_official():
+0014:     assert BRAND_HIERARCHY["brand"] == "MDRN SportsQ"
+0015:     assert BRAND_HIERARCHY["predict"] == "SportsQ Predict"
+0016:     assert BRAND_HIERARCHY["score_call"] == "SportsQ ScoreCall"
+0017:     assert BRAND_HIERARCHY["confidence"] == "SportsQ Confidence"
+0018:     assert BRAND_HIERARCHY["news_impact"] == "SportsQ News Impact"
+0019:     assert BRAND_HIERARCHY["form_index"] == "SportsQ Form Index"
+0020: 
+0021: def test_1x2_normalization():
+0022:     assert _normalise_1x2("1") == "HOME"
+0023:     assert _normalise_1x2("H") == "HOME"
+0024:     assert _normalise_1x2("home") == "HOME"
+0025:     assert _normalise_1x2("X") == "DRAW"
+0026:     assert _normalise_1x2("draw") == "DRAW"
+---
+0026:     assert _normalise_1x2("draw") == "DRAW"
+0027:     assert _normalise_1x2("2") == "AWAY"
+0028:     assert _normalise_1x2("A") == "AWAY"
+0029: 
+0030: def test_confidence_bands():
+0031:     assert _confidence_band(70) == "HIGH"
+0032:     assert _confidence_band(60) == "MEDIUM"
+0033:     assert _confidence_band(50) == "LOW"
+0034:     assert _confidence_band(None) == "UNAVAILABLE"
+0035: 
+0036: def test_score_call_does_not_fabricate():
+0037:     score, source = _score_call({
+0038:         "home_probability": 0.60,
+0039:         "draw_probability": 0.25,
+0040:         "away_probability": 0.15,
+0041:     })
+0042:     assert score is None
+0043:     assert source == "not_exposed_by_existing_lock"
+0044: 
+0045: def test_score_call_uses_existing_locked_score():
+0046:     score, source = _score_call({
+---
+0027:     assert _normalise_1x2("2") == "AWAY"
+0028:     assert _normalise_1x2("A") == "AWAY"
+0029: 
+0030: def test_confidence_bands():
+0031:     assert _confidence_band(70) == "HIGH"
+0032:     assert _confidence_band(60) == "MEDIUM"
+0033:     assert _confidence_band(50) == "LOW"
+0034:     assert _confidence_band(None) == "UNAVAILABLE"
+0035: 
+0036: def test_score_call_does_not_fabricate():
+0037:     score, source = _score_call({
+0038:         "home_probability": 0.60,
+0039:         "draw_probability": 0.25,
+0040:         "away_probability": 0.15,
+0041:     })
+0042:     assert score is None
+0043:     assert source == "not_exposed_by_existing_lock"
+0044: 
+0045: def test_score_call_uses_existing_locked_score():
+0046:     score, source = _score_call({
+0047:         "predicted_home_goals": 2,
+---
+0032:     assert _confidence_band(60) == "MEDIUM"
+0033:     assert _confidence_band(50) == "LOW"
+0034:     assert _confidence_band(None) == "UNAVAILABLE"
+0035: 
+0036: def test_score_call_does_not_fabricate():
+0037:     score, source = _score_call({
+0038:         "home_probability": 0.60,
+0039:         "draw_probability": 0.25,
+0040:         "away_probability": 0.15,
+0041:     })
+0042:     assert score is None
+0043:     assert source == "not_exposed_by_existing_lock"
+0044: 
+0045: def test_score_call_uses_existing_locked_score():
+0046:     score, source = _score_call({
+0047:         "predicted_home_goals": 2,
+0048:         "predicted_away_goals": 1,
+0049:     })
+0050:     assert score == "2-1"
+0051:     assert source == "existing_locked_score_call"
+0052: 
+
+FILE: test_sportsq_stage3.py
+
+NEEDLE: score_call
+0025:         "fixture": {
+0026:             "fixture_id": 10,
+0027:             "home_team": "Chelsea",
+0028:             "away_team": "Arsenal",
+0029:             "kickoff_utc": "2026-09-12T16:00:00+00:00",
+0030:         },
+0031:         "sportsq_predict": {
+0032:             "prediction": "HOME",
+0033:             "status": "AVAILABLE",
+0034:         },
+0035:         "sportsq_score_call": {
+0036:             "score": None,
+0037:             "status": "NOT_EXPOSED_BY_EXISTING_LOCK",
+0038:         },
+0039:         "sportsq_confidence": {
+0040:             "percent": 67.4,
+0041:             "band": "HIGH",
+0042:         },
+0043:         "sportsq_form_index": {
+0044:             "home": {"index": 72.0},
+0045:             "away": {"index": 58.0},
+
+NEEDLE: NOT_EXPOSED_BY_EXISTING_LOCK
+0027:             "home_team": "Chelsea",
+0028:             "away_team": "Arsenal",
+0029:             "kickoff_utc": "2026-09-12T16:00:00+00:00",
+0030:         },
+0031:         "sportsq_predict": {
+0032:             "prediction": "HOME",
+0033:             "status": "AVAILABLE",
+0034:         },
+0035:         "sportsq_score_call": {
+0036:             "score": None,
+0037:             "status": "NOT_EXPOSED_BY_EXISTING_LOCK",
+0038:         },
+0039:         "sportsq_confidence": {
+0040:             "percent": 67.4,
+0041:             "band": "HIGH",
+0042:         },
+0043:         "sportsq_form_index": {
+0044:             "home": {"index": 72.0},
+0045:             "away": {"index": 58.0},
+0046:         },
+0047:         "sportsq_news_impact": {
+
+NEEDLE: score
+0025:         "fixture": {
+0026:             "fixture_id": 10,
+0027:             "home_team": "Chelsea",
+0028:             "away_team": "Arsenal",
+0029:             "kickoff_utc": "2026-09-12T16:00:00+00:00",
+0030:         },
+0031:         "sportsq_predict": {
+0032:             "prediction": "HOME",
+0033:             "status": "AVAILABLE",
+0034:         },
+0035:         "sportsq_score_call": {
+0036:             "score": None,
+0037:             "status": "NOT_EXPOSED_BY_EXISTING_LOCK",
+0038:         },
+0039:         "sportsq_confidence": {
+0040:             "percent": 67.4,
+0041:             "band": "HIGH",
+0042:         },
+0043:         "sportsq_form_index": {
+0044:             "home": {"index": 72.0},
+0045:             "away": {"index": 58.0},
+---
+0026:             "fixture_id": 10,
+0027:             "home_team": "Chelsea",
+0028:             "away_team": "Arsenal",
+0029:             "kickoff_utc": "2026-09-12T16:00:00+00:00",
+0030:         },
+0031:         "sportsq_predict": {
+0032:             "prediction": "HOME",
+0033:             "status": "AVAILABLE",
+0034:         },
+0035:         "sportsq_score_call": {
+0036:             "score": None,
+0037:             "status": "NOT_EXPOSED_BY_EXISTING_LOCK",
+0038:         },
+0039:         "sportsq_confidence": {
+0040:             "percent": 67.4,
+0041:             "band": "HIGH",
+0042:         },
+0043:         "sportsq_form_index": {
+0044:             "home": {"index": 72.0},
+0045:             "away": {"index": 58.0},
+0046:         },
+---
+0039:         "sportsq_confidence": {
+0040:             "percent": 67.4,
+0041:             "band": "HIGH",
+0042:         },
+0043:         "sportsq_form_index": {
+0044:             "home": {"index": 72.0},
+0045:             "away": {"index": 58.0},
+0046:         },
+0047:         "sportsq_news_impact": {
+0048:             "status": "NO_STRUCTURED_TEAM_NEWS_INPUT",
+0049:             "impact_score": None,
+0050:             "direction": "UNVERIFIED",
+0051:             "verified": False,
+0052:         },
+0053:     }
+0054: 
+0055: def test_brand_and_approved_theme():
+0056:     assert BRAND == "MDRN SportsQ"
+0057:     assert THEME["navy"] == "#07111F"
+0058:     assert THEME["lime"] == "#C7FF2E"
+0059:     assert THEME["white"] == "#FFFFFF"
+
+FILE: test_sportsq_stage3_gui_polish.py
+
+NEEDLE: ScoreCall
+0013: def test_dashboard_has_accuracy_cards_and_modal():
+0014:     html = (ROOT / "app" / "static" / "sportsq" / "index.html").read_text(
+0015:         encoding="utf-8"
+0016:     )
+0017:     assert 'id="accuracyLocked"' in html
+0018:     assert 'id="accuracyGraded"' in html
+0019:     assert 'id="accuracyPending"' in html
+0020:     assert 'id="accuracyPercent"' in html
+0021:     assert 'id="detailModal"' in html
+0022: 
+0023: def test_dashboard_js_has_fixture_generation_and_scorecall_no_fabrication():
+0024:     js = (ROOT / "app" / "static" / "sportsq" / "app.js").read_text(
+0025:         encoding="utf-8"
+0026:     )
+0027:     assert "generateFixtureContent" in js
+0028:     assert "/api/v1/sportsq/stage3/generate/${fixtureId}" in js
+0029:     assert 'hasScore ? "ACTIVE" : "AWAITING DATA"' in js
+0030:     assert "Not exposed by lock" in js
+0031: 
+0032: def test_dashboard_js_has_confidence_bands_and_kickoff():
+0033:     js = (ROOT / "app" / "static" / "sportsq" / "app.js").read_text(
+
+NEEDLE: score
+0013: def test_dashboard_has_accuracy_cards_and_modal():
+0014:     html = (ROOT / "app" / "static" / "sportsq" / "index.html").read_text(
+0015:         encoding="utf-8"
+0016:     )
+0017:     assert 'id="accuracyLocked"' in html
+0018:     assert 'id="accuracyGraded"' in html
+0019:     assert 'id="accuracyPending"' in html
+0020:     assert 'id="accuracyPercent"' in html
+0021:     assert 'id="detailModal"' in html
+0022: 
+0023: def test_dashboard_js_has_fixture_generation_and_scorecall_no_fabrication():
+0024:     js = (ROOT / "app" / "static" / "sportsq" / "app.js").read_text(
+0025:         encoding="utf-8"
+0026:     )
+0027:     assert "generateFixtureContent" in js
+0028:     assert "/api/v1/sportsq/stage3/generate/${fixtureId}" in js
+0029:     assert 'hasScore ? "ACTIVE" : "AWAITING DATA"' in js
+0030:     assert "Not exposed by lock" in js
+0031: 
+0032: def test_dashboard_js_has_confidence_bands_and_kickoff():
+0033:     js = (ROOT / "app" / "static" / "sportsq" / "app.js").read_text(
+---
+0019:     assert 'id="accuracyPending"' in html
+0020:     assert 'id="accuracyPercent"' in html
+0021:     assert 'id="detailModal"' in html
+0022: 
+0023: def test_dashboard_js_has_fixture_generation_and_scorecall_no_fabrication():
+0024:     js = (ROOT / "app" / "static" / "sportsq" / "app.js").read_text(
+0025:         encoding="utf-8"
+0026:     )
+0027:     assert "generateFixtureContent" in js
+0028:     assert "/api/v1/sportsq/stage3/generate/${fixtureId}" in js
+0029:     assert 'hasScore ? "ACTIVE" : "AWAITING DATA"' in js
+0030:     assert "Not exposed by lock" in js
+0031: 
+0032: def test_dashboard_js_has_confidence_bands_and_kickoff():
+0033:     js = (ROOT / "app" / "static" / "sportsq" / "app.js").read_text(
+0034:         encoding="utf-8"
+0035:     )
+0036:     assert "confidenceBand" in js
+0037:     assert "formatKickoff" in js
+0038:     assert "HIGH" in js
+0039:     assert "MEDIUM" in js
+
+==============================================================================
+PROTECTED HASH SNAPSHOT
+==============================================================================
+app/models.py | ab45e4e3f209424ed5decfcb46ff1a7e40b933383f34b3e0d19c403c1dee1571
+app/services/baseline_models.py | 26a07a2e798a09f0db218f732d8a29c2b576c33383c93c5739b92a5014213014
+app/services/ensemble_models.py | 762a6d1b7dff760c6f0026c158182493701cbe239335724051ed63b595d4e4bc
+app/services/feature_engineering.py | 244443c6ae96cb566645223eee44833d6a0d0ef21f3a529ea2f3413e92086081
+app/services/high_confidence_selector.py | 78af20c65ac59fb3eed6e57d2a2dde376b0c76f8d3727f076c113f6f8a7b90ce
+app/services/live_prediction_engine.py | c36a6d0f9089bb58c219a74fb1513e249949d363ec3bb6a5df4bc78c78e84192
+app/services/prediction_grading.py | 593300da77b912a9efa593f139f0652c2d263477ea164317969344ddbaa4f7e9
+app/services/social_content.py | 2678e8a9c000b077ecf495d727e509387985b774f27888787440c02d174f310c
+app/services/sportsq_intelligence.py | c769faef5dd721f333436f7dc1bac22921dbe62669df46d1f20b32c9ee1e7d4a
+app/services/sportsq_source_rights.py | cbda8ee8435219d5a8170c9a1a6608f887fcaf47e6e7c43809b003f2b49b5ecd
+fixtures rows: 2268
+live_predictions rows: 18
+sportsq_media_assets rows: 0
+sportsq_rights_verifications rows: 0
+sportsq_sources rows: 17
+holdout tables: []
+holdout files: []
+
+==============================================================================
+PROPOSED STAGE 5 ARCHITECTURE
+==============================================================================
+Candidate: LOCK-CONDITIONED POISSON SCORECALL
+- Training data: finished fixtures only, kickoff strictly before target kickoff.
+- No final holdout access.
+- Estimate home/away scoring rates with shrinkage toward competition averages.
+- Build independent Poisson score grid.
+- Restrict candidate scorelines to immutable locked 1X2 result (H/D/A).
+- Select highest-probability exact score within that locked outcome class.
+- Persist in separate sportsq_scorecall_locks table; never alter live_predictions.
+- One ScoreCall lock per live prediction/fixture; existing ScoreCall lock immutable.
+- SportsQ intelligence reads ScoreCall lock if present; otherwise keep safe placeholder.
+- Exact-score grading remains separate from existing 1X2 grading.

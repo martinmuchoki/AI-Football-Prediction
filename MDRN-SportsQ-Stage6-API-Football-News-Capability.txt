@@ -1,0 +1,124 @@
+
+==============================================================================
+MDRN SPORTSQ - STAGE 6 API-FOOTBALL NEWS CAPABILITY
+==============================================================================
+Local application version: 1.0.3-stage5-scorecall
+API base URL configured: https://v3.football.api-sports.io
+API key configured: YES (VALUE NOT DISPLAYED)
+Probe league: 39
+Probe season: 2026
+
+==============================================================================
+1. LEAGUE / SEASON COVERAGE
+==============================================================================
+{
+  "endpoint": "/leagues",
+  "params": {
+    "id": 39,
+    "season": 2026
+  },
+  "url_without_key": "https://v3.football.api-sports.io/leagues?id=39&season=2026",
+  "http_status": 200,
+  "rate_limit_headers": {}
+}
+{
+  "get": "leagues",
+  "parameters": {
+    "id": "39",
+    "season": "2026"
+  },
+  "errors": {
+    "plan": "Free plans do not have access to this season, try from 2022 to 2024."
+  },
+  "results": 0,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response_type": "list",
+  "response_count": 0
+}
+coverage.injuries = None
+coverage.fixtures.lineups = None
+
+==============================================================================
+2. LEAGUE-SEASON INJURY / SUSPENSION RESPONSE
+==============================================================================
+{
+  "endpoint": "/injuries",
+  "params": {
+    "league": 39,
+    "season": 2026
+  },
+  "url_without_key": "https://v3.football.api-sports.io/injuries?league=39&season=2026",
+  "http_status": 200,
+  "rate_limit_headers": {}
+}
+{
+  "get": "injuries",
+  "parameters": {
+    "league": "39",
+    "season": "2026"
+  },
+  "errors": {
+    "plan": "Free plans do not have access to this season, try from 2022 to 2024."
+  },
+  "results": 0,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response_type": "list",
+  "response_count": 0
+}
+
+==============================================================================
+3. UPCOMING API-FOOTBALL FIXTURES
+==============================================================================
+{
+  "endpoint": "/fixtures",
+  "params": {
+    "league": 39,
+    "season": 2026,
+    "next": 10
+  },
+  "url_without_key": "https://v3.football.api-sports.io/fixtures?league=39&season=2026&next=10",
+  "http_status": 200,
+  "rate_limit_headers": {}
+}
+{
+  "get": "fixtures",
+  "parameters": {
+    "league": "39",
+    "season": "2026",
+    "next": "10"
+  },
+  "errors": {
+    "plan": "Free plans do not have access to this season, try from 2022 to 2024."
+  },
+  "results": 0,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response_type": "list",
+  "response_count": 0
+}
+
+==============================================================================
+4. FIXTURE-SPECIFIC INJURIES / SUSPENSIONS
+==============================================================================
+
+==============================================================================
+5. FIXTURE LINEUPS
+==============================================================================
+
+==============================================================================
+6. STAGE 6 CAPABILITY DECISION
+==============================================================================
+injuries_coverage_supported=False
+lineups_coverage_supported=False
+Local database modified: NO
+Application source modified: NO
+API credential displayed: NO
+Recommendation: do not enable automated injury ingestion until coverage is confirmed for the target league/season.

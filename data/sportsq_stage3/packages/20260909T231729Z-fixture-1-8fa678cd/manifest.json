@@ -1,0 +1,68 @@
+{
+  "assets": [
+    {
+      "filename": "1-AFC-Bournemouth-vs-Brentford-prediction-square.png",
+      "format": "square",
+      "kind": "MATCH_PREDICTION",
+      "media_type": "image/png"
+    },
+    {
+      "filename": "1-AFC-Bournemouth-vs-Brentford-story.png",
+      "format": "vertical",
+      "kind": "VERTICAL_STORY_REEL",
+      "media_type": "image/png"
+    },
+    {
+      "filename": "1-AFC-Bournemouth-vs-Brentford-caption.txt",
+      "kind": "CAPTION",
+      "media_type": "text/plain"
+    },
+    {
+      "filename": "1-AFC-Bournemouth-vs-Brentford-article.txt",
+      "kind": "ARTICLE",
+      "media_type": "text/plain"
+    },
+    {
+      "filename": "results-accuracy.png",
+      "kind": "RESULTS_ACCURACY",
+      "media_type": "image/png"
+    },
+    {
+      "filename": "sportsq-static-story.mp4",
+      "kind": "STATIC_STORY_VIDEO",
+      "media_type": "video/mp4",
+      "motion_policy": "STATIC_CARDS_ONLY"
+    }
+  ],
+  "brand": "MDRN SportsQ",
+  "breaking_news": {
+    "created": false,
+    "output": null,
+    "reason": "NO_VERIFIED_STRUCTURED_TEAM_NEWS"
+  },
+  "competition_id": 2,
+  "created_at": "2026-09-09T23:17:31.729226+00:00",
+  "fixture_id": 1,
+  "package_id": "20260909T231729Z-fixture-1-8fa678cd",
+  "prediction_count": 1,
+  "rights": {
+    "attribution_is_not_license": true,
+    "licensed_clip_metadata_required": true,
+    "third_party_clips_used": false,
+    "unverified_clip_insertion_allowed": false
+  },
+  "safety": {
+    "historical_holdout_touched": false,
+    "post_kickoff_features_used": false,
+    "prediction_engine_rewritten": false,
+    "prediction_locks_modified": false,
+    "prediction_rows_modified": false
+  },
+  "season": 2026,
+  "static_video": {
+    "created": true,
+    "output": "D:\\Mprojet\\AI-Football-Prediction-v0.1.0-Phase1-Source\\AI-Football-Prediction-v0.1.0-Phase1\\data\\sportsq_stage3\\packages\\20260909T231729Z-fixture-1-8fa678cd\\sportsq-static-story.mp4",
+    "reason": null
+  },
+  "status": "success"
+}

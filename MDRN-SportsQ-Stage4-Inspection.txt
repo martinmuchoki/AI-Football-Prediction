@@ -1,0 +1,211 @@
+
+==============================================================================
+MDRN SPORTSQ - STAGE 4 READ-ONLY INSPECTION
+==============================================================================
+APP VERSION
+1.0.1-stage3-gui-polish
+
+==============================================================================
+STAGE 4 RESOURCE FOLDER
+==============================================================================
+Resource root exists: True
+resources\stage4\docs\INTEGRATION_NOTES.md | 769 bytes
+resources\stage4\docs\SOURCE_VALIDATION_NOTES.md | 1065 bytes
+resources\stage4\docs\STAGE4_COMPLETION_GATE.md | 1437 bytes
+resources\stage4\manifest.json | 764 bytes
+resources\stage4\policies\rights_policy.json | 1181 bytes
+resources\stage4\policies\source_trust_policy.json | 583 bytes
+resources\stage4\README.md | 1391 bytes
+resources\stage4\schemas\media_asset.schema.json | 2066 bytes
+resources\stage4\schemas\rights_verification.schema.json | 1174 bytes
+resources\stage4\schemas\source_record.schema.json | 1016 bytes
+resources\stage4\seed\media_asset_register_template.csv | 269 bytes
+resources\stage4\seed\official_football_sources.csv | 2151 bytes
+resources\stage4\seed\official_football_sources.json | 3684 bytes
+resources\stage4\seed\reusable_media_sources.csv | 2963 bytes
+resources\stage4\seed\reusable_media_sources.json | 4933 bytes
+
+==============================================================================
+MODEL / DATABASE CONVENTIONS
+==============================================================================
+models.py exists: True
+class : 16
+Base: 17
+Column(: 0
+mapped_column: 263
+relationship(: 9
+__tablename__: 16
+LivePrediction: 2
+Fixture: 4
+Prediction: 2
+
+Database dialect: sqlite
+Table count: 16
+- data_sources: 16 columns | PK=['id']
+- fixture_reconciliations: 21 columns | PK=['id']
+- fixtures: 32 columns | PK=['id']
+- league_seasons: 11 columns | PK=['id']
+- live_predictions: 28 columns | PK=['id']
+- market_safety_alert_deliveries: 13 columns | PK=['id']
+- market_safety_events: 21 columns | PK=['id']
+- market_safety_incidents: 18 columns | PK=['id']
+- market_safety_sla_alerts: 16 columns | PK=['id']
+- odds_snapshots: 18 columns | PK=['id']
+- source_observations: 11 columns | PK=['id']
+- source_policies: 13 columns | PK=['id']
+- source_snapshots: 13 columns | PK=['id']
+- sync_runs: 12 columns | PK=['id']
+- teams: 9 columns | PK=['id']
+- web_collection_targets: 10 columns | PK=['id']
+
+==============================================================================
+MIGRATION / SCHEMA TOOLING
+==============================================================================
+alembic.ini: False
+alembic: False
+migrations: False
+
+==============================================================================
+STAGE 3 INTEGRATION POINTS
+==============================================================================
+
+FILE: app/services/sportsq_stage3.py
+exists=True
+  generate_content_package: 1
+  generate_fixture_content_package: 1
+  render_prediction_card: 5
+  render_news_card: 3
+  third_party: 3
+  rights: 5
+  licen: 6
+
+FILE: app/services/social_content.py
+exists=True
+  render_prediction_card: 2
+
+FILE: app/services/sportsq_intelligence.py
+exists=True
+
+FILE: app/main.py
+exists=True
+  generate_content_package: 2
+  generate_fixture_content_package: 2
+  StaticFiles: 5
+  /api/v1/sportsq/stage3: 9
+
+==============================================================================
+CALLABLE INVENTORY
+==============================================================================
+
+app.services.sportsq_stage3
+  approve_queue_item(queue_id: 'str', *, content_root: 'str | Path | None' = None) -> 'dict[str, Any]'
+  cancel_queue_item(queue_id: 'str', *, content_root: 'str | Path | None' = None) -> 'dict[str, Any]'
+  content_preview(session: 'Session', *, competition_id: 'int' = 2, season: 'int' = 2026, limit: 'int' = 5) -> 'dict[str, Any]'
+  enqueue_package(package_id: 'str', *, platforms: 'list[str]', scheduled_for: 'str | None' = None, content_root: 'str | Path | None' = None) -> 'dict[str, Any]'
+  generate_content_package(session: 'Session', *, competition_id: 'int' = 2, season: 'int' = 2026, limit: 'int' = 3, content_root: 'str | Path | None' = None) -> 'dict[str, Any]'
+  generate_fixture_content_package(session: 'Session', *, fixture_id: 'int', competition_id: 'int' = 2, season: 'int' = 2026, content_root: 'str | Path | None' = None) -> 'dict[str, Any]'
+  list_queue(*, content_root: 'str | Path | None' = None) -> 'list[dict[str, Any]]'
+  platform_readiness() -> 'dict[str, Any]'
+  process_queue_item(queue_id: 'str', *, content_root: 'str | Path | None' = None) -> 'dict[str, Any]'
+  render_accuracy_card(accuracy: 'dict[str, Any]', output_path: 'str | Path') -> 'Path'
+  render_news_card(item: 'dict[str, Any]', output_path: 'str | Path') -> 'dict[str, Any]'
+  render_prediction_card(item: 'dict[str, Any]', output_path: 'str | Path', *, vertical: 'bool' = False) -> 'Path'
+  stage3_status(session: 'Session') -> 'dict[str, Any]'
+
+app.services.social_content
+  generate_social_package(session: 'Session', *, competition_id: 'int', season: 'int', output_dir: 'str | Path', high_confidence_only: 'bool' = True, make_video: 'bool' = True) -> 'dict[str, Any]'
+  render_prediction_card(row: 'dict[str, Any]', output_path: 'str | Path') -> 'Path'
+
+app.services.sportsq_intelligence
+  get_sportsq_intelligence(session: 'Session', *, fixture_id: 'int', competition_id: 'int' = 2, season: 'int' = 2026) -> 'dict[str, Any]'
+  list_sportsq_intelligence(session: 'Session', *, competition_id: 'int' = 2, season: 'int' = 2026, limit: 'int' = 100) -> 'dict[str, Any]'
+  sportsq_accuracy_summary(session: 'Session', *, competition_id: 'int' = 2, season: 'int' = 2026) -> 'dict[str, Any]'
+  sportsq_capabilities(session: 'Session') -> 'dict[str, Any]'
+
+==============================================================================
+SPORTSQ ROUTES
+==============================================================================
+['GET'] /api/v1/sportsq/intelligence
+['GET'] /api/v1/sportsq/intelligence/{fixture_id}
+['GET'] /api/v1/sportsq/form/{fixture_id}
+['GET'] /api/v1/sportsq/news-impact/{fixture_id}
+['GET'] /api/v1/sportsq/accuracy
+['GET'] /api/v1/sportsq/capabilities
+[] /sportsq/static
+[] /sportsq/content
+['GET'] /sportsq
+['GET'] /api/v1/sportsq/stage3/status
+['GET'] /api/v1/sportsq/stage3/preview
+['POST'] /api/v1/sportsq/stage3/generate
+['GET'] /api/v1/sportsq/stage3/queue
+['POST'] /api/v1/sportsq/stage3/queue
+['POST'] /api/v1/sportsq/stage3/queue/{queue_id}/approve
+['POST'] /api/v1/sportsq/stage3/queue/{queue_id}/cancel
+['POST'] /api/v1/sportsq/stage3/queue/{queue_id}/process
+['POST'] /api/v1/sportsq/stage3/generate/{fixture_id}
+
+==============================================================================
+RELEVANT TESTS
+==============================================================================
+test_cli_live_prediction_command.py
+test_cli_market_residual_command.py
+test_fixture_reconciliation.py
+test_live_prediction_engine.py
+test_market_refresh.py
+test_market_reliability.py
+test_market_residual.py
+test_market_safety.py
+test_market_safety_alerts.py
+test_market_safety_events.py
+test_market_safety_incidents.py
+test_market_safety_telegram.py
+test_market_scheduler_reconciliation.py
+test_prediction_grading.py
+test_social_content.py
+test_source_health_monitor.py
+test_source_policy.py
+test_source_registry.py
+test_sportsq_intelligence.py
+test_sportsq_stage3.py
+test_sportsq_stage3_gui_polish.py
+
+==============================================================================
+PROTECTED STATE SNAPSHOT
+==============================================================================
+app/models.py | ab45e4e3f209424ed5decfcb46ff1a7e40b933383f34b3e0d19c403c1dee1571
+app/services/baseline_models.py | 26a07a2e798a09f0db218f732d8a29c2b576c33383c93c5739b92a5014213014
+app/services/ensemble_models.py | 762a6d1b7dff760c6f0026c158182493701cbe239335724051ed63b595d4e4bc
+app/services/feature_engineering.py | 244443c6ae96cb566645223eee44833d6a0d0ef21f3a529ea2f3413e92086081
+app/services/high_confidence_selector.py | 78af20c65ac59fb3eed6e57d2a2dde376b0c76f8d3727f076c113f6f8a7b90ce
+app/services/live_prediction_engine.py | c36a6d0f9089bb58c219a74fb1513e249949d363ec3bb6a5df4bc78c78e84192
+app/services/prediction_grading.py | 593300da77b912a9efa593f139f0652c2d263477ea164317969344ddbaa4f7e9
+app/services/social_content.py | 2678e8a9c000b077ecf495d727e509387985b774f27888787440c02d174f310c
+app/services/sportsq_intelligence.py | c769faef5dd721f333436f7dc1bac22921dbe62669df46d1f20b32c9ee1e7d4a
+live_predictions rows: 18
+holdout tables: []
+holdout files: []
+
+==============================================================================
+STAGE 4 RESOURCE PARSE VALIDATION
+==============================================================================
+OK JSON: resources\stage4\manifest.json
+OK JSON: resources\stage4\policies\rights_policy.json
+OK JSON: resources\stage4\policies\source_trust_policy.json
+OK JSON: resources\stage4\schemas\media_asset.schema.json
+OK JSON: resources\stage4\schemas\rights_verification.schema.json
+OK JSON: resources\stage4\schemas\source_record.schema.json
+OK JSON: resources\stage4\seed\official_football_sources.json
+OK JSON: resources\stage4\seed\reusable_media_sources.json
+
+==============================================================================
+IMPLEMENTATION RECOMMENDATION
+==============================================================================
+Recommended first coding patch (no network downloads):
+1. SourceRecord persistence/model.
+2. MediaAsset persistence/model.
+3. RightsVerification persistence/model.
+4. Fail-closed assert_media_reusable(asset) service.
+5. Seed importer from resources/stage4/seed.
+6. Read-only source/rights API endpoints.
+7. Focused tests + complete regression.
+8. Immutable-state guard before/after/final.

@@ -1,0 +1,962 @@
+
+==============================================================================
+MDRN SPORTSQ - STAGE 6 TARGETED HISTORICAL LINEUP PROBE
+==============================================================================
+Local application version: 1.0.3-stage5-scorecall
+Fixture ID: 1208021
+API key configured: YES (VALUE NOT DISPLAYED)
+
+==============================================================================
+1. FIXTURE DETAILS
+==============================================================================
+{
+  "endpoint": "/fixtures",
+  "params": {
+    "id": 1208021
+  },
+  "url_without_key": "https://v3.football.api-sports.io/fixtures?id=1208021",
+  "http_status": 200
+}
+{
+  "get": "fixtures",
+  "parameters": {
+    "id": "1208021"
+  },
+  "errors": [],
+  "results": 1,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response_type": "list",
+  "response_count": 1,
+  "first_item_paths": [
+    "events",
+    "events[].assist",
+    "events[].assist.id",
+    "events[].assist.name",
+    "events[].comments",
+    "events[].detail",
+    "events[].player",
+    "events[].player.id",
+    "events[].player.name",
+    "events[].team",
+    "events[].team.id",
+    "events[].team.logo",
+    "events[].team.name",
+    "events[].time",
+    "events[].time.elapsed",
+    "events[].time.extra",
+    "events[].type",
+    "fixture",
+    "fixture.date",
+    "fixture.id",
+    "fixture.periods",
+    "fixture.periods.first",
+    "fixture.periods.second",
+    "fixture.referee",
+    "fixture.status",
+    "fixture.status.elapsed",
+    "fixture.status.extra",
+    "fixture.status.long",
+    "fixture.status.short",
+    "fixture.timestamp",
+    "fixture.timezone",
+    "fixture.venue",
+    "fixture.venue.city",
+    "fixture.venue.id",
+    "fixture.venue.name",
+    "goals",
+    "goals.away",
+    "goals.home",
+    "league",
+    "league.country",
+    "league.flag",
+    "league.id",
+    "league.logo",
+    "league.name",
+    "league.round",
+    "league.season",
+    "league.standings",
+    "lineups",
+    "lineups[].coach",
+    "lineups[].coach.id",
+    "lineups[].coach.name",
+    "lineups[].coach.photo",
+    "lineups[].formation",
+    "lineups[].startXI",
+    "lineups[].startXI[].player",
+    "lineups[].startXI[].player.grid",
+    "lineups[].startXI[].player.id",
+    "lineups[].startXI[].player.name",
+    "lineups[].startXI[].player.number",
+    "lineups[].startXI[].player.pos",
+    "lineups[].substitutes",
+    "lineups[].substitutes[].player",
+    "lineups[].substitutes[].player.grid",
+    "lineups[].substitutes[].player.id",
+    "lineups[].substitutes[].player.name",
+    "lineups[].substitutes[].player.number",
+    "lineups[].substitutes[].player.pos",
+    "lineups[].team",
+    "lineups[].team.colors",
+    "lineups[].team.colors.goalkeeper",
+    "lineups[].team.colors.goalkeeper.border",
+    "lineups[].team.colors.goalkeeper.number",
+    "lineups[].team.colors.goalkeeper.primary",
+    "lineups[].team.colors.player",
+    "lineups[].team.colors.player.border",
+    "lineups[].team.colors.player.number",
+    "lineups[].team.colors.player.primary",
+    "lineups[].team.id",
+    "lineups[].team.logo",
+    "lineups[].team.name",
+    "players",
+    "players[].players",
+    "players[].players[].player",
+    "players[].players[].player.id",
+    "players[].players[].player.name",
+    "players[].players[].player.photo",
+    "players[].players[].statistics",
+    "players[].players[].statistics[].cards",
+    "players[].players[].statistics[].cards.red",
+    "players[].players[].statistics[].cards.yellow",
+    "players[].players[].statistics[].dribbles",
+    "players[].players[].statistics[].dribbles.attempts",
+    "players[].players[].statistics[].dribbles.past",
+    "players[].players[].statistics[].dribbles.success",
+    "players[].players[].statistics[].duels",
+    "players[].players[].statistics[].duels.total",
+    "players[].players[].statistics[].duels.won",
+    "players[].players[].statistics[].fouls",
+    "players[].players[].statistics[].fouls.committed",
+    "players[].players[].statistics[].fouls.drawn",
+    "players[].players[].statistics[].games",
+    "players[].players[].statistics[].games.captain",
+    "players[].players[].statistics[].games.minutes",
+    "players[].players[].statistics[].games.number",
+    "players[].players[].statistics[].games.position",
+    "players[].players[].statistics[].games.rating",
+    "players[].players[].statistics[].games.substitute",
+    "players[].players[].statistics[].goals",
+    "players[].players[].statistics[].goals.assists",
+    "players[].players[].statistics[].goals.conceded",
+    "players[].players[].statistics[].goals.saves",
+    "players[].players[].statistics[].goals.total",
+    "players[].players[].statistics[].offsides",
+    "players[].players[].statistics[].passes",
+    "players[].players[].statistics[].passes.accuracy",
+    "players[].players[].statistics[].passes.key",
+    "players[].players[].statistics[].passes.total",
+    "players[].players[].statistics[].penalty",
+    "players[].players[].statistics[].penalty.commited",
+    "players[].players[].statistics[].penalty.missed",
+    "players[].players[].statistics[].penalty.saved",
+    "players[].players[].statistics[].penalty.scored",
+    "players[].players[].statistics[].penalty.won",
+    "players[].players[].statistics[].shots",
+    "players[].players[].statistics[].shots.on",
+    "players[].players[].statistics[].shots.total",
+    "players[].players[].statistics[].tackles",
+    "players[].players[].statistics[].tackles.blocks",
+    "players[].players[].statistics[].tackles.interceptions",
+    "players[].players[].statistics[].tackles.total",
+    "players[].team",
+    "players[].team.id",
+    "players[].team.logo",
+    "players[].team.name",
+    "players[].team.update",
+    "score",
+    "score.extratime",
+    "score.extratime.away",
+    "score.extratime.home",
+    "score.fulltime",
+    "score.fulltime.away",
+    "score.fulltime.home",
+    "score.halftime",
+    "score.halftime.away",
+    "score.halftime.home",
+    "score.penalty",
+    "score.penalty.away",
+    "score.penalty.home",
+    "statistics",
+    "statistics[].statistics",
+    "statistics[].statistics[].type",
+    "statistics[].statistics[].value",
+    "statistics[].team",
+    "statistics[].team.id",
+    "statistics[].team.logo",
+    "statistics[].team.name",
+    "teams",
+    "teams.away",
+    "teams.away.id",
+    "teams.away.logo",
+    "teams.away.name",
+    "teams.away.winner",
+    "teams.home",
+    "teams.home.id",
+    "teams.home.logo",
+    "teams.home.name",
+    "teams.home.winner"
+  ]
+}
+FIXTURE SUMMARY:
+{
+  "fixture": {
+    "id": 1208021,
+    "date": "2024-08-16T19:00:00+00:00",
+    "status": {
+      "long": "Match Finished",
+      "short": "FT",
+      "elapsed": 90,
+      "extra": null
+    }
+  },
+  "league": {
+    "id": 39,
+    "name": "Premier League",
+    "season": 2024
+  },
+  "home": "Manchester United",
+  "away": "Fulham"
+}
+
+==============================================================================
+2. FIXTURE-SPECIFIC INJURIES / SUSPENSIONS
+==============================================================================
+{
+  "endpoint": "/injuries",
+  "params": {
+    "fixture": 1208021
+  },
+  "url_without_key": "https://v3.football.api-sports.io/injuries?fixture=1208021",
+  "http_status": 200
+}
+{
+  "get": "injuries",
+  "parameters": {
+    "fixture": "1208021"
+  },
+  "errors": [],
+  "results": 6,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response_type": "list",
+  "response_count": 6,
+  "first_item_paths": [
+    "fixture",
+    "fixture.date",
+    "fixture.id",
+    "fixture.timestamp",
+    "fixture.timezone",
+    "league",
+    "league.country",
+    "league.flag",
+    "league.id",
+    "league.logo",
+    "league.name",
+    "league.season",
+    "player",
+    "player.id",
+    "player.name",
+    "player.photo",
+    "player.reason",
+    "player.type",
+    "team",
+    "team.id",
+    "team.logo",
+    "team.name"
+  ]
+}
+INJURY TYPE COUNTS:
+{
+  "Missing Fixture": 5,
+  "Questionable": 1
+}
+INJURY REASON COUNTS:
+{
+  "Ankle Injury": 2,
+  "Muscle Injury": 1,
+  "Knee Injury": 1,
+  "Health problems": 1,
+  "Injury": 1
+}
+
+INJURY ITEM 1
+{
+  "player": {
+    "id": 153434,
+    "name": "W. Fish",
+    "photo": "https://media.api-sports.io/football/players/153434.png",
+    "type": "Missing Fixture",
+    "reason": "Ankle Injury"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+INJURY ITEM 2
+{
+  "player": {
+    "id": 288006,
+    "name": "R. Hojlund",
+    "photo": "https://media.api-sports.io/football/players/288006.png",
+    "type": "Missing Fixture",
+    "reason": "Muscle Injury"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+INJURY ITEM 3
+{
+  "player": {
+    "id": 37145,
+    "name": "T. Malacia",
+    "photo": "https://media.api-sports.io/football/players/37145.png",
+    "type": "Missing Fixture",
+    "reason": "Knee Injury"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+INJURY ITEM 4
+{
+  "player": {
+    "id": 891,
+    "name": "L. Shaw",
+    "photo": "https://media.api-sports.io/football/players/891.png",
+    "type": "Missing Fixture",
+    "reason": "Health problems"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+INJURY ITEM 5
+{
+  "player": {
+    "id": 342970,
+    "name": "L. Yoro",
+    "photo": "https://media.api-sports.io/football/players/342970.png",
+    "type": "Missing Fixture",
+    "reason": "Ankle Injury"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+INJURY ITEM 6
+{
+  "player": {
+    "id": 889,
+    "name": "V. Lindelof",
+    "photo": "https://media.api-sports.io/football/players/889.png",
+    "type": "Questionable",
+    "reason": "Injury"
+  },
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png"
+  },
+  "fixture": {
+    "id": 1208021,
+    "timezone": "UTC",
+    "date": "2024-08-16T19:00:00+00:00",
+    "timestamp": 1723834800
+  },
+  "league": {
+    "id": 39,
+    "season": 2024,
+    "name": "Premier League",
+    "country": "England",
+    "logo": "https://media.api-sports.io/football/leagues/39.png",
+    "flag": "https://media.api-sports.io/flags/gb-eng.svg"
+  }
+}
+
+==============================================================================
+3. FIXTURE LINEUPS
+==============================================================================
+{
+  "endpoint": "/fixtures/lineups",
+  "params": {
+    "fixture": 1208021
+  },
+  "url_without_key": "https://v3.football.api-sports.io/fixtures/lineups?fixture=1208021",
+  "http_status": 200
+}
+{
+  "get": "fixtures/lineups",
+  "parameters": {
+    "fixture": "1208021"
+  },
+  "errors": [],
+  "results": 2,
+  "paging": {
+    "current": 1,
+    "total": 1
+  },
+  "response_type": "list",
+  "response_count": 2,
+  "first_item_paths": [
+    "coach",
+    "coach.id",
+    "coach.name",
+    "coach.photo",
+    "formation",
+    "startXI",
+    "startXI[].player",
+    "startXI[].player.grid",
+    "startXI[].player.id",
+    "startXI[].player.name",
+    "startXI[].player.number",
+    "startXI[].player.pos",
+    "substitutes",
+    "substitutes[].player",
+    "substitutes[].player.grid",
+    "substitutes[].player.id",
+    "substitutes[].player.name",
+    "substitutes[].player.number",
+    "substitutes[].player.pos",
+    "team",
+    "team.colors",
+    "team.colors.goalkeeper",
+    "team.colors.goalkeeper.border",
+    "team.colors.goalkeeper.number",
+    "team.colors.goalkeeper.primary",
+    "team.colors.player",
+    "team.colors.player.border",
+    "team.colors.player.number",
+    "team.colors.player.primary",
+    "team.id",
+    "team.logo",
+    "team.name"
+  ]
+}
+
+LINEUP TEAM 1
+{
+  "team": {
+    "id": 33,
+    "name": "Manchester United",
+    "logo": "https://media.api-sports.io/football/teams/33.png",
+    "colors": {
+      "player": {
+        "primary": "ea0000",
+        "number": "ffffff",
+        "border": "ea0000"
+      },
+      "goalkeeper": {
+        "primary": "000000",
+        "number": "ffffff",
+        "border": "000000"
+      }
+    }
+  },
+  "formation": "4-2-3-1",
+  "coach": {
+    "id": 1993,
+    "name": "E. ten Hag",
+    "photo": "https://media.api-sports.io/football/coachs/1993.png"
+  },
+  "startXI": [
+    {
+      "player": {
+        "id": 526,
+        "name": "A. Onana",
+        "number": 24,
+        "pos": "G",
+        "grid": "1:1"
+      }
+    },
+    {
+      "player": {
+        "id": 545,
+        "name": "N. Mazraoui",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:4"
+      }
+    },
+    {
+      "player": {
+        "id": 2935,
+        "name": "H. Maguire",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      }
+    },
+    {
+      "player": {
+        "id": 2467,
+        "name": "Lisandro Mart\u00ednez",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:2"
+      }
+    },
+    {
+      "player": {
+        "id": 886,
+        "name": "Diogo Dalot",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:1"
+      }
+    },
+    {
+      "player": {
+        "id": 747,
+        "name": "Casemiro",
+        "number": 18,
+        "pos": "M",
+        "grid": "3:2"
+      }
+    },
+    {
+      "player": {
+        "id": 284322,
+        "name": "K. Mainoo",
+        "number": 37,
+        "pos": "M",
+        "grid": "3:1"
+      }
+    },
+    {
+      "player": {
+        "id": 157997,
+        "name": "A. Diallo",
+        "number": 16,
+        "pos": "M",
+        "grid": "4:3"
+      }
+    },
+    {
+      "player": {
+        "id": 19220,
+        "name": "M. Mount",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:2"
+      }
+    },
+    {
+      "player": {
+        "id": 909,
+        "name": "M. Rashford",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      }
+    },
+    {
+      "player": {
+        "id": 1485,
+        "name": "Bruno Fernandes",
+        "number": 8,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    }
+  ],
+  "substitutes": [
+    {
+      "player": {
+        "id": 284324,
+        "name": "A. Garnacho",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 70100,
+        "name": "J. Zirkzee",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 532,
+        "name": "M. de Ligt",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 18772,
+        "name": "J. Evans",
+        "number": 35,
+        "pos": "D",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 903,
+        "name": "S. McTominay",
+        "number": 39,
+        "pos": "M",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 174,
+        "name": "C. Eriksen",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 284400,
+        "name": "T. Collyer",
+        "number": 43,
+        "pos": "M",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 9971,
+        "name": "Antony",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 50132,
+        "name": "A. Bay\u0131nd\u0131r",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      }
+    }
+  ]
+}
+
+LINEUP TEAM 2
+{
+  "team": {
+    "id": 36,
+    "name": "Fulham",
+    "logo": "https://media.api-sports.io/football/teams/36.png",
+    "colors": {
+      "player": {
+        "primary": "ffffff",
+        "number": "000000",
+        "border": "ffffff"
+      },
+      "goalkeeper": {
+        "primary": "d01e2a",
+        "number": "ffffff",
+        "border": "d01e2a"
+      }
+    }
+  },
+  "formation": "4-2-3-1",
+  "coach": {
+    "id": 10,
+    "name": "Marco Silva",
+    "photo": "https://media.api-sports.io/football/coachs/10.png"
+  },
+  "startXI": [
+    {
+      "player": {
+        "id": 1438,
+        "name": "B. Leno",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      }
+    },
+    {
+      "player": {
+        "id": 657,
+        "name": "K. Tete",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      }
+    },
+    {
+      "player": {
+        "id": 18814,
+        "name": "I. Diop",
+        "number": 31,
+        "pos": "D",
+        "grid": "2:3"
+      }
+    },
+    {
+      "player": {
+        "id": 152967,
+        "name": "C. Bassey",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
+      }
+    },
+    {
+      "player": {
+        "id": 19549,
+        "name": "A. Robinson",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:1"
+      }
+    },
+    {
+      "player": {
+        "id": 899,
+        "name": "Andreas Pereira",
+        "number": 18,
+        "pos": "M",
+        "grid": "3:2"
+      }
+    },
+    {
+      "player": {
+        "id": 2823,
+        "name": "S. Luki\u0107",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:1"
+      }
+    },
+    {
+      "player": {
+        "id": 18753,
+        "name": "Adama Traor\u00e9",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:3"
+      }
+    },
+    {
+      "player": {
+        "id": 1161,
+        "name": "E. Smith Rowe",
+        "number": 32,
+        "pos": "M",
+        "grid": "4:2"
+      }
+    },
+    {
+      "player": {
+        "id": 1455,
+        "name": "A. Iwobi",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:1"
+      }
+    },
+    {
+      "player": {
+        "id": 195106,
+        "name": "Rodrigo Muniz",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    }
+  ],
+  "substitutes": [
+    {
+      "player": {
+        "id": 19025,
+        "name": "T. Cairney",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 2887,
+        "name": "R. Jim\u00e9nez",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 19221,
+        "name": "H. Wilson",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 191971,
+        "name": "J. Stansfield",
+        "number": 28,
+        "pos": "F",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 19480,
+        "name": "H. Reed",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 19312,
+        "name": "S. Benda",
+        "number": 23,
+        "pos": "G",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 131,
+        "name": "Jorge Cuenca",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 2920,
+        "name": "T. Castagne",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      }
+    },
+    {
+      "player": {
+        "id": 389315,
+        "name": "J. King",
+        "number": 24,
+        "pos": "M",
+        "grid": null
+      }
+    }
+  ]
+}
+
+==============================================================================
+4. STAGE 6 IMPLEMENTATION GATE
+==============================================================================
+fixture_lookup_ok=True
+fixture_injuries_endpoint_ok=True
+fixture_injury_item_count=6
+fixture_lineups_endpoint_ok=True
+fixture_lineup_team_count=2
+2026_live_ingestion_enabled=FALSE
+database_modified=FALSE
+application_source_modified=FALSE
+api_key_displayed=FALSE
+DECISION=STAGE6_PROVIDER_SCHEMA_VALIDATED_FOR_HISTORICAL_ADAPTER
+Next implementation may add provider-neutral News Impact persistence, API-Football historical adapter parsing, verification states, temporal cutoff enforcement, and read-only intelligence exposure while leaving 2026 live ingestion disabled.

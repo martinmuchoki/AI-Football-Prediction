@@ -1,0 +1,1419 @@
+﻿
+======================================================================
+VERSION
+======================================================================
+0.11.0-reliability-production-hardening
+
+======================================================================
+MODEL CLASS NAMES
+======================================================================
+Team
+Fixture
+LivePrediction
+OddsSnapshot
+FixtureReconciliation
+
+======================================================================
+DATABASE TABLES
+======================================================================
+data_sources
+fixture_reconciliations
+fixtures
+league_seasons
+live_predictions
+market_safety_alert_deliveries
+market_safety_events
+market_safety_incidents
+market_safety_sla_alerts
+odds_snapshots
+source_observations
+source_policies
+source_snapshots
+sync_runs
+teams
+web_collection_targets
+
+======================================================================
+PREDICTION / INTELLIGENCE TABLE SCHEMAS
+======================================================================
+
+[fixture_reconciliations]
+id | INTEGER | nullable=False
+competition_id | BIGINT | nullable=False
+season | INTEGER | nullable=False
+canonical_key | VARCHAR(320) | nullable=False
+primary_source | VARCHAR(80) | nullable=False
+secondary_source | VARCHAR(80) | nullable=False
+primary_fixture_id | BIGINT | nullable=True
+secondary_entity_key | VARCHAR(320) | nullable=True
+home_team | VARCHAR(200) | nullable=False
+away_team | VARCHAR(200) | nullable=False
+primary_date | VARCHAR(10) | nullable=True
+secondary_date | VARCHAR(10) | nullable=True
+date_status | VARCHAR(30) | nullable=False
+primary_finished | BOOLEAN | nullable=False
+primary_score | VARCHAR(30) | nullable=True
+secondary_score | VARCHAR(30) | nullable=True
+result_status | VARCHAR(30) | nullable=False
+overall_status | VARCHAR(30) | nullable=False
+checked_at | DATETIME | nullable=False
+created_at | DATETIME | nullable=False
+updated_at | DATETIME | nullable=False
+  UNIQUE: ['competition_id', 'season', 'canonical_key', 'primary_source', 'secondary_source']
+  INDEX: ix_fixture_reconciliation_checked ['checked_at'] unique=0
+  INDEX: ix_fixture_reconciliation_competition ['competition_id', 'season'] unique=0
+  INDEX: ix_fixture_reconciliation_status ['overall_status'] unique=0
+
+[fixtures]
+id | INTEGER | nullable=False
+provider | VARCHAR(40) | nullable=False
+provider_fixture_id | BIGINT | nullable=False
+league_season_id | INTEGER | nullable=False
+home_team_id | INTEGER | nullable=False
+away_team_id | INTEGER | nullable=False
+kickoff_utc | DATETIME | nullable=False
+timezone | VARCHAR(64) | nullable=True
+round_name | VARCHAR(120) | nullable=True
+referee | VARCHAR(200) | nullable=True
+venue_id | BIGINT | nullable=True
+venue_name | VARCHAR(200) | nullable=True
+venue_city | VARCHAR(160) | nullable=True
+status_short | VARCHAR(20) | nullable=False
+status_long | VARCHAR(80) | nullable=True
+elapsed | INTEGER | nullable=True
+home_goals | INTEGER | nullable=True
+away_goals | INTEGER | nullable=True
+halftime_home | INTEGER | nullable=True
+halftime_away | INTEGER | nullable=True
+fulltime_home | INTEGER | nullable=True
+fulltime_away | INTEGER | nullable=True
+extratime_home | INTEGER | nullable=True
+extratime_away | INTEGER | nullable=True
+penalty_home | INTEGER | nullable=True
+penalty_away | INTEGER | nullable=True
+is_finished | BOOLEAN | nullable=False
+result_1x2 | VARCHAR(8) | nullable=True
+raw_json | TEXT | nullable=False
+provider_updated_at | DATETIME | nullable=True
+created_at | DATETIME | nullable=False
+updated_at | DATETIME | nullable=False
+  UNIQUE: ['provider', 'provider_fixture_id']
+  INDEX: ix_fixtures_finished ['is_finished'] unique=0
+  INDEX: ix_fixtures_kickoff ['kickoff_utc'] unique=0
+  INDEX: ix_fixtures_status ['status_short'] unique=0
+
+[live_predictions]
+id | INTEGER | nullable=False
+fixture_id | INTEGER | nullable=False
+provider | VARCHAR(40) | nullable=False
+provider_fixture_id | BIGINT | nullable=False
+competition_id | BIGINT | nullable=False
+season | INTEGER | nullable=False
+model_name | VARCHAR(80) | nullable=False
+policy_version | VARCHAR(80) | nullable=False
+market_source | VARCHAR(80) | nullable=False
+home_odds | FLOAT | nullable=False
+draw_odds | FLOAT | nullable=False
+away_odds | FLOAT | nullable=False
+market_overround | FLOAT | nullable=False
+p_home | FLOAT | nullable=False
+p_draw | FLOAT | nullable=False
+p_away | FLOAT | nullable=False
+prediction | VARCHAR(1) | nullable=False
+confidence | FLOAT | nullable=False
+threshold | FLOAT | nullable=False
+selector_label | VARCHAR(32) | nullable=False
+publish | BOOLEAN | nullable=False
+odds_snapshot_at | DATETIME | nullable=False
+locked_at | DATETIME | nullable=False
+kickoff_utc | DATETIME | nullable=False
+actual_result | VARCHAR(1) | nullable=True
+is_correct | BOOLEAN | nullable=True
+graded_at | DATETIME | nullable=True
+created_at | DATETIME | nullable=False
+  UNIQUE: ['fixture_id', 'policy_version']
+  INDEX: ix_live_predictions_kickoff ['kickoff_utc'] unique=0
+  INDEX: ix_live_predictions_locked ['locked_at'] unique=0
+  INDEX: ix_live_predictions_publish ['publish'] unique=0
+
+[odds_snapshots]
+id | INTEGER | nullable=False
+fixture_id | INTEGER | nullable=False
+provider | VARCHAR(40) | nullable=False
+provider_fixture_id | BIGINT | nullable=False
+competition_id | BIGINT | nullable=False
+season | INTEGER | nullable=False
+market_source | VARCHAR(80) | nullable=False
+home_odds | FLOAT | nullable=False
+draw_odds | FLOAT | nullable=False
+away_odds | FLOAT | nullable=False
+market_overround | FLOAT | nullable=False
+p_home | FLOAT | nullable=False
+p_draw | FLOAT | nullable=False
+p_away | FLOAT | nullable=False
+raw_hash | VARCHAR(64) | nullable=False
+captured_at | DATETIME | nullable=False
+kickoff_utc | DATETIME | nullable=False
+created_at | DATETIME | nullable=False
+  UNIQUE: ['fixture_id', 'market_source', 'raw_hash']
+  INDEX: ix_odds_snapshots_captured ['captured_at'] unique=0
+  INDEX: ix_odds_snapshots_competition ['competition_id', 'season'] unique=0
+  INDEX: ix_odds_snapshots_fixture ['fixture_id'] unique=0
+
+======================================================================
+SAFE TABLE COUNTS
+======================================================================
+fixture_reconciliations: 380
+fixtures: 2268
+live_predictions: 18
+odds_snapshots: 21
+teams: 48
+
+======================================================================
+PUBLIC INTELLIGENCE API ROUTES
+======================================================================
+GET /predictions/live
+GET /predictions/performance
+GET /api/v1/predictions/high-confidence
+GET /api/v1/predictions/performance
+
+======================================================================
+MODEL SOURCE EXCERPTS
+======================================================================
+
+--- models.py line 63 ---
+63: class Fixture(Base):
+64:     __tablename__ = "fixtures"
+65:     __table_args__ = (
+66:         UniqueConstraint("provider", "provider_fixture_id", name="uq_fixture_provider"),
+67:         CheckConstraint("home_team_id <> away_team_id", name="ck_teams_different"),
+68:         Index("ix_fixtures_kickoff", "kickoff_utc"),
+69:         Index("ix_fixtures_status", "status_short"),
+70:         Index("ix_fixtures_finished", "is_finished"),
+71:     )
+72: 
+73:     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+74:     provider: Mapped[str] = mapped_column(String(40), default="api-football", nullable=False)
+75:     provider_fixture_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+76: 
+77:     league_season_id: Mapped[int] = mapped_column(ForeignKey("league_seasons.id"), nullable=False)
+78:     home_team_id: Mapped[int] = mapped_column(ForeignKey("teams.id"), nullable=False)
+79:     away_team_id: Mapped[int] = mapped_column(ForeignKey("teams.id"), nullable=False)
+80: 
+81:     kickoff_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+82:     timezone: Mapped[str | None] = mapped_column(String(64))
+83:     round_name: Mapped[str | None] = mapped_column(String(120))
+84:     referee: Mapped[str | None] = mapped_column(String(200))
+85: 
+86:     venue_id: Mapped[int | None] = mapped_column(BigInteger)
+87:     venue_name: Mapped[str | None] = mapped_column(String(200))
+88:     venue_city: Mapped[str | None] = mapped_column(String(160))
+89: 
+90:     status_short: Mapped[str] = mapped_column(String(20), nullable=False)
+91:     status_long: Mapped[str | None] = mapped_column(String(80))
+92:     elapsed: Mapped[int | None] = mapped_column(Integer)
+93: 
+94:     home_goals: Mapped[int | None] = mapped_column(Integer)
+95:     away_goals: Mapped[int | None] = mapped_column(Integer)
+96: 
+97:     halftime_home: Mapped[int | None] = mapped_column(Integer)
+98:     halftime_away: Mapped[int | None] = mapped_column(Integer)
+99:     fulltime_home: Mapped[int | None] = mapped_column(Integer)
+100:     fulltime_away: Mapped[int | None] = mapped_column(Integer)
+101:     extratime_home: Mapped[int | None] = mapped_column(Integer)
+102:     extratime_away: Mapped[int | None] = mapped_column(Integer)
+103:     penalty_home: Mapped[int | None] = mapped_column(Integer)
+104:     penalty_away: Mapped[int | None] = mapped_column(Integer)
+105: 
+106:     is_finished: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+107:     result_1x2: Mapped[str | None] = mapped_column(String(8))
+108: 
+109:     raw_json: Mapped[str] = mapped_column(Text, nullable=False)
+110:     provider_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+111:     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+112:     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False)
+113: 
+114:     league_season: Mapped[LeagueSeason] = relationship()
+115:     home_team: Mapped[Team] = relationship(foreign_keys=[home_team_id])
+116:     away_team: Mapped[Team] = relationship(foreign_keys=[away_team_id])
+117: 
+118: 
+119: class SyncRun(Base):
+120:     __tablename__ = "sync_runs"
+121: 
+122:     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+123:     run_type: Mapped[str] = mapped_column(String(40), nullable=False)
+124:     provider: Mapped[str] = mapped_column(String(40), default="api-football", nullable=False)
+125:     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+126:     finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+127:     status: Mapped[str] = mapped_column(String(20), nullable=False)
+128:     requested: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+129:     received: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+130:     inserted: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+131:     updated: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+132:     rejected: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+133:     error_message: Mapped[str | None] = mapped_column(Text)
+
+--- models.py line 136 ---
+136: class LivePrediction(Base):
+137:     """Immutable pre-match prediction snapshot for a live fixture.
+138: 
+139:     A row is inserted once per fixture/policy version and is never overwritten.
+140:     This preserves the exact pre-kickoff odds and decision used for later grading.
+141:     """
+142: 
+143:     __tablename__ = "live_predictions"
+144:     __table_args__ = (
+145:         UniqueConstraint("fixture_id", "policy_version", name="uq_live_prediction_fixture_policy"),
+146:         Index("ix_live_predictions_kickoff", "kickoff_utc"),
+147:         Index("ix_live_predictions_publish", "publish"),
+148:         Index("ix_live_predictions_locked", "locked_at"),
+149:     )
+150: 
+151:     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+152:     fixture_id: Mapped[int] = mapped_column(ForeignKey("fixtures.id"), nullable=False)
+153:     provider: Mapped[str] = mapped_column(String(40), nullable=False, default="live-score-api")
+154:     provider_fixture_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+155:     competition_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+156:     season: Mapped[int] = mapped_column(Integer, nullable=False)
+157: 
+158:     model_name: Mapped[str] = mapped_column(String(80), nullable=False, default="bookmaker_open")
+159:     policy_version: Mapped[str] = mapped_column(String(80), nullable=False)
+160:     market_source: Mapped[str] = mapped_column(String(80), nullable=False, default="odds.pre")
+161: 
+162:     home_odds: Mapped[float] = mapped_column(Float, nullable=False)
+163:     draw_odds: Mapped[float] = mapped_column(Float, nullable=False)
+164:     away_odds: Mapped[float] = mapped_column(Float, nullable=False)
+165:     market_overround: Mapped[float] = mapped_column(Float, nullable=False)
+166: 
+167:     p_home: Mapped[float] = mapped_column(Float, nullable=False)
+168:     p_draw: Mapped[float] = mapped_column(Float, nullable=False)
+169:     p_away: Mapped[float] = mapped_column(Float, nullable=False)
+170: 
+171:     prediction: Mapped[str] = mapped_column(String(1), nullable=False)
+172:     confidence: Mapped[float] = mapped_column(Float, nullable=False)
+173:     threshold: Mapped[float] = mapped_column(Float, nullable=False)
+174:     selector_label: Mapped[str] = mapped_column(String(32), nullable=False)
+175:     publish: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+176: 
+177:     odds_snapshot_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+178:     locked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+179:     kickoff_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+180: 
+181:     # Reserved for Phase 8 grading; nullable until the result is known.
+182:     actual_result: Mapped[str | None] = mapped_column(String(1))
+183:     is_correct: Mapped[bool | None] = mapped_column(Boolean)
+184:     graded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+185: 
+186:     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+187: 
+188:     fixture: Mapped[Fixture] = relationship()
+189: 
+190: 
+191: class OddsSnapshot(Base):
+192:     """Time-series pre-match 1X2 odds snapshot.
+193: 
+194:     Unlike LivePrediction, which locks once and never changes, this table records
+195:     each distinct pre-match market state. Unchanged prices are deduplicated.
+196:     """
+197: 
+198:     __tablename__ = "odds_snapshots"
+199:     __table_args__ = (
+200:         UniqueConstraint(
+201:             "fixture_id",
+202:             "market_source",
+203:             "raw_hash",
+204:             name="uq_odds_snapshot_fixture_market_hash",
+205:         ),
+206:         Index("ix_odds_snapshots_fixture", "fixture_id"),
+
+--- models.py line 191 ---
+191: class OddsSnapshot(Base):
+192:     """Time-series pre-match 1X2 odds snapshot.
+193: 
+194:     Unlike LivePrediction, which locks once and never changes, this table records
+195:     each distinct pre-match market state. Unchanged prices are deduplicated.
+196:     """
+197: 
+198:     __tablename__ = "odds_snapshots"
+199:     __table_args__ = (
+200:         UniqueConstraint(
+201:             "fixture_id",
+202:             "market_source",
+203:             "raw_hash",
+204:             name="uq_odds_snapshot_fixture_market_hash",
+205:         ),
+206:         Index("ix_odds_snapshots_fixture", "fixture_id"),
+207:         Index("ix_odds_snapshots_captured", "captured_at"),
+208:         Index("ix_odds_snapshots_competition", "competition_id", "season"),
+209:     )
+210: 
+211:     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+212:     fixture_id: Mapped[int] = mapped_column(ForeignKey("fixtures.id"), nullable=False)
+213:     provider: Mapped[str] = mapped_column(String(40), nullable=False, default="live-score-api")
+214:     provider_fixture_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+215:     competition_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+216:     season: Mapped[int] = mapped_column(Integer, nullable=False)
+217:     market_source: Mapped[str] = mapped_column(String(80), nullable=False, default="odds.pre")
+218: 
+219:     home_odds: Mapped[float] = mapped_column(Float, nullable=False)
+220:     draw_odds: Mapped[float] = mapped_column(Float, nullable=False)
+221:     away_odds: Mapped[float] = mapped_column(Float, nullable=False)
+222:     market_overround: Mapped[float] = mapped_column(Float, nullable=False)
+223: 
+224:     p_home: Mapped[float] = mapped_column(Float, nullable=False)
+225:     p_draw: Mapped[float] = mapped_column(Float, nullable=False)
+226:     p_away: Mapped[float] = mapped_column(Float, nullable=False)
+227: 
+228:     raw_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+229:     captured_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+230:     kickoff_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+231:     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+232: 
+233:     fixture: Mapped[Fixture] = relationship()
+234: 
+235: 
+236: class DataSource(Base):
+237:     __tablename__ = "data_sources"
+238:     __table_args__ = (
+239:         UniqueConstraint("slug", name="uq_data_source_slug"),
+240:         Index("ix_data_sources_priority", "priority"),
+241:         Index("ix_data_sources_health", "health_status"),
+242:     )
+243: 
+244:     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+245:     slug: Mapped[str] = mapped_column(String(80), nullable=False)
+246:     name: Mapped[str] = mapped_column(String(200), nullable=False)
+247:     source_type: Mapped[str] = mapped_column(String(40), nullable=False)
+248:     priority: Mapped[int] = mapped_column(Integer, nullable=False, default=100)
+249:     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+250:     base_url: Mapped[str | None] = mapped_column(Text)
+251:     parser_version: Mapped[str] = mapped_column(String(80), nullable=False, default="v1")
+252: 
+253:     health_status: Mapped[str] = mapped_column(String(20), nullable=False, default="UNKNOWN")
+254:     last_checked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+255:     last_success_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+256:     last_error_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+257:     consecutive_failures: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+258:     error_message: Mapped[str | None] = mapped_column(Text)
+259: 
+260:     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+261:     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False)
+
+--- models.py line 345 ---
+345: class FixtureReconciliation(Base):
+346:     """Persisted comparison of one canonical fixture across two providers."""
+347: 
+348:     __tablename__ = "fixture_reconciliations"
+349:     __table_args__ = (
+350:         UniqueConstraint(
+351:             "competition_id",
+352:             "season",
+353:             "canonical_key",
+354:             "primary_source",
+355:             "secondary_source",
+356:             name="uq_fixture_reconciliation_pair",
+357:         ),
+358:         Index("ix_fixture_reconciliation_status", "overall_status"),
+359:         Index("ix_fixture_reconciliation_competition", "competition_id", "season"),
+360:         Index("ix_fixture_reconciliation_checked", "checked_at"),
+361:     )
+362: 
+363:     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+364:     competition_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+365:     season: Mapped[int] = mapped_column(Integer, nullable=False)
+366:     canonical_key: Mapped[str] = mapped_column(String(320), nullable=False)
+367: 
+368:     primary_source: Mapped[str] = mapped_column(String(80), nullable=False)
+369:     secondary_source: Mapped[str] = mapped_column(String(80), nullable=False)
+370:     primary_fixture_id: Mapped[int | None] = mapped_column(BigInteger)
+371:     secondary_entity_key: Mapped[str | None] = mapped_column(String(320))
+372: 
+373:     home_team: Mapped[str] = mapped_column(String(200), nullable=False)
+374:     away_team: Mapped[str] = mapped_column(String(200), nullable=False)
+375: 
+376:     primary_date: Mapped[str | None] = mapped_column(String(10))
+377:     secondary_date: Mapped[str | None] = mapped_column(String(10))
+378:     date_status: Mapped[str] = mapped_column(String(30), nullable=False)
+379: 
+380:     primary_finished: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+381:     primary_score: Mapped[str | None] = mapped_column(String(30))
+382:     secondary_score: Mapped[str | None] = mapped_column(String(30))
+383:     result_status: Mapped[str] = mapped_column(String(30), nullable=False)
+384: 
+385:     overall_status: Mapped[str] = mapped_column(String(30), nullable=False)
+386:     checked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+387:     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+388:     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False)
+389: 
+390: 
+391: class MarketSafetyEvent(Base):
+392:     """Immutable operational observation of unified market-safety state."""
+393: 
+394:     __tablename__ = "market_safety_events"
+395:     __table_args__ = (
+396:         Index(
+397:             "ix_market_safety_event_competition",
+398:             "competition_id",
+399:             "season",
+400:             "observed_at",
+401:         ),
+402:         Index(
+403:             "ix_market_safety_event_status",
+404:             "overall_status",
+405:         ),
+406:         Index(
+407:             "ix_market_safety_event_transition",
+408:             "transition",
+409:         ),
+410:         Index(
+411:             "ix_market_safety_event_alert",
+412:             "alert_type",
+413:         ),
+414:     )
+415: 
+
+======================================================================
+READ-ONLY SAFETY ASSERTIONS
+======================================================================
+database_write_operations=0
+prediction_mutations=0
+prediction_lock_mutations=0
+final_holdout_mutations=0
+inspection_complete=True
+
+======================================================================
+APP PREDICTION / FEATURE / LOCK FUNCTIONS
+======================================================================
+
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\cli.py
+L151: def _build_features(args) -> None:
+L196: def _select_high_confidence(args) -> None:
+L206: def _run_live_predictions(args) -> None:
+L222: def _list_live_predictions(args) -> None:
+L235: def _grade_live_predictions(args) -> None:
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\main.py
+L101: def predictions_live(
+L116: def predictions_performance(
+L209: def api_v1_high_confidence_predictions(
+L223: def api_v1_prediction_performance(
+L453: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\market_scheduler.py
+L82: "final_holdout_touched": False,
+L97: "final_holdout_touched": False,
+L115: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\models.py
+L136: class LivePrediction(Base):
+L148: Index("ix_live_predictions_locked", "locked_at"),
+L178: locked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+L436: prediction_lock_allowed: Mapped[bool] = mapped_column(
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\baseline_models.py
+L164: def production_feature_columns(fields: Iterable[str]) -> list[str]:
+L183: def poisson_feature_columns(fields: Iterable[str]) -> list[str]:
+L317: def _prediction_rows(
+L478: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\ensemble_models.py
+L91: def curated_feature_columns(fields: list[str]) -> list[str]:
+L109: def _ordered_predict_proba(model: Any, x: np.ndarray) -> np.ndarray:
+L341: def _write_predictions(
+L477: "final_holdout_touched": False,
+L492: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\feature_engineering.py
+L208: def _add_market_features(row: dict[str, Any], raw: dict[str, Any]) -> None:
+L274: def build_feature_rows(records: list[MatchRecord]) -> list[dict[str, Any]]:
+L401: def build_feature_dataset(
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\fixture_reconciliation.py
+L241: "final_holdout_touched": False,
+L263: "final_holdout_touched": False,
+L287: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\high_confidence_selector.py
+L26: def select_prediction(p_home: float, p_draw: float, p_away: float, *, threshold: float = DEFAULT_THRESHOLD) -> SelectionDecision:
+L48: def apply_selector_to_prediction_rows(rows: Iterable[dict[str, str]], *, model_prefix: str = "bookmaker_open", threshold: float = DEFAULT_THRESHOLD) -> list[dict[str, Any]]:
+L98: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\live_prediction_engine.py
+L73: def generate_live_predictions(
+L123: "already_locked": 0,
+L129: "final_holdout_touched": False,
+L145: summary["already_locked"] += 1
+L186: locked_at=now_utc,
+L211: "locked_at": now_utc.isoformat(),
+L218: def list_live_predictions(
+L253: "locked_at": _utc(pred.locked_at).isoformat(),
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\market_refresh.py
+L47: "final_holdout_touched": False,
+L77: "final_holdout_touched": False,
+L124: "already_locked": 0,
+L186: "prediction_lock": {
+L190: "already_locked": predictions.get("already_locked", 0),
+L195: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\market_reliability.py
+L160: "final_holdout_touched": False,
+L280: "final_holdout_touched": False,
+L294: "final_holdout_touched": False,
+L319: "final_holdout_touched": False,
+L369: "final_holdout_touched": False,
+L428: "final_holdout_touched": False,
+L714: "final_holdout_touched": False,
+L743: "final_holdout_touched": False,
+L823: "final_holdout_touched": False,
+L870: "final_holdout_touched": False,
+L1126: "final_holdout_touched": False,
+L1384: "prediction_lock_policy_changed": False,
+L1385: "existing_prediction_locks_immutable": True,
+L1386: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\market_residual.py
+L186: def _write_predictions(
+L374: "final_holdout_touched": False,
+L388: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\market_safety.py
+L100: prediction_lock_allowed = bool(
+L102: "prediction_lock_allowed",
+L151: "prediction_lock_allowed": prediction_lock_allowed,
+L276: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\market_safety_alerts.py
+L65: "final_holdout_touched": False,
+L184: "prediction_lock_allowed": event.get(
+L185: "prediction_lock_allowed"
+L220: "final_holdout_touched": False,
+L266: "prediction_lock_allowed",
+L575: "final_holdout_touched": False,
+L798: "final_holdout_touched": False,
+L810: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\market_safety_events.py
+L34: "prediction_lock_allowed": bool(
+L35: row.prediction_lock_allowed
+L90: "final_holdout_touched": False,
+L200: prediction_lock_allowed=bool(
+L202: "prediction_lock_allowed",
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\market_safety_incidents.py
+L186: "final_holdout_touched": False,
+L297: "final_holdout_touched": False,
+L337: "final_holdout_touched": False,
+L393: "final_holdout_touched": False,
+L412: "final_holdout_touched": False,
+L420: "final_holdout_touched": False,
+L464: "final_holdout_touched": False,
+L474: "final_holdout_touched": False,
+L510: "final_holdout_touched": False,
+L663: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\odds_history.py
+L85: "final_holdout_touched": False,
+L277: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\openfootball_sync.py
+L202: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\prediction_grading.py
+L23: def grade_live_predictions(
+L71: "final_holdout_touched": False,
+L75: def _prob_for_actual(pred: LivePrediction, actual: str) -> float:
+L85: def _brier(pred: LivePrediction, actual: str) -> float:
+L127: "final_holdout_touched": False,
+L157: def live_prediction_rows(
+L192: "locked_at": _utc(pred.locked_at).isoformat(),
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\reconciliation_health.py
+L81: prediction_lock_allowed = True
+L86: prediction_lock_allowed = True
+L91: prediction_lock_allowed = False
+L96: prediction_lock_allowed = True
+L101: prediction_lock_allowed = True
+L130: "prediction_lock_allowed": prediction_lock_allowed,
+L169: "final_holdout_touched": False,
+
+FILE=D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1\app\services\social_content.py
+L64: def _prediction_name(code: str, home: str, away: str) -> str:
+L81: def render_prediction_card(row: dict[str, Any], output_path: str | Path) -> Path:
+L259: "final_holdout_touched": False,
+
+======================================================================
+EXISTING INTELLIGENCE SERVICE FILES
+======================================================================
+
+baseline_models.py
+ensemble_models.py
+feature_engineering.py
+high_confidence_selector.py
+live_prediction_engine.py
+prediction_grading.py
+social_content.py
+
+======================================================================
+EXACT INTELLIGENCE TEST FILES
+======================================================================
+
+test_baseline_models.py
+test_cli_baseline_command.py
+test_cli_ensemble_command.py
+test_cli_features_command.py
+test_cli_high_confidence_command.py
+test_cli_live_prediction_command.py
+test_ensemble_models.py
+test_feature_engineering.py
+test_high_confidence_selector.py
+test_live_prediction_engine.py
+test_prediction_grading.py
+test_social_content.py
+
+======================================================================
+HOLDOUT / LOCK SAFETY CORE
+======================================================================
+
+
+  app\main.py:451:        "latest_snapshot_at": latest.captured_at.isoformat() if latest else None,
+  app\main.py:452:        "scheduler_module": "python -m app.market_scheduler",
+> app\main.py:453:        "final_holdout_touched": False,
+  app\main.py:454:    }
+  app\main.py:455:
+  app\main.py:456:
+  app\main.py:457:@app.get("/api/v1/web/targets", dependencies=[Depends(_own_api_guard)])
+  app\main.py:458:def api_v1_web_targets() -> list[dict]:
+  app\main.py:459:    with SessionLocal() as session:
+  app\main.py:460:        return list_web_targets(session)
+  app\main.py:461:
+  app\market_scheduler.py:80:                "fixture_agreement_rate": summary.get("fixture_agreement_rate"),
+  app\market_scheduler.py:81:                "overall_counts": summary.get("overall_counts", {}),
+> app\market_scheduler.py:82:                "final_holdout_touched": False,
+  app\market_scheduler.py:83:            }
+  app\market_scheduler.py:84:            results.append(item)
+  app\market_scheduler.py:85:            print(
+  app\market_scheduler.py:86:                f"[reconciliation-refresh] competition={competition} "
+  app\market_scheduler.py:87:                f"season={season} {item}"
+  app\market_scheduler.py:88:            )
+  app\market_scheduler.py:89:
+  app\market_scheduler.py:90:        except Exception as exc:
+  app\market_scheduler.py:95:                "season_label": season_label,
+  app\market_scheduler.py:96:                "detail": type(exc).__name__,
+> app\market_scheduler.py:97:                "final_holdout_touched": False,
+  app\market_scheduler.py:98:            }
+  app\market_scheduler.py:99:            results.append(item)
+  app\market_scheduler.py:100:            print(
+  app\market_scheduler.py:101:                f"[reconciliation-refresh] competition={competition} "
+  app\market_scheduler.py:102:                f"season={season} {item}"
+  app\market_scheduler.py:103:            )
+  app\market_scheduler.py:104:
+  app\market_scheduler.py:105:    if not results:
+  app\market_scheduler.py:113:        "status": status,
+  app\market_scheduler.py:114:        "results": results,
+> app\market_scheduler.py:115:        "final_holdout_touched": False,
+  app\market_scheduler.py:116:    }
+  app\market_scheduler.py:117:
+  app\market_scheduler.py:118:
+  app\market_scheduler.py:119:async def live_market_job() -> None:
+  app\market_scheduler.py:120:    reconciliation = await openfootball_reconciliation_job()
+  app\market_scheduler.py:121:    print(
+  app\market_scheduler.py:122:        "[reconciliation-before-market] "
+  app\market_scheduler.py:123:        f"status={reconciliation.get('status')}"
+  app\models.py:146:        Index("ix_live_predictions_kickoff", "kickoff_utc"),
+  app\models.py:147:        Index("ix_live_predictions_publish", "publish"),
+> app\models.py:148:        Index("ix_live_predictions_locked", "locked_at"),
+  app\models.py:149:    )
+  app\models.py:150:
+  app\models.py:151:    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+  app\models.py:152:    fixture_id: Mapped[int] = mapped_column(ForeignKey("fixtures.id"), nullable=False)
+  app\models.py:153:    provider: Mapped[str] = mapped_column(String(40), nullable=False, default="live-score-api")
+  app\models.py:154:    provider_fixture_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+  app\models.py:155:    competition_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+  app\models.py:156:    season: Mapped[int] = mapped_column(Integer, nullable=False)
+  app\models.py:176:
+  app\models.py:177:    odds_snapshot_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+> app\models.py:178:    locked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+  app\models.py:179:    kickoff_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+  app\models.py:180:
+  app\models.py:181:    # Reserved for Phase 8 grading; nullable until the result is known.
+  app\models.py:182:    actual_result: Mapped[str | None] = mapped_column(String(1))
+  app\models.py:183:    is_correct: Mapped[bool | None] = mapped_column(Boolean)
+  app\models.py:184:    graded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+  app\models.py:185:
+  app\models.py:186:    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
+  app\models.py:434:    )
+  app\models.py:435:
+> app\models.py:436:    prediction_lock_allowed: Mapped[bool] = mapped_column(
+  app\models.py:437:        Boolean,
+  app\models.py:438:        nullable=False,
+  app\models.py:439:    )
+  app\models.py:440:
+  app\models.py:441:    prediction_gate_action: Mapped[str | None] = mapped_column(
+  app\models.py:442:        String(50),
+  app\models.py:443:    )
+  app\models.py:444:
+  app\services\baseline_models.py:476:        "report": str(output),
+  app\services\baseline_models.py:477:        "predictions": str(predictions_path),
+> app\services\baseline_models.py:478:        "final_holdout_touched": False,
+  app\services\baseline_models.py:479:    }
+  app\services\ensemble_models.py:475:        },
+  app\services\ensemble_models.py:476:        "fold2_vs_bookmaker_open": improvement,
+> app\services\ensemble_models.py:477:        "final_holdout_touched": False,
+  app\services\ensemble_models.py:478:    }
+  app\services\ensemble_models.py:479:    output.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+  app\services\ensemble_models.py:480:
+  app\services\ensemble_models.py:481:    return {
+  app\services\ensemble_models.py:482:        "status": "success",
+  app\services\ensemble_models.py:483:        "fold1_train_rows": len(fold1_train),
+  app\services\ensemble_models.py:484:        "fold1_validation_rows": len(fold1_val),
+  app\services\ensemble_models.py:485:        "fold2_train_rows": len(fold2_train),
+  app\services\ensemble_models.py:490:        "fold2_vs_bookmaker_open": improvement,
+  app\services\ensemble_models.py:491:        "report": str(output),
+> app\services\ensemble_models.py:492:        "final_holdout_touched": False,
+  app\services\ensemble_models.py:493:    }
+  app\services\fixture_reconciliation.py:239:        "fixture_agreement_rate": round(clean / total, 6) if total else None,
+  app\services\fixture_reconciliation.py:240:        "quality_gate": gate,
+> app\services\fixture_reconciliation.py:241:        "final_holdout_touched": False,
+  app\services\fixture_reconciliation.py:242:    }
+  app\services\fixture_reconciliation.py:243:
+  app\services\fixture_reconciliation.py:244:
+  app\services\fixture_reconciliation.py:245:def reconciliation_summary(session: Session, *, competition_id: int, season: int) -> dict[str, Any]:
+  app\services\fixture_reconciliation.py:246:    rows = list(
+  app\services\fixture_reconciliation.py:247:        session.scalars(
+  app\services\fixture_reconciliation.py:248:            select(FixtureReconciliation).where(
+  app\services\fixture_reconciliation.py:249:                FixtureReconciliation.competition_id == int(competition_id),
+  app\services\fixture_reconciliation.py:261:            "total": 0,
+  app\services\fixture_reconciliation.py:262:            "quality_gate": "UNKNOWN",
+> app\services\fixture_reconciliation.py:263:            "final_holdout_touched": False,
+  app\services\fixture_reconciliation.py:264:        }
+  app\services\fixture_reconciliation.py:265:
+  app\services\fixture_reconciliation.py:266:    counts: dict[str, int] = {}
+  app\services\fixture_reconciliation.py:267:    for row in rows:
+  app\services\fixture_reconciliation.py:268:        counts[row.overall_status] = counts.get(row.overall_status, 0) + 1
+  app\services\fixture_reconciliation.py:269:    total = len(rows)
+  app\services\fixture_reconciliation.py:270:    clean = counts.get("MATCH", 0)
+  app\services\fixture_reconciliation.py:271:    conflict = counts.get("CONFLICT", 0)
+  app\services\fixture_reconciliation.py:285:        "quality_gate": gate,
+  app\services\fixture_reconciliation.py:286:        "last_checked_at": latest.isoformat(),
+> app\services\fixture_reconciliation.py:287:        "final_holdout_touched": False,
+  app\services\fixture_reconciliation.py:288:    }
+  app\services\fixture_reconciliation.py:289:
+  app\services\fixture_reconciliation.py:290:
+  app\services\fixture_reconciliation.py:291:def reconciliation_issues(
+  app\services\fixture_reconciliation.py:292:    session: Session,
+  app\services\fixture_reconciliation.py:293:    *,
+  app\services\fixture_reconciliation.py:294:    competition_id: int,
+  app\services\fixture_reconciliation.py:295:    season: int,
+  app\services\high_confidence_selector.py:96:        "coverage": round(high / len(selected), 6),
+  app\services\high_confidence_selector.py:97:        "output": str(destination),
+> app\services\high_confidence_selector.py:98:        "final_holdout_touched": False,
+  app\services\high_confidence_selector.py:99:    }
+  app\services\high_confidence_selector.py:100:    manifest_path = destination.with_suffix(destination.suffix + ".manifest.json")
+  app\services\high_confidence_selector.py:101:    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+  app\services\high_confidence_selector.py:102:    manifest["manifest"] = str(manifest_path)
+  app\services\high_confidence_selector.py:103:    return manifest
+  app\services\live_prediction_engine.py:121:        "candidates": len(candidates),
+  app\services\live_prediction_engine.py:122:        "locked_new": 0,
+> app\services\live_prediction_engine.py:123:        "already_locked": 0,
+  app\services\live_prediction_engine.py:124:        "missing_or_invalid_odds": 0,
+  app\services\live_prediction_engine.py:125:        "already_started": 0,
+  app\services\live_prediction_engine.py:126:        "high_confidence": 0,
+  app\services\live_prediction_engine.py:127:        "pass": 0,
+  app\services\live_prediction_engine.py:128:        "predictions": [],
+> app\services\live_prediction_engine.py:129:        "final_holdout_touched": False,
+  app\services\live_prediction_engine.py:130:    }
+  app\services\live_prediction_engine.py:131:
+  app\services\live_prediction_engine.py:132:    for fixture, league, home_name, away_name in candidates:
+  app\services\live_prediction_engine.py:133:        kickoff = _utc(fixture.kickoff_utc)
+  app\services\live_prediction_engine.py:134:        if kickoff <= now_utc:
+  app\services\live_prediction_engine.py:135:            summary["already_started"] += 1
+  app\services\live_prediction_engine.py:136:            continue
+  app\services\live_prediction_engine.py:137:
+  app\services\live_prediction_engine.py:143:        )
+  app\services\live_prediction_engine.py:144:        if existing is not None:
+> app\services\live_prediction_engine.py:145:            summary["already_locked"] += 1
+  app\services\live_prediction_engine.py:146:            continue
+  app\services\live_prediction_engine.py:147:
+  app\services\live_prediction_engine.py:148:        try:
+  app\services\live_prediction_engine.py:149:            home_odds, draw_odds, away_odds = extract_pre_match_odds(fixture.raw_json)
+  app\services\live_prediction_engine.py:150:            p_home, p_draw, p_away, overround = fair_probabilities_from_decimal_odds(
+  app\services\live_prediction_engine.py:151:                home_odds, draw_odds, away_odds
+  app\services\live_prediction_engine.py:152:            )
+  app\services\live_prediction_engine.py:153:        except ValueError:
+  app\services\live_prediction_engine.py:184:            publish=decision.publish,
+  app\services\live_prediction_engine.py:185:            odds_snapshot_at=now_utc,
+> app\services\live_prediction_engine.py:186:            locked_at=now_utc,
+  app\services\live_prediction_engine.py:187:            kickoff_utc=kickoff,
+  app\services\live_prediction_engine.py:188:        )
+  app\services\live_prediction_engine.py:189:        session.add(prediction)
+  app\services\live_prediction_engine.py:190:        summary["locked_new"] += 1
+  app\services\live_prediction_engine.py:191:        if decision.publish:
+  app\services\live_prediction_engine.py:192:            summary["high_confidence"] += 1
+  app\services\live_prediction_engine.py:193:        else:
+  app\services\live_prediction_engine.py:194:            summary["pass"] += 1
+  app\services\live_prediction_engine.py:209:            "label": decision.label,
+  app\services\live_prediction_engine.py:210:            "publish": decision.publish,
+> app\services\live_prediction_engine.py:211:            "locked_at": now_utc.isoformat(),
+  app\services\live_prediction_engine.py:212:        })
+  app\services\live_prediction_engine.py:213:
+  app\services\live_prediction_engine.py:214:    session.commit()
+  app\services\live_prediction_engine.py:215:    return summary
+  app\services\live_prediction_engine.py:216:
+  app\services\live_prediction_engine.py:217:
+  app\services\live_prediction_engine.py:218:def list_live_predictions(
+  app\services\live_prediction_engine.py:219:    session: Session,
+  app\services\live_prediction_engine.py:251:            "label": pred.selector_label,
+  app\services\live_prediction_engine.py:252:            "publish": bool(pred.publish),
+> app\services\live_prediction_engine.py:253:            "locked_at": _utc(pred.locked_at).isoformat(),
+  app\services\live_prediction_engine.py:254:        })
+  app\services\live_prediction_engine.py:255:    return rows
+  app\services\market_refresh.py:45:            "season": int(season),
+  app\services\market_refresh.py:46:            "detail": "Live Score credentials are not configured",
+> app\services\market_refresh.py:47:            "final_holdout_touched": False,
+  app\services\market_refresh.py:48:        }
+  app\services\market_refresh.py:49:
+  app\services\market_refresh.py:50:    try:
+  app\services\market_refresh.py:51:        async with LiveScoreApiClient(settings) as client:
+  app\services\market_refresh.py:52:            sync = await sync_live_score_fixtures(
+  app\services\market_refresh.py:53:                session,
+  app\services\market_refresh.py:54:                client,
+  app\services\market_refresh.py:55:                competition_id=int(competition_id),
+  app\services\market_refresh.py:75:            "season": int(season),
+  app\services\market_refresh.py:76:            "detail": detail[:500],
+> app\services\market_refresh.py:77:            "final_holdout_touched": False,
+  app\services\market_refresh.py:78:        }
+  app\services\market_refresh.py:79:
+  app\services\market_refresh.py:80:    odds = capture_pre_match_odds(
+  app\services\market_refresh.py:81:        session,
+  app\services\market_refresh.py:82:        competition_id=int(competition_id),
+  app\services\market_refresh.py:83:        season=int(season),
+  app\services\market_refresh.py:84:        now=when,
+  app\services\market_refresh.py:85:    )
+  app\services\market_refresh.py:122:        predictions = {
+  app\services\market_refresh.py:123:            "locked_new": 0,
+> app\services\market_refresh.py:124:            "already_locked": 0,
+  app\services\market_refresh.py:125:            "high_confidence": 0,
+  app\services\market_refresh.py:126:            "pass": 0,
+  app\services\market_refresh.py:127:        }
+  app\services\market_refresh.py:128:    else:
+  app\services\market_refresh.py:129:        gate_action = (
+  app\services\market_refresh.py:130:            "ALLOW_DEGRADED"
+  app\services\market_refresh.py:131:            if quality_gate == "WARN"
+  app\services\market_refresh.py:132:            else "ALLOW_UNVERIFIED"
+  app\services\market_refresh.py:184:            "action": gate_action,
+  app\services\market_refresh.py:185:        },
+> app\services\market_refresh.py:186:        "prediction_lock": {
+  app\services\market_refresh.py:187:            "blocked": quality_gate == "FAIL",
+  app\services\market_refresh.py:188:            "block_reason": "RECONCILIATION_FAIL" if quality_gate == "FAIL" else None,
+  app\services\market_refresh.py:189:            "locked_new": predictions.get("locked_new", 0),
+> app\services\market_refresh.py:190:            "already_locked": predictions.get("already_locked", 0),
+  app\services\market_refresh.py:191:            "high_confidence_new": predictions.get("high_confidence", 0),
+  app\services\market_refresh.py:192:            "pass_new": predictions.get("pass", 0),
+  app\services\market_refresh.py:193:        },
+  app\services\market_refresh.py:194:        "refreshed_at": when.isoformat(),
+> app\services\market_refresh.py:195:        "final_holdout_touched": False,
+  app\services\market_refresh.py:196:    }
+  app\services\market_reliability.py:158:        ),
+  app\services\market_reliability.py:159:
+> app\services\market_reliability.py:160:        "final_holdout_touched": False,
+  app\services\market_reliability.py:161:    }
+  app\services\market_reliability.py:162:
+  app\services\market_reliability.py:163:
+  app\services\market_reliability.py:164:def _due_sla_stage(
+  app\services\market_reliability.py:165:    incident: dict[str, Any],
+  app\services\market_reliability.py:166:    settings: Any,
+  app\services\market_reliability.py:167:    *,
+  app\services\market_reliability.py:168:    now: datetime | None = None,
+  app\services\market_reliability.py:278:            "alert": None,
+  app\services\market_reliability.py:279:            "new_alert": False,
+> app\services\market_reliability.py:280:            "final_holdout_touched": False,
+  app\services\market_reliability.py:281:        }
+  app\services\market_reliability.py:282:
+  app\services\market_reliability.py:283:    due = _due_sla_stage(
+  app\services\market_reliability.py:284:        incident,
+  app\services\market_reliability.py:285:        settings,
+  app\services\market_reliability.py:286:        now=now,
+  app\services\market_reliability.py:287:    )
+  app\services\market_reliability.py:288:
+  app\services\market_reliability.py:292:            "alert": None,
+  app\services\market_reliability.py:293:            "new_alert": False,
+> app\services\market_reliability.py:294:            "final_holdout_touched": False,
+  app\services\market_reliability.py:295:        }
+  app\services\market_reliability.py:296:
+  app\services\market_reliability.py:297:    existing = session.scalar(
+  app\services\market_reliability.py:298:        select(
+  app\services\market_reliability.py:299:            MarketSafetySlaAlert
+  app\services\market_reliability.py:300:        )
+  app\services\market_reliability.py:301:        .where(
+  app\services\market_reliability.py:302:            MarketSafetySlaAlert.incident_id
+  app\services\market_reliability.py:317:            ),
+  app\services\market_reliability.py:318:            "new_alert": False,
+> app\services\market_reliability.py:319:            "final_holdout_touched": False,
+  app\services\market_reliability.py:320:        }
+  app\services\market_reliability.py:321:
+  app\services\market_reliability.py:322:    row = MarketSafetySlaAlert(
+  app\services\market_reliability.py:323:        incident_id=int(
+  app\services\market_reliability.py:324:            incident["id"]
+  app\services\market_reliability.py:325:        ),
+  app\services\market_reliability.py:326:
+  app\services\market_reliability.py:327:        competition_id=int(
+  app\services\market_reliability.py:367:        ),
+  app\services\market_reliability.py:368:        "new_alert": True,
+> app\services\market_reliability.py:369:        "final_holdout_touched": False,
+  app\services\market_reliability.py:370:    }
+  app\services\market_reliability.py:371:
+  app\services\market_reliability.py:372:
+  app\services\market_reliability.py:373:def _sla_telegram_message(
+  app\services\market_reliability.py:374:    alert: dict[str, Any],
+  app\services\market_reliability.py:375:    incident: dict[str, Any],
+  app\services\market_reliability.py:376:) -> str:
+  app\services\market_reliability.py:377:
+  app\services\market_reliability.py:426:        return {
+  app\services\market_reliability.py:427:            "status": "MISSING_ALERT",
+> app\services\market_reliability.py:428:            "final_holdout_touched": False,
+  app\services\market_reliability.py:429:        }
+  app\services\market_reliability.py:430:
+  app\services\market_reliability.py:431:    if (
+  app\services\market_reliability.py:432:        row.telegram_delivery_status
+  app\services\market_reliability.py:433:        == "DELIVERED"
+  app\services\market_reliability.py:434:    ):
+  app\services\market_reliability.py:435:        result = _sla_alert_dict(
+  app\services\market_reliability.py:436:            row
+  app\services\market_reliability.py:712:        **evaluation,
+  app\services\market_reliability.py:713:        "delivery": delivery,
+> app\services\market_reliability.py:714:        "final_holdout_touched": False,
+  app\services\market_reliability.py:715:    }
+  app\services\market_reliability.py:716:
+  app\services\market_reliability.py:717:
+  app\services\market_reliability.py:718:def recover_incident_state_from_history(
+  app\services\market_reliability.py:719:    session: Session,
+  app\services\market_reliability.py:720:    *,
+  app\services\market_reliability.py:721:    competition_id: int,
+  app\services\market_reliability.py:722:    season: int,
+  app\services\market_reliability.py:741:            "processed": 0,
+  app\services\market_reliability.py:742:            "actions": [],
+> app\services\market_reliability.py:743:            "final_holdout_touched": False,
+  app\services\market_reliability.py:744:        }
+  app\services\market_reliability.py:745:
+  app\services\market_reliability.py:746:    latest = history[0]
+  app\services\market_reliability.py:747:
+  app\services\market_reliability.py:748:    active = active_market_safety_incident(
+  app\services\market_reliability.py:749:        session,
+  app\services\market_reliability.py:750:        competition_id=int(
+  app\services\market_reliability.py:751:            competition_id
+  app\services\market_reliability.py:821:                latest["id"]
+  app\services\market_reliability.py:822:            ),
+> app\services\market_reliability.py:823:            "final_holdout_touched": False,
+  app\services\market_reliability.py:824:        }
+  app\services\market_reliability.py:825:
+  app\services\market_reliability.py:826:    pending = [
+  app\services\market_reliability.py:827:        event
+  app\services\market_reliability.py:828:        for event in reversed(
+  app\services\market_reliability.py:829:            history
+  app\services\market_reliability.py:830:        )
+  app\services\market_reliability.py:831:        if int(
+  app\services\market_reliability.py:868:            latest["id"]
+  app\services\market_reliability.py:869:        ),
+> app\services\market_reliability.py:870:        "final_holdout_touched": False,
+  app\services\market_reliability.py:871:    }
+  app\services\market_reliability.py:872:
+  app\services\market_reliability.py:873:
+  app\services\market_reliability.py:874:def list_market_safety_sla_alerts(
+  app\services\market_reliability.py:875:    session: Session,
+  app\services\market_reliability.py:876:    *,
+  app\services\market_reliability.py:877:    competition_id: int,
+  app\services\market_reliability.py:878:    season: int,
+  app\services\market_reliability.py:1124:
+  app\services\market_reliability.py:1125:        "prediction_tables_modified": False,
+> app\services\market_reliability.py:1126:        "final_holdout_touched": False,
+  app\services\market_reliability.py:1127:    }
+  app\services\market_reliability.py:1128:
+  app\services\market_reliability.py:1129:
+  app\services\market_reliability.py:1130:def reliability_summary(
+  app\services\market_reliability.py:1131:    session: Session,
+  app\services\market_reliability.py:1132:    settings: Any,
+  app\services\market_reliability.py:1133:    *,
+  app\services\market_reliability.py:1134:    competition_id: int,
+  app\services\market_reliability.py:1382:        ),
+  app\services\market_reliability.py:1383:
+> app\services\market_reliability.py:1384:        "prediction_lock_policy_changed": False,
+> app\services\market_reliability.py:1385:        "existing_prediction_locks_immutable": True,
+> app\services\market_reliability.py:1386:        "final_holdout_touched": False,
+  app\services\market_reliability.py:1387:    }
+  app\services\market_residual.py:372:        "fold1_predictions": str(f1_pred),
+  app\services\market_residual.py:373:        "fold2_predictions": str(f2_pred),
+> app\services\market_residual.py:374:        "final_holdout_touched": False,
+  app\services\market_residual.py:375:    }
+  app\services\market_residual.py:376:    output.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+  app\services\market_residual.py:377:
+  app\services\market_residual.py:378:    return {
+  app\services\market_residual.py:379:        "status": "success",
+  app\services\market_residual.py:380:        "selected_on_fold1": selected,
+  app\services\market_residual.py:381:        "market_bias": [round(float(x), 6) for x in bias],
+  app\services\market_residual.py:382:        "residual_weights": residual_weights,
+  app\services\market_residual.py:386:        "bootstrap": bootstrap,
+  app\services\market_residual.py:387:        "report": str(output),
+> app\services\market_residual.py:388:        "final_holdout_touched": False,
+  app\services\market_residual.py:389:    }
+  app\services\market_safety.py:98:    ).upper()
+  app\services\market_safety.py:99:
+> app\services\market_safety.py:100:    prediction_lock_allowed = bool(
+  app\services\market_safety.py:101:        reconciliation.get(
+> app\services\market_safety.py:102:            "prediction_lock_allowed",
+  app\services\market_safety.py:103:            True,
+  app\services\market_safety.py:104:        )
+  app\services\market_safety.py:105:    )
+  app\services\market_safety.py:106:
+  app\services\market_safety.py:107:    reasons: list[str] = []
+  app\services\market_safety.py:108:
+  app\services\market_safety.py:109:    if reconciliation_status == "BLOCKED":
+  app\services\market_safety.py:110:        overall_status = "BLOCKED"
+  app\services\market_safety.py:149:        # This mirrors the actual reconciliation prediction gate.
+  app\services\market_safety.py:150:        # Source-health observations do not create a new blocking policy.
+> app\services\market_safety.py:151:        "prediction_lock_allowed": prediction_lock_allowed,
+  app\services\market_safety.py:152:        "prediction_gate_action": reconciliation.get(
+  app\services\market_safety.py:153:            "action"
+  app\services\market_safety.py:154:        ),
+  app\services\market_safety.py:155:
+  app\services\market_safety.py:156:        "primary_source": {
+  app\services\market_safety.py:157:            "slug": PRIMARY_SOURCE,
+  app\services\market_safety.py:158:            "effective_health_status": primary_status,
+  app\services\market_safety.py:159:            "registered": primary_row is not None,
+  app\services\market_safety.py:274:        ),
+  app\services\market_safety.py:275:
+> app\services\market_safety.py:276:        "final_holdout_touched": False,
+  app\services\market_safety.py:277:    }
+  app\services\market_safety_alerts.py:63:        ),
+  app\services\market_safety_alerts.py:64:
+> app\services\market_safety_alerts.py:65:        "final_holdout_touched": False,
+  app\services\market_safety_alerts.py:66:    }
+  app\services\market_safety_alerts.py:67:
+  app\services\market_safety_alerts.py:68:
+  app\services\market_safety_alerts.py:69:def _existing_delivery(
+  app\services\market_safety_alerts.py:70:    session: Session,
+  app\services\market_safety_alerts.py:71:    *,
+  app\services\market_safety_alerts.py:72:    event_id: int,
+  app\services\market_safety_alerts.py:73:    channel: str = "webhook",
+  app\services\market_safety_alerts.py:182:        ),
+  app\services\market_safety_alerts.py:183:
+> app\services\market_safety_alerts.py:184:        "prediction_lock_allowed": event.get(
+> app\services\market_safety_alerts.py:185:            "prediction_lock_allowed"
+  app\services\market_safety_alerts.py:186:        ),
+  app\services\market_safety_alerts.py:187:
+  app\services\market_safety_alerts.py:188:        "prediction_gate_action": event.get(
+  app\services\market_safety_alerts.py:189:            "prediction_gate_action"
+  app\services\market_safety_alerts.py:190:        ),
+  app\services\market_safety_alerts.py:191:
+  app\services\market_safety_alerts.py:192:        "reasons": list(
+  app\services\market_safety_alerts.py:193:            event.get(
+  app\services\market_safety_alerts.py:218:        ),
+  app\services\market_safety_alerts.py:219:
+> app\services\market_safety_alerts.py:220:        "final_holdout_touched": False,
+  app\services\market_safety_alerts.py:221:    }
+  app\services\market_safety_alerts.py:222:
+  app\services\market_safety_alerts.py:223:
+  app\services\market_safety_alerts.py:224:def build_telegram_message(
+  app\services\market_safety_alerts.py:225:    event: dict[str, Any],
+  app\services\market_safety_alerts.py:226:) -> str:
+  app\services\market_safety_alerts.py:227:
+  app\services\market_safety_alerts.py:228:    alert_type = str(
+  app\services\market_safety_alerts.py:264:    prediction_allowed = bool(
+  app\services\market_safety_alerts.py:265:        event.get(
+> app\services\market_safety_alerts.py:266:            "prediction_lock_allowed",
+  app\services\market_safety_alerts.py:267:            True,
+  app\services\market_safety_alerts.py:268:        )
+  app\services\market_safety_alerts.py:269:    )
+  app\services\market_safety_alerts.py:270:
+  app\services\market_safety_alerts.py:271:    incident_state = dict(
+  app\services\market_safety_alerts.py:272:        event.get(
+  app\services\market_safety_alerts.py:273:            "incident",
+  app\services\market_safety_alerts.py:274:            {},
+  app\services\market_safety_alerts.py:573:            "channel": "telegram",
+  app\services\market_safety_alerts.py:574:            "reason": "TELEGRAM_DISABLED",
+> app\services\market_safety_alerts.py:575:            "final_holdout_touched": False,
+  app\services\market_safety_alerts.py:576:        }
+  app\services\market_safety_alerts.py:577:
+  app\services\market_safety_alerts.py:578:    bot_token = str(
+  app\services\market_safety_alerts.py:579:        getattr(
+  app\services\market_safety_alerts.py:580:            settings,
+  app\services\market_safety_alerts.py:581:            "safety_alert_telegram_bot_token",
+  app\services\market_safety_alerts.py:582:            "",
+  app\services\market_safety_alerts.py:583:        )
+  app\services\market_safety_alerts.py:796:            "reason": "NO_TRANSITION",
+  app\services\market_safety_alerts.py:797:            "audit_id": None,
+> app\services\market_safety_alerts.py:798:            "final_holdout_touched": False,
+  app\services\market_safety_alerts.py:799:        }
+  app\services\market_safety_alerts.py:800:
+  app\services\market_safety_alerts.py:801:    alert_type = str(
+  app\services\market_safety_alerts.py:802:        alert_type
+  app\services\market_safety_alerts.py:803:    ).upper()
+  app\services\market_safety_alerts.py:804:
+  app\services\market_safety_alerts.py:805:    if alert_type not in DELIVERABLE_ALERT_TYPES:
+  app\services\market_safety_alerts.py:806:        return {
+  app\services\market_safety_alerts.py:808:            "reason": "UNSUPPORTED_ALERT_TYPE",
+  app\services\market_safety_alerts.py:809:            "audit_id": None,
+> app\services\market_safety_alerts.py:810:            "final_holdout_touched": False,
+  app\services\market_safety_alerts.py:811:        }
+  app\services\market_safety_alerts.py:812:
+  app\services\market_safety_alerts.py:813:    webhook_result = await _deliver_webhook(
+  app\services\market_safety_alerts.py:814:        session,
+  app\services\market_safety_alerts.py:815:        settings,
+  app\services\market_safety_alerts.py:816:        event=event,
+  app\services\market_safety_alerts.py:817:    )
+  app\services\market_safety_alerts.py:818:
+  app\services\market_safety_events.py:32:        "overall_status": row.overall_status,
+  app\services\market_safety_events.py:33:
+> app\services\market_safety_events.py:34:        "prediction_lock_allowed": bool(
+> app\services\market_safety_events.py:35:            row.prediction_lock_allowed
+  app\services\market_safety_events.py:36:        ),
+  app\services\market_safety_events.py:37:
+  app\services\market_safety_events.py:38:        "prediction_gate_action": (
+  app\services\market_safety_events.py:39:            row.prediction_gate_action
+  app\services\market_safety_events.py:40:        ),
+  app\services\market_safety_events.py:41:
+  app\services\market_safety_events.py:42:        "reasons": reasons,
+  app\services\market_safety_events.py:43:
+  app\services\market_safety_events.py:88:        ),
+  app\services\market_safety_events.py:89:
+> app\services\market_safety_events.py:90:        "final_holdout_touched": False,
+  app\services\market_safety_events.py:91:    }
+  app\services\market_safety_events.py:92:
+  app\services\market_safety_events.py:93:
+  app\services\market_safety_events.py:94:def _alert_type(
+  app\services\market_safety_events.py:95:    previous_status: str | None,
+  app\services\market_safety_events.py:96:    current_status: str,
+  app\services\market_safety_events.py:97:) -> str | None:
+  app\services\market_safety_events.py:98:
+  app\services\market_safety_events.py:198:        overall_status=current_status,
+  app\services\market_safety_events.py:199:
+> app\services\market_safety_events.py:200:        prediction_lock_allowed=bool(
+  app\services\market_safety_events.py:201:            snapshot.get(
+> app\services\market_safety_events.py:202:                "prediction_lock_allowed",
+  app\services\market_safety_events.py:203:                True,
+  app\services\market_safety_events.py:204:            )
+  app\services\market_safety_events.py:205:        ),
+  app\services\market_safety_events.py:206:
+  app\services\market_safety_events.py:207:        prediction_gate_action=(
+  app\services\market_safety_events.py:208:            snapshot.get(
+  app\services\market_safety_events.py:209:                "prediction_gate_action"
+  app\services\market_safety_events.py:210:            )
+  app\services\market_safety_incidents.py:184:        ),
+  app\services\market_safety_incidents.py:185:
+> app\services\market_safety_incidents.py:186:        "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:187:    }
+  app\services\market_safety_incidents.py:188:
+  app\services\market_safety_incidents.py:189:
+  app\services\market_safety_incidents.py:190:def _active_row(
+  app\services\market_safety_incidents.py:191:    session: Session,
+  app\services\market_safety_incidents.py:192:    *,
+  app\services\market_safety_incidents.py:193:    competition_id: int,
+  app\services\market_safety_incidents.py:194:    season: int,
+  app\services\market_safety_incidents.py:295:                    active
+  app\services\market_safety_incidents.py:296:                ),
+> app\services\market_safety_incidents.py:297:                "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:298:            }
+  app\services\market_safety_incidents.py:299:
+  app\services\market_safety_incidents.py:300:    if market_status in {
+  app\services\market_safety_incidents.py:301:        "DEGRADED",
+  app\services\market_safety_incidents.py:302:        "BLOCKED",
+  app\services\market_safety_incidents.py:303:    }:
+  app\services\market_safety_incidents.py:304:
+  app\services\market_safety_incidents.py:305:        if active is None:
+  app\services\market_safety_incidents.py:335:                    row
+  app\services\market_safety_incidents.py:336:                ),
+> app\services\market_safety_incidents.py:337:                "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:338:            }
+  app\services\market_safety_incidents.py:339:
+  app\services\market_safety_incidents.py:340:        previous_highest = str(
+  app\services\market_safety_incidents.py:341:            active.highest_severity
+  app\services\market_safety_incidents.py:342:        ).upper()
+  app\services\market_safety_incidents.py:343:
+  app\services\market_safety_incidents.py:344:        active.last_event_id = event_id
+  app\services\market_safety_incidents.py:345:        active.current_status = (
+  app\services\market_safety_incidents.py:391:                active
+  app\services\market_safety_incidents.py:392:            ),
+> app\services\market_safety_incidents.py:393:            "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:394:        }
+  app\services\market_safety_incidents.py:395:
+  app\services\market_safety_incidents.py:396:    if market_status == "READY":
+  app\services\market_safety_incidents.py:397:
+  app\services\market_safety_incidents.py:398:        duplicate_closed = (
+  app\services\market_safety_incidents.py:399:            _closed_by_event(
+  app\services\market_safety_incidents.py:400:                session,
+  app\services\market_safety_incidents.py:401:                event_id=event_id,
+  app\services\market_safety_incidents.py:410:                    duplicate_closed
+  app\services\market_safety_incidents.py:411:                ),
+> app\services\market_safety_incidents.py:412:                "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:413:            }
+  app\services\market_safety_incidents.py:414:
+  app\services\market_safety_incidents.py:415:        if active is None:
+  app\services\market_safety_incidents.py:416:
+  app\services\market_safety_incidents.py:417:            return {
+  app\services\market_safety_incidents.py:418:                "action": "NONE",
+  app\services\market_safety_incidents.py:419:                "incident": None,
+> app\services\market_safety_incidents.py:420:                "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:421:            }
+  app\services\market_safety_incidents.py:422:
+  app\services\market_safety_incidents.py:423:        active.status = "CLOSED"
+  app\services\market_safety_incidents.py:424:
+  app\services\market_safety_incidents.py:425:        active.current_status = (
+  app\services\market_safety_incidents.py:426:            "READY"
+  app\services\market_safety_incidents.py:427:        )
+  app\services\market_safety_incidents.py:428:
+  app\services\market_safety_incidents.py:462:                active
+  app\services\market_safety_incidents.py:463:            ),
+> app\services\market_safety_incidents.py:464:            "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:465:        }
+  app\services\market_safety_incidents.py:466:
+  app\services\market_safety_incidents.py:467:    return {
+  app\services\market_safety_incidents.py:468:        "action": "IGNORED",
+  app\services\market_safety_incidents.py:469:        "incident": (
+  app\services\market_safety_incidents.py:470:            _incident_dict(active)
+  app\services\market_safety_incidents.py:471:            if active
+  app\services\market_safety_incidents.py:472:            else None
+  app\services\market_safety_incidents.py:473:        ),
+> app\services\market_safety_incidents.py:474:        "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:475:    }
+  app\services\market_safety_incidents.py:476:
+  app\services\market_safety_incidents.py:477:
+  app\services\market_safety_incidents.py:478:def active_market_safety_incident(
+  app\services\market_safety_incidents.py:479:    session: Session,
+  app\services\market_safety_incidents.py:480:    *,
+  app\services\market_safety_incidents.py:481:    competition_id: int,
+  app\services\market_safety_incidents.py:482:    season: int,
+  app\services\market_safety_incidents.py:508:        ),
+  app\services\market_safety_incidents.py:509:
+> app\services\market_safety_incidents.py:510:        "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:511:    }
+  app\services\market_safety_incidents.py:512:
+  app\services\market_safety_incidents.py:513:
+  app\services\market_safety_incidents.py:514:def list_market_safety_incidents(
+  app\services\market_safety_incidents.py:515:    session: Session,
+  app\services\market_safety_incidents.py:516:    *,
+  app\services\market_safety_incidents.py:517:    competition_id: int,
+  app\services\market_safety_incidents.py:518:    season: int,
+  app\services\market_safety_incidents.py:661:        ),
+  app\services\market_safety_incidents.py:662:
+> app\services\market_safety_incidents.py:663:        "final_holdout_touched": False,
+  app\services\market_safety_incidents.py:664:    }
+  app\services\odds_history.py:83:        "already_started": 0,
+  app\services\odds_history.py:84:        "snapshots": [],
+> app\services\odds_history.py:85:        "final_holdout_touched": False,
+  app\services\odds_history.py:86:    }
+  app\services\odds_history.py:87:
+  app\services\odds_history.py:88:    for fixture, league, home_name, away_name in candidates:
+  app\services\odds_history.py:89:        kickoff = _utc(fixture.kickoff_utc)
+  app\services\odds_history.py:90:        if kickoff <= captured_at:
+  app\services\odds_history.py:91:            summary["already_started"] += 1
+  app\services\odds_history.py:92:            continue
+  app\services\odds_history.py:93:
+  app\services\odds_history.py:275:            "A": round(float(latest.p_away - first.p_away), 6),
+  app\services\odds_history.py:276:        },
+> app\services\odds_history.py:277:        "final_holdout_touched": False,
+  app\services\odds_history.py:278:    }
+  app\services\openfootball_sync.py:200:            for d, h, a in only_open[:10]
+  app\services\openfootball_sync.py:201:        ],
+> app\services\openfootball_sync.py:202:        "final_holdout_touched": False,
+  app\services\openfootball_sync.py:203:    }
+  app\services\prediction_grading.py:69:        "skipped_invalid_result": skipped_invalid_result,
+  app\services\prediction_grading.py:70:        "graded_at": graded_at.isoformat(),
+> app\services\prediction_grading.py:71:        "final_holdout_touched": False,
+  app\services\prediction_grading.py:72:    }
+  app\services\prediction_grading.py:73:
+  app\services\prediction_grading.py:74:
+  app\services\prediction_grading.py:75:def _prob_for_actual(pred: LivePrediction, actual: str) -> float:
+  app\services\prediction_grading.py:76:    if actual == "H":
+  app\services\prediction_grading.py:77:        return float(pred.p_home)
+  app\services\prediction_grading.py:78:    if actual == "D":
+  app\services\prediction_grading.py:79:        return float(pred.p_draw)
+  app\services\prediction_grading.py:125:        "prediction_mix": {"H": 0, "D": 0, "A": 0},
+  app\services\prediction_grading.py:126:        "actual_mix": {"H": 0, "D": 0, "A": 0},
+> app\services\prediction_grading.py:127:        "final_holdout_touched": False,
+  app\services\prediction_grading.py:128:    }
+  app\services\prediction_grading.py:129:
+  app\services\prediction_grading.py:130:    if not graded:
+  app\services\prediction_grading.py:131:        return result
+  app\services\prediction_grading.py:132:
+  app\services\prediction_grading.py:133:    correct = sum(bool(p.is_correct) for p in graded)
+  app\services\prediction_grading.py:134:    log_losses = []
+  app\services\prediction_grading.py:135:    briers = []
+  app\services\prediction_grading.py:190:            "label": pred.selector_label,
+  app\services\prediction_grading.py:191:            "publish": bool(pred.publish),
+> app\services\prediction_grading.py:192:            "locked_at": _utc(pred.locked_at).isoformat(),
+  app\services\prediction_grading.py:193:            "actual_result": pred.actual_result,
+  app\services\prediction_grading.py:194:            "is_correct": pred.is_correct,
+  app\services\prediction_grading.py:195:            "graded_at": _utc(pred.graded_at).isoformat() if pred.graded_at else None,
+  app\services\prediction_grading.py:196:        })
+  app\services\prediction_grading.py:197:    return output
+  app\services\reconciliation_health.py:79:    if effective_gate == "PASS":
+  app\services\reconciliation_health.py:80:        operational_status = "HEALTHY"
+> app\services\reconciliation_health.py:81:        prediction_lock_allowed = True
+  app\services\reconciliation_health.py:82:        action = "ALLOW"
+  app\services\reconciliation_health.py:83:
+  app\services\reconciliation_health.py:84:    elif effective_gate == "WARN":
+  app\services\reconciliation_health.py:85:        operational_status = "DEGRADED"
+> app\services\reconciliation_health.py:86:        prediction_lock_allowed = True
+  app\services\reconciliation_health.py:87:        action = "ALLOW_DEGRADED"
+  app\services\reconciliation_health.py:88:
+  app\services\reconciliation_health.py:89:    elif effective_gate == "FAIL":
+  app\services\reconciliation_health.py:90:        operational_status = "BLOCKED"
+> app\services\reconciliation_health.py:91:        prediction_lock_allowed = False
+  app\services\reconciliation_health.py:92:        action = "BLOCK_NEW_PREDICTIONS"
+  app\services\reconciliation_health.py:93:
+  app\services\reconciliation_health.py:94:    elif effective_gate == "STALE":
+  app\services\reconciliation_health.py:95:        operational_status = "STALE"
+> app\services\reconciliation_health.py:96:        prediction_lock_allowed = True
+  app\services\reconciliation_health.py:97:        action = "ALLOW_UNVERIFIED"
+  app\services\reconciliation_health.py:98:
+  app\services\reconciliation_health.py:99:    else:
+  app\services\reconciliation_health.py:100:        operational_status = "UNINITIALIZED"
+> app\services\reconciliation_health.py:101:        prediction_lock_allowed = True
+  app\services\reconciliation_health.py:102:        action = "ALLOW_UNVERIFIED"
+  app\services\reconciliation_health.py:103:
+  app\services\reconciliation_health.py:104:    counts = dict(summary.get("overall_counts") or {})
+  app\services\reconciliation_health.py:105:
+  app\services\reconciliation_health.py:106:    total = int(summary.get("total") or 0)
+  app\services\reconciliation_health.py:107:    clean_count = int(counts.get("MATCH", 0))
+  app\services\reconciliation_health.py:108:
+  app\services\reconciliation_health.py:109:    issue_count = max(
+  app\services\reconciliation_health.py:128:
+  app\services\reconciliation_health.py:129:        "operational_status": operational_status,
+> app\services\reconciliation_health.py:130:        "prediction_lock_allowed": prediction_lock_allowed,
+  app\services\reconciliation_health.py:131:        "action": action,
+  app\services\reconciliation_health.py:132:
+  app\services\reconciliation_health.py:133:        "quality_gate": effective_gate,
+  app\services\reconciliation_health.py:134:        "reported_quality_gate": reported_gate,
+  app\services\reconciliation_health.py:135:
+  app\services\reconciliation_health.py:136:        "freshness": freshness,
+  app\services\reconciliation_health.py:137:        "age_minutes": (
+  app\services\reconciliation_health.py:138:            round(age_minutes, 2)
+  app\services\reconciliation_health.py:167:        "scheduler_module": "python -m app.market_scheduler",
+  app\services\reconciliation_health.py:168:
+> app\services\reconciliation_health.py:169:        "final_holdout_touched": False,
+  app\services\reconciliation_health.py:170:    }
+  app\services\social_content.py:257:        "video": video,
+  app\services\social_content.py:258:        "output_dir": str(output),
+> app\services\social_content.py:259:        "final_holdout_touched": False,
+  app\services\social_content.py:260:    }
+  app\services\social_content.py:261:    manifest_path = output / "manifest.json"
+  app\services\social_content.py:262:    manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+  app\services\social_content.py:263:    manifest["manifest"] = str(manifest_path)
+  app\services\social_content.py:264:    return manifest
+
+
+
+
+======================================================================
+STAGE 2 CORE INSPECTION COMPLETE
+======================================================================
+READ ONLY
+NO FILES MODIFIED EXCEPT THIS REPORT AND TEMPORARY PROBE
+NO DATABASE RECORDS MODIFIED
+NO PREDICTIONS MODIFIED
+NO PREDICTION LOCKS MODIFIED
+HISTORICAL HOLDOUT UNTOUCHED
+======================================================================
+

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MDRN SportsQ Source Record",
+  "type": "object",
+  "required": [
+    "source_id",
+    "name",
+    "base_url",
+    "trust_class",
+    "status"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "base_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "trust_class": {
+      "enum": [
+        "OFFICIAL",
+        "TRUSTED",
+        "OPEN_MEDIA",
+        "UNVERIFIED"
+      ]
+    },
+    "status": {
+      "enum": [
+        "ACTIVE",
+        "PENDING",
+        "BLOCKED",
+        "RETIRED"
+      ]
+    },
+    "scope": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_verified_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

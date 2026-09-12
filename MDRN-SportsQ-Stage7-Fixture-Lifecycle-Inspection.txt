@@ -1,0 +1,2492 @@
+
+==============================================================================
+1. BASE VERSION / STAGE GATE
+==============================================================================
+app.__version__=1.0.4-stage6-news-impact
+proposed_stage7_version=1.0.5-stage7-fixture-lifecycle
+PASS: Installed base remains 1.0.4-stage6-news-impact
+
+==============================================================================
+2. RELEVANT FILE INVENTORY / PYTHON SYNTAX
+==============================================================================
+
+FILE: app/scheduler.py
+exists=True
+size_bytes=2236
+python_parse=PASS
+
+FILE: app/market_scheduler.py
+exists=True
+size_bytes=14441
+python_parse=PASS
+
+FILE: app/cli.py
+exists=True
+size_bytes=31274
+python_parse=PASS
+
+FILE: app/config.py
+exists=True
+size_bytes=5438
+python_parse=PASS
+
+FILE: app/models.py
+exists=True
+size_bytes=30962
+python_parse=PASS
+
+FILE: app/main.py
+exists=True
+size_bytes=30577
+python_parse=PASS
+
+FILE: app/providers/api_football.py
+exists=True
+size_bytes=4681
+python_parse=PASS
+
+FILE: app/providers/live_score_api.py
+exists=True
+size_bytes=7092
+python_parse=PASS
+
+FILE: app/services/fixture_ingestor.py
+exists=True
+size_bytes=7762
+python_parse=PASS
+
+FILE: app/services/live_score_ingestor.py
+exists=True
+size_bytes=10711
+python_parse=PASS
+
+FILE: app/services/market_refresh.py
+exists=True
+size_bytes=7479
+python_parse=PASS
+
+FILE: app/services/live_prediction_engine.py
+exists=True
+size_bytes=8503
+python_parse=PASS
+
+FILE: app/services/prediction_grading.py
+exists=True
+size_bytes=6356
+python_parse=PASS
+
+FILE: app/services/sportsq_scorecall.py
+exists=True
+size_bytes=21914
+python_parse=PASS
+
+FILE: app/services/sportsq_news_impact.py
+exists=True
+size_bytes=30619
+python_parse=PASS
+
+FILE: app/services/sportsq_intelligence.py
+exists=True
+size_bytes=25324
+python_parse=PASS
+
+FILE: app/services/sportsq_stage3.py
+exists=True
+size_bytes=32563
+python_parse=PASS
+
+FILE: app/services/social_content.py
+exists=True
+size_bytes=7985
+python_parse=PASS
+
+==============================================================================
+3. TOP-LEVEL SYMBOL MAP
+==============================================================================
+
+FILE: app/scheduler.py
+functions=[]
+async_functions=["fixture_job", "result_job", "main"]
+classes=[]
+
+FILE: app/market_scheduler.py
+functions=["_openfootball_season_label"]
+async_functions=["openfootball_reconciliation_job", "live_market_job", "source_health_job", "public_web_job", "main"]
+classes=[]
+
+FILE: app/cli.py
+functions=["_date", "_add_pagination_args", "_build_features", "_evaluate_baselines", "_evaluate_ensemble", "_evaluate_market_residual", "_select_high_confidence", "_run_live_predictions", "_list_live_predictions", "_grade_live_predictions", "_live_performance", "_generate_social_content", "_seed_data_sources", "_list_data_sources", "_add_web_source", "_resolve_source_field", "_capture_odds_snapshots", "_list_odds_history", "_odds_movement", "_run_source_health_checks", "_refresh_live_market", "_add_web_target", "_list_web_targets", "_collect_web_targets", "_seed_source_policies", "_list_source_policies", "_set_source_policy", "_sync_openfootball_epl", "_reconcile_openfootball_epl", "_reconciliation_summary", "_reconciliation_issues", "main"]
+async_functions=["_sync_api_football", "_refresh_api_football", "_sync_live_fixtures", "_sync_live_history", "_sync_football_data_history", "_collect_public_url"]
+classes=[]
+
+FILE: app/config.py
+functions=["get_settings"]
+async_functions=[]
+classes=["Settings"]
+
+FILE: app/models.py
+functions=["utcnow"]
+async_functions=[]
+classes=["LeagueSeason", "Team", "Fixture", "SyncRun", "LivePrediction", "OddsSnapshot", "DataSource", "SourceSnapshot", "SourceObservation", "SourcePolicy", "FixtureReconciliation", "MarketSafetyEvent", "MarketSafetyAlertDelivery", "MarketSafetyIncident", "MarketSafetySlaAlert", "WebCollectionTarget"]
+
+FILE: app/main.py
+functions=["health", "status", "fixtures", "predictions_live", "predictions_performance", "_own_api_guard", "api_v1_health", "api_v1_sources", "api_v1_sources_health", "api_v1_upcoming_fixtures", "api_v1_high_confidence_predictions", "api_v1_prediction_performance", "api_v1_resolve_provenance", "api_v1_odds_history", "api_v1_odds_movement", "api_v1_market_safety", "api_v1_market_safety_history", "api_v1_market_safety_transitions", "api_v1_market_reliability", "api_v1_market_reliability_integrity", "api_v1_market_reliability_sla", "api_v1_market_safety_incidents", "api_v1_market_safety_incident_active", "api_v1_market_safety_incident_metrics", "api_v1_market_safety_deliveries", "api_v1_market_status", "api_v1_web_targets", "api_v1_source_policies", "api_v1_reconciliation_summary", "api_v1_reconciliation_health", "api_v1_reconciliation_issues", "api_v1_sportsq_intelligence", "api_v1_sportsq_fixture_intelligence", "api_v1_sportsq_form_index", "api_v1_sportsq_news_impact_status", "api_v1_sportsq_news_impact_events", "api_v1_sportsq_news_impact", "api_v1_sportsq_accuracy", "api_v1_sportsq_capabilities", "sportsq_dashboard", "api_v1_sportsq_stage3_status", "api_v1_sportsq_stage3_preview", "api_v1_sportsq_stage3_generate", "api_v1_sportsq_stage3_queue", "api_v1_sportsq_stage3_enqueue", "api_v1_sportsq_stage3_approve", "api_v1_sportsq_stage3_cancel", "api_v1_sportsq_stage3_process", "api_v1_sportsq_stage3_generate_fixture", "api_v1_sportsq_stage4_status", "api_v1_sportsq_stage4_sources", "api_v1_sportsq_stage4_media", "api_v1_sportsq_stage4_media_asset", "api_v1_sportsq_stage4_rights", "api_v1_sportsq_scorecall_status", "api_v1_sportsq_scorecall_list", "api_v1_sportsq_scorecall_fixture"]
+async_functions=["lifespan"]
+classes=[]
+
+FILE: app/providers/api_football.py
+functions=[]
+async_functions=[]
+classes=["ApiFootballError", "ApiResponse", "ApiFootballClient"]
+
+FILE: app/providers/live_score_api.py
+functions=[]
+async_functions=[]
+classes=["LiveScoreApiError", "LiveScoreResponse", "LiveScoreApiClient"]
+
+FILE: app/services/fixture_ingestor.py
+functions=["_get_or_create_league", "_get_or_create_team", "upsert_fixture", "ingest_payload", "unfinished_provider_ids", "_chunks"]
+async_functions=["sync_fixture_window", "refresh_unfinished_results"]
+classes=["IngestionSummary"]
+
+FILE: app/services/live_score_ingestor.py
+functions=["_league", "_team", "upsert_normalized", "_ingest"]
+async_functions=["_sync_pages", "sync_live_score_fixtures", "sync_live_score_history"]
+classes=[]
+
+FILE: app/services/market_refresh.py
+functions=[]
+async_functions=["refresh_live_market"]
+classes=[]
+
+FILE: app/services/live_prediction_engine.py
+functions=["_utc", "_safe_json", "_decimal_odd", "extract_pre_match_odds", "fair_probabilities_from_decimal_odds", "generate_live_predictions", "list_live_predictions"]
+async_functions=[]
+classes=[]
+
+FILE: app/services/prediction_grading.py
+functions=["_utc", "grade_live_predictions", "_prob_for_actual", "_brier", "performance_summary", "live_prediction_rows"]
+async_functions=[]
+classes=[]
+
+FILE: app/services/sportsq_scorecall.py
+functions=["_utc", "_db_utc", "_serialise", "ensure_scorecall_schema", "_poisson_probability", "_normalise_outcome", "_matches_outcome", "exact_score_from_lambdas", "_shrink_rate", "_historical_context", "get_scorecall_lock", "list_scorecall_locks", "lock_scorecalls_for_existing_predictions", "scorecall_status"]
+async_functions=[]
+classes=[]
+
+FILE: app/services/sportsq_news_impact.py
+functions=["_utc", "_db_utc", "_parse_dt", "ensure_news_impact_schema", "_normalise_name", "_source_verification", "_normalise_availability", "normalise_api_football_injuries", "normalise_api_football_lineups", "_event_key", "record_team_news_event", "_player_key", "_source_player_key", "_status_group", "compute_news_impact_from_events", "_fixture_context", "list_team_news_events", "news_impact_for_fixture", "news_impact_status"]
+async_functions=[]
+classes=[]
+
+FILE: app/services/sportsq_intelligence.py
+functions=["_table_names", "_columns", "_value", "_to_float", "_probability_value", "_probabilities", "_normalise_1x2", "_prediction_label", "_confidence_percent", "_confidence_band", "_score_call", "_form_band", "_form_index_from_matches", "_fixture", "_team_name", "_recent_team_form", "_news_impact", "_module_status", "_invoke_existing", "_raw_prediction_rows", "_existing_prediction_rows", "_row_fixture_id", "_intelligence_item", "list_sportsq_intelligence", "get_sportsq_intelligence", "sportsq_accuracy_summary", "sportsq_capabilities"]
+async_functions=[]
+classes=[]
+
+FILE: app/services/sportsq_stage3.py
+functions=["_utc_now", "_iso", "_safe_stem", "_font", "_draw_text", "_base_canvas", "_prediction_copy", "render_prediction_card", "render_accuracy_card", "render_news_card", "_content_root", "platform_readiness", "stage3_status", "content_preview", "generate_content_package", "_queue_file", "_read_queue", "_write_queue", "list_queue", "_package_manifest", "enqueue_package", "_mutate_queue_item", "approve_queue_item", "cancel_queue_item", "process_queue_item", "generate_fixture_content_package"]
+async_functions=[]
+classes=[]
+
+FILE: app/services/social_content.py
+functions=["_resolve_ffmpeg", "_font", "_utc", "_prediction_name", "_safe_name", "render_prediction_card", "_caption", "_make_static_video", "generate_social_package"]
+async_functions=[]
+classes=[]
+
+==============================================================================
+4. EXISTING FIXTURE / RESULT INGESTION
+==============================================================================
+
+--- app/scheduler.py ---
+
+NEEDLE: fixture | matches=9
+  0007: 
+  0008: from app.config import get_settings
+  0009: from app.db import SessionLocal, init_db
+  0010: from app.providers.api_football import ApiFootballClient
+> 0011: from app.services.fixture_ingestor import refresh_unfinished_results, sync_fixture_window
+  0012: 
+  0013: 
+  0014: settings = get_settings()
+  0015: 
+  0013: 
+  0014: settings = get_settings()
+  0015: 
+  0016: 
+> 0017: async def fixture_job() -> None:
+  0018:     today = date.today()
+  0019:     from_date = today - timedelta(days=settings.fixture_lookback_days)
+  0020:     to_date = today + timedelta(days=settings.fixture_lookahead_days)
+  0021: 
+  0015: 
+  0016: 
+  0017: async def fixture_job() -> None:
+  0018:     today = date.today()
+> 0019:     from_date = today - timedelta(days=settings.fixture_lookback_days)
+  0020:     to_date = today + timedelta(days=settings.fixture_lookahead_days)
+  0021: 
+  0022:     async with ApiFootballClient(settings) as client:
+  0023:         for league, season in settings.tracked_competitions():
+  0016: 
+  0017: async def fixture_job() -> None:
+  0018:     today = date.today()
+  0019:     from_date = today - timedelta(days=settings.fixture_lookback_days)
+> 0020:     to_date = today + timedelta(days=settings.fixture_lookahead_days)
+  0021: 
+  0022:     async with ApiFootballClient(settings) as client:
+  0023:         for league, season in settings.tracked_competitions():
+  0024:             with SessionLocal() as session:
+  0021: 
+  0022:     async with ApiFootballClient(settings) as client:
+  0023:         for league, season in settings.tracked_competitions():
+  0024:             with SessionLocal() as session:
+> 0025:                 summary = await sync_fixture_window(
+  0026:                     session,
+  0027:                     client,
+  0028:                     league=league,
+  0029:                     season=season,
+
+NEEDLE: result | matches=8
+  0032:                 )
+  0033:                 print(f"[fixtures] league={league} season={season} {dict(summary)}")
+  0034: 
+  0035: 
+> 0036: async def result_job() -> None:
+  0037:     async with ApiFootballClient(settings) as client:
+  0038:         with SessionLocal() as session:
+  0039:             summary = await refresh_unfinished_results(
+  0040:                 session,
+  0035: 
+  0036: async def result_job() -> None:
+  0037:     async with ApiFootballClient(settings) as client:
+  0038:         with SessionLocal() as session:
+> 0039:             summary = await refresh_unfinished_results(
+  0040:                 session,
+  0041:                 client,
+  0042:                 lookback_hours=settings.result_lookback_hours,
+  0043:             )
+  0038:         with SessionLocal() as session:
+  0039:             summary = await refresh_unfinished_results(
+  0040:                 session,
+  0041:                 client,
+> 0042:                 lookback_hours=settings.result_lookback_hours,
+  0043:             )
+  0044:             print(f"[results] {dict(summary)}")
+  0045: 
+  0046: 
+  0040:                 session,
+  0041:                 client,
+  0042:                 lookback_hours=settings.result_lookback_hours,
+  0043:             )
+> 0044:             print(f"[results] {dict(summary)}")
+  0045: 
+  0046: 
+  0047: async def main() -> None:
+  0048:     settings.require_api_key()
+
+NEEDLE: refresh | matches=2
+
+NEEDLE: ingest | matches=1
+
+NEEDLE: grade | matches=0
+
+NEEDLE: prediction | matches=0
+
+--- app/market_scheduler.py ---
+
+NEEDLE: fixture | matches=2
+  0006: 
+  0007: from app.config import get_settings
+  0008: from app.db import SessionLocal, init_db
+  0009: from app.providers.openfootball_json import OpenFootballJsonClient
+> 0010: from app.services.fixture_reconciliation import reconcile_openfootball_payload
+  0011: from app.services.market_refresh import refresh_live_market
+  0012: from app.services.market_safety import market_safety_status
+  0013: from app.services.market_safety_events import record_market_safety_event
+  0014: from app.services.market_safety_incidents import process_market_safety_incident
+  0076:                 "competition_id": competition,
+  0077:                 "season": season,
+  0078:                 "season_label": season_label,
+  0079:                 "quality_gate": summary.get("quality_gate"),
+> 0080:                 "fixture_agreement_rate": summary.get("fixture_agreement_rate"),
+  0081:                 "overall_counts": summary.get("overall_counts", {}),
+  0082:                 "final_holdout_touched": False,
+  0083:             }
+  0084:             results.append(item)
+
+NEEDLE: result | matches=19
+  0036:     OpenFootball is currently configured for EPL competition 2 only. Provider
+  0037:     failure is isolated from the market-refresh workflow: Phase 10A.7 freshness
+  0038:     protection decides whether persisted reconciliation can still be trusted.
+  0039:     """
+> 0040:     results = []
+  0041: 
+  0042:     for competition, season in settings.live_score_competitions():
+  0043:         competition = int(competition)
+  0044:         season = int(season)
+  0080:                 "fixture_agreement_rate": summary.get("fixture_agreement_rate"),
+  0081:                 "overall_counts": summary.get("overall_counts", {}),
+  0082:                 "final_holdout_touched": False,
+  0083:             }
+> 0084:             results.append(item)
+  0085:             print(
+  0086:                 f"[reconciliation-refresh] competition={competition} "
+  0087:                 f"season={season} {item}"
+  0088:             )
+  0095:                 "season_label": season_label,
+  0096:                 "detail": type(exc).__name__,
+  0097:                 "final_holdout_touched": False,
+  0098:             }
+> 0099:             results.append(item)
+  0100:             print(
+  0101:                 f"[reconciliation-refresh] competition={competition} "
+  0102:                 f"season={season} {item}"
+  0103:             )
+  0101:                 f"[reconciliation-refresh] competition={competition} "
+  0102:                 f"season={season} {item}"
+  0103:             )
+  0104: 
+> 0105:     if not results:
+  0106:         status = "not_configured"
+  0107:     elif all(item["status"] == "success" for item in results):
+  0108:         status = "success"
+  0109:     else:
+  0103:             )
+  0104: 
+  0105:     if not results:
+  0106:         status = "not_configured"
+> 0107:     elif all(item["status"] == "success" for item in results):
+  0108:         status = "success"
+  0109:     else:
+  0110:         status = "partial"
+  0111: 
+
+NEEDLE: refresh | matches=10
+  0007: from app.config import get_settings
+  0008: from app.db import SessionLocal, init_db
+  0009: from app.providers.openfootball_json import OpenFootballJsonClient
+  0010: from app.services.fixture_reconciliation import reconcile_openfootball_payload
+> 0011: from app.services.market_refresh import refresh_live_market
+  0012: from app.services.market_safety import market_safety_status
+  0013: from app.services.market_safety_events import record_market_safety_event
+  0014: from app.services.market_safety_incidents import process_market_safety_incident
+  0015: from app.services.market_reliability import (
+  0030:     return f"{season}-{str(season + 1)[-2:]}"
+  0031: 
+  0032: 
+  0033: async def openfootball_reconciliation_job() -> dict:
+> 0034:     """Refresh EPL OpenFootball reconciliation before scheduled market locking.
+  0035: 
+  0036:     OpenFootball is currently configured for EPL competition 2 only. Provider
+  0037:     failure is isolated from the market-refresh workflow: Phase 10A.7 freshness
+  0038:     protection decides whether persisted reconciliation can still be trusted.
+  0033: async def openfootball_reconciliation_job() -> dict:
+  0034:     """Refresh EPL OpenFootball reconciliation before scheduled market locking.
+  0035: 
+  0036:     OpenFootball is currently configured for EPL competition 2 only. Provider
+> 0037:     failure is isolated from the market-refresh workflow: Phase 10A.7 freshness
+  0038:     protection decides whether persisted reconciliation can still be trusted.
+  0039:     """
+  0040:     results = []
+  0041: 
+  0082:                 "final_holdout_touched": False,
+  0083:             }
+  0084:             results.append(item)
+  0085:             print(
+> 0086:                 f"[reconciliation-refresh] competition={competition} "
+  0087:                 f"season={season} {item}"
+  0088:             )
+  0089: 
+  0090:         except Exception as exc:
+  0097:                 "final_holdout_touched": False,
+  0098:             }
+  0099:             results.append(item)
+  0100:             print(
+> 0101:                 f"[reconciliation-refresh] competition={competition} "
+  0102:                 f"season={season} {item}"
+  0103:             )
+  0104: 
+  0105:     if not results:
+
+NEEDLE: prediction | matches=1
+  0198:                     f"alert={event.get('alert_type')}"
+  0199:                 )
+  0200: 
+  0201:                 # Incident lifecycle is operational observability.
+> 0202:                 # Failure here must never interrupt prediction refresh
+  0203:                 # or transition-alert delivery.
+  0204:                 try:
+  0205:                     incident_state = process_market_safety_incident(
+  0206:                         session,
+
+NEEDLE: lock | matches=1
+
+--- app/services/fixture_ingestor.py ---
+
+NEEDLE: fixture | matches=21
+  0007: 
+  0008: from sqlalchemy import and_, select
+  0009: from sqlalchemy.orm import Session
+  0010: 
+> 0011: from app.models import Fixture, LeagueSeason, SyncRun, Team
+  0012: from app.providers.api_football import ApiFootballClient
+  0013: from app.validation import FixtureValidationError, NormalizedFixture, normalize_fixture
+  0014: 
+  0015: 
+  0009: from sqlalchemy.orm import Session
+  0010: 
+  0011: from app.models import Fixture, LeagueSeason, SyncRun, Team
+  0012: from app.providers.api_football import ApiFootballClient
+> 0013: from app.validation import FixtureValidationError, NormalizedFixture, normalize_fixture
+  0014: 
+  0015: 
+  0016: class IngestionSummary(dict):
+  0017:     pass
+  0016: class IngestionSummary(dict):
+  0017:     pass
+  0018: 
+  0019: 
+> 0020: def _get_or_create_league(session: Session, f: NormalizedFixture) -> LeagueSeason:
+  0021:     row = session.scalar(
+  0022:         select(LeagueSeason).where(
+  0023:             LeagueSeason.provider == "api-football",
+  0024:             LeagueSeason.provider_league_id == f.league_id,
+  0074:         row.logo_url = logo_url
+  0075:     return row
+  0076: 
+  0077: 
+> 0078: def upsert_fixture(session: Session, raw: dict) -> tuple[Fixture, bool]:
+  0079:     f = normalize_fixture(raw)
+  0080:     league = _get_or_create_league(session, f)
+  0081:     home = _get_or_create_team(
+  0082:         session,
+  0075:     return row
+  0076: 
+  0077: 
+  0078: def upsert_fixture(session: Session, raw: dict) -> tuple[Fixture, bool]:
+> 0079:     f = normalize_fixture(raw)
+  0080:     league = _get_or_create_league(session, f)
+  0081:     home = _get_or_create_team(
+  0082:         session,
+  0083:         provider_team_id=f.home_team_id,
+
+NEEDLE: upsert | matches=2
+  0151:     errors: list[str] = []
+  0152: 
+  0153:     for raw in items:
+  0154:         try:
+> 0155:             _, was_inserted = upsert_fixture(session, raw)
+  0156:             if was_inserted:
+  0157:                 inserted += 1
+  0158:             else:
+  0159:                 updated += 1
+
+NEEDLE: provider_fixture | matches=3
+  0093: 
+  0094:     row = session.scalar(
+  0095:         select(Fixture).where(
+  0096:             Fixture.provider == "api-football",
+> 0097:             Fixture.provider_fixture_id == f.provider_fixture_id,
+  0098:         )
+  0099:     )
+  0100:     inserted = row is None
+  0101:     if row is None:
+  0100:     inserted = row is None
+  0101:     if row is None:
+  0102:         row = Fixture(
+  0103:             provider="api-football",
+> 0104:             provider_fixture_id=f.provider_fixture_id,
+  0105:             league_season_id=league.id,
+  0106:             home_team_id=home.id,
+  0107:             away_team_id=away.id,
+  0108:             kickoff_utc=f.kickoff_utc,
+  0209: ) -> list[int]:
+  0210:     now = now or datetime.now(timezone.utc)
+  0211:     cutoff = now - timedelta(hours=lookback_hours)
+  0212:     stmt = (
+> 0213:         select(Fixture.provider_fixture_id)
+  0214:         .where(
+  0215:             Fixture.is_finished.is_(False),
+  0216:             Fixture.kickoff_utc <= now,
+  0217:             Fixture.kickoff_utc >= cutoff,
+
+NEEDLE: status | matches=5
+  0105:             league_season_id=league.id,
+  0106:             home_team_id=home.id,
+  0107:             away_team_id=away.id,
+  0108:             kickoff_utc=f.kickoff_utc,
+> 0109:             status_short=f.status_short,
+  0110:             raw_json="{}",
+  0111:         )
+  0112:         session.add(row)
+  0113: 
+  0120:     row.referee = f.referee
+  0121:     row.venue_id = f.venue_id
+  0122:     row.venue_name = f.venue_name
+  0123:     row.venue_city = f.venue_city
+> 0124:     row.status_short = f.status_short
+  0125:     row.status_long = f.status_long
+  0126:     row.elapsed = f.elapsed
+  0127:     row.home_goals = f.home_goals
+  0128:     row.away_goals = f.away_goals
+  0121:     row.venue_id = f.venue_id
+  0122:     row.venue_name = f.venue_name
+  0123:     row.venue_city = f.venue_city
+  0124:     row.status_short = f.status_short
+> 0125:     row.status_long = f.status_long
+  0126:     row.elapsed = f.elapsed
+  0127:     row.home_goals = f.home_goals
+  0128:     row.away_goals = f.away_goals
+  0129:     row.halftime_home = f.halftime_home
+  0142:     return row, inserted
+  0143: 
+  0144: 
+  0145: def ingest_payload(session: Session, items: Sequence[dict], run_type: str) -> IngestionSummary:
+> 0146:     run = SyncRun(run_type=run_type, status="running", received=len(items))
+  0147:     session.add(run)
+  0148:     session.flush()
+  0149: 
+  0150:     inserted = updated = rejected = 0
+  0163: 
+  0164:     run.inserted = inserted
+  0165:     run.updated = updated
+  0166:     run.rejected = rejected
+> 0167:     run.status = "success" if not errors else "partial"
+  0168:     run.finished_at = datetime.now(timezone.utc)
+  0169:     if errors:
+  0170:         run.error_message = " | ".join(errors[:10])
+  0171: 
+
+NEEDLE: finished | matches=6
+  0133:     row.extratime_home = f.extratime_home
+  0134:     row.extratime_away = f.extratime_away
+  0135:     row.penalty_home = f.penalty_home
+  0136:     row.penalty_away = f.penalty_away
+> 0137:     row.is_finished = f.is_finished
+  0138:     row.result_1x2 = f.result_1x2
+  0139:     row.raw_json = json.dumps(raw, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+  0140:     row.provider_updated_at = datetime.now(timezone.utc)
+  0141:     session.flush()
+  0164:     run.inserted = inserted
+  0165:     run.updated = updated
+  0166:     run.rejected = rejected
+  0167:     run.status = "success" if not errors else "partial"
+> 0168:     run.finished_at = datetime.now(timezone.utc)
+  0169:     if errors:
+  0170:         run.error_message = " | ".join(errors[:10])
+  0171: 
+  0172:     session.commit()
+  0200:     summary["requests_remaining"] = response.requests_remaining
+  0201:     return summary
+  0202: 
+  0203: 
+> 0204: def unfinished_provider_ids(
+  0205:     session: Session,
+  0206:     *,
+  0207:     lookback_hours: int = 36,
+  0208:     now: datetime | None = None,
+  0211:     cutoff = now - timedelta(hours=lookback_hours)
+  0212:     stmt = (
+  0213:         select(Fixture.provider_fixture_id)
+  0214:         .where(
+> 0215:             Fixture.is_finished.is_(False),
+  0216:             Fixture.kickoff_utc <= now,
+  0217:             Fixture.kickoff_utc >= cutoff,
+  0218:         )
+  0219:         .order_by(Fixture.kickoff_utc.asc())
+  0225:     for i in range(0, len(values), size):
+  0226:         yield values[i:i + size]
+  0227: 
+  0228: 
+> 0229: async def refresh_unfinished_results(
+  0230:     session: Session,
+  0231:     client: ApiFootballClient,
+  0232:     *,
+  0233:     lookback_hours: int = 36,
+
+--- app/services/live_score_ingestor.py ---
+
+NEEDLE: fixture | matches=15
+  0009: 
+  0010: from app.live_score_validation import (
+  0011:     LiveScoreNormalized,
+  0012:     LiveScoreValidationError,
+> 0013:     normalize_live_score_fixture,
+  0014:     normalize_live_score_history,
+  0015: )
+  0016: from app.models import Fixture, LeagueSeason, SyncRun, Team
+  0017: from app.providers.live_score_api import LiveScoreApiClient
+  0012:     LiveScoreValidationError,
+  0013:     normalize_live_score_fixture,
+  0014:     normalize_live_score_history,
+  0015: )
+> 0016: from app.models import Fixture, LeagueSeason, SyncRun, Team
+  0017: from app.providers.live_score_api import LiveScoreApiClient
+  0018: 
+  0019: 
+  0020: PROVIDER = "live-score-api"
+  0066:         row.logo_url = logo
+  0067:     return row
+  0068: 
+  0069: 
+> 0070: def upsert_normalized(session: Session, n: LiveScoreNormalized, raw: dict) -> tuple[Fixture, bool]:
+  0071:     league = _league(session, n)
+  0072:     home = _team(session, n.home_team_id, n.home_team_name, n.home_team_logo)
+  0073:     away = _team(session, n.away_team_id, n.away_team_name, n.away_team_logo)
+  0074: 
+  0072:     home = _team(session, n.home_team_id, n.home_team_name, n.home_team_logo)
+  0073:     away = _team(session, n.away_team_id, n.away_team_name, n.away_team_logo)
+  0074: 
+  0075:     row = session.scalar(
+> 0076:         select(Fixture).where(
+  0077:             Fixture.provider == PROVIDER,
+  0078:             Fixture.provider_fixture_id == n.provider_fixture_id,
+  0079:         )
+  0080:     )
+  0073:     away = _team(session, n.away_team_id, n.away_team_name, n.away_team_logo)
+  0074: 
+  0075:     row = session.scalar(
+  0076:         select(Fixture).where(
+> 0077:             Fixture.provider == PROVIDER,
+  0078:             Fixture.provider_fixture_id == n.provider_fixture_id,
+  0079:         )
+  0080:     )
+  0081:     inserted = row is None
+
+NEEDLE: result | matches=8
+  0111:     row.extratime_away = n.extratime_away
+  0112:     row.penalty_home = n.penalty_home
+  0113:     row.penalty_away = n.penalty_away
+  0114:     row.is_finished = n.is_finished
+> 0115:     row.result_1x2 = n.result_1x2
+  0116:     row.raw_json = json.dumps(raw, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+  0117:     row.provider_updated_at = datetime.now(timezone.utc)
+  0118:     session.flush()
+  0119:     return row, inserted
+  0232:             break
+  0233:         if signature:
+  0234:             seen_page_signatures.add(signature)
+  0235: 
+> 0236:         page_result = _ingest(
+  0237:             session,
+  0238:             items,
+  0239:             season=season,
+  0240:             run_type=run_type,
+  0239:             season=season,
+  0240:             run_type=run_type,
+  0241:             normalizer=normalizer,
+  0242:         )
+> 0243:         totals["received"] += page_result["received"]
+  0244:         totals["inserted"] += page_result["inserted"]
+  0245:         totals["updated"] += page_result["updated"]
+  0246:         totals["rejected"] += page_result["rejected"]
+  0247:         totals["errors"].extend(page_result["errors"])
+  0240:             run_type=run_type,
+  0241:             normalizer=normalizer,
+  0242:         )
+  0243:         totals["received"] += page_result["received"]
+> 0244:         totals["inserted"] += page_result["inserted"]
+  0245:         totals["updated"] += page_result["updated"]
+  0246:         totals["rejected"] += page_result["rejected"]
+  0247:         totals["errors"].extend(page_result["errors"])
+  0248:         totals["pages_processed"] += 1
+  0241:             normalizer=normalizer,
+  0242:         )
+  0243:         totals["received"] += page_result["received"]
+  0244:         totals["inserted"] += page_result["inserted"]
+> 0245:         totals["updated"] += page_result["updated"]
+  0246:         totals["rejected"] += page_result["rejected"]
+  0247:         totals["errors"].extend(page_result["errors"])
+  0248:         totals["pages_processed"] += 1
+  0249:         totals["last_successful_page"] = current_page
+
+NEEDLE: status | matches=6
+  0086:             league_season_id=league.id,
+  0087:             home_team_id=home.id,
+  0088:             away_team_id=away.id,
+  0089:             kickoff_utc=n.kickoff_utc,
+> 0090:             status_short=n.status_short,
+  0091:             raw_json="{}",
+  0092:         )
+  0093:         session.add(row)
+  0094: 
+  0098:     row.kickoff_utc = n.kickoff_utc
+  0099:     row.timezone = "UTC"
+  0100:     row.round_name = n.round_name
+  0101:     row.venue_name = n.venue_name
+> 0102:     row.status_short = n.status_short
+  0103:     row.status_long = n.status_long
+  0104:     row.home_goals = n.home_goals
+  0105:     row.away_goals = n.away_goals
+  0106:     row.halftime_home = n.halftime_home
+  0099:     row.timezone = "UTC"
+  0100:     row.round_name = n.round_name
+  0101:     row.venue_name = n.venue_name
+  0102:     row.status_short = n.status_short
+> 0103:     row.status_long = n.status_long
+  0104:     row.home_goals = n.home_goals
+  0105:     row.away_goals = n.away_goals
+  0106:     row.halftime_home = n.halftime_home
+  0107:     row.halftime_away = n.halftime_away
+  0126:     season: int,
+  0127:     run_type: str,
+  0128:     normalizer: Callable,
+  0129: ) -> dict:
+> 0130:     run = SyncRun(run_type=run_type, provider=PROVIDER, status="running", received=len(items))
+  0131:     session.add(run)
+  0132:     session.flush()
+  0133: 
+  0134:     inserted = updated = rejected = 0
+  0146: 
+  0147:     run.inserted = inserted
+  0148:     run.updated = updated
+  0149:     run.rejected = rejected
+> 0150:     run.status = "success" if not errors else "partial"
+  0151:     run.finished_at = datetime.now(timezone.utc)
+  0152:     run.error_message = " | ".join(errors[:10]) if errors else None
+  0153:     session.commit()
+  0154: 
+
+NEEDLE: finished | matches=2
+  0110:     row.extratime_home = n.extratime_home
+  0111:     row.extratime_away = n.extratime_away
+  0112:     row.penalty_home = n.penalty_home
+  0113:     row.penalty_away = n.penalty_away
+> 0114:     row.is_finished = n.is_finished
+  0115:     row.result_1x2 = n.result_1x2
+  0116:     row.raw_json = json.dumps(raw, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+  0117:     row.provider_updated_at = datetime.now(timezone.utc)
+  0118:     session.flush()
+  0147:     run.inserted = inserted
+  0148:     run.updated = updated
+  0149:     run.rejected = rejected
+  0150:     run.status = "success" if not errors else "partial"
+> 0151:     run.finished_at = datetime.now(timezone.utc)
+  0152:     run.error_message = " | ".join(errors[:10]) if errors else None
+  0153:     session.commit()
+  0154: 
+  0155:     return {
+
+NEEDLE: score | matches=21
+  0006: 
+  0007: from sqlalchemy import select
+  0008: from sqlalchemy.orm import Session
+  0009: 
+> 0010: from app.live_score_validation import (
+  0011:     LiveScoreNormalized,
+  0012:     LiveScoreValidationError,
+  0013:     normalize_live_score_fixture,
+  0014:     normalize_live_score_history,
+  0007: from sqlalchemy import select
+  0008: from sqlalchemy.orm import Session
+  0009: 
+  0010: from app.live_score_validation import (
+> 0011:     LiveScoreNormalized,
+  0012:     LiveScoreValidationError,
+  0013:     normalize_live_score_fixture,
+  0014:     normalize_live_score_history,
+  0015: )
+  0008: from sqlalchemy.orm import Session
+  0009: 
+  0010: from app.live_score_validation import (
+  0011:     LiveScoreNormalized,
+> 0012:     LiveScoreValidationError,
+  0013:     normalize_live_score_fixture,
+  0014:     normalize_live_score_history,
+  0015: )
+  0016: from app.models import Fixture, LeagueSeason, SyncRun, Team
+  0010: from app.live_score_validation import (
+  0011:     LiveScoreNormalized,
+  0012:     LiveScoreValidationError,
+  0013:     normalize_live_score_fixture,
+> 0014:     normalize_live_score_history,
+  0015: )
+  0016: from app.models import Fixture, LeagueSeason, SyncRun, Team
+  0017: from app.providers.live_score_api import LiveScoreApiClient
+  0018: 
+
+--- app/services/market_refresh.py ---
+
+NEEDLE: fixture | matches=7
+  0007: 
+  0008: from app.config import Settings
+  0009: from app.providers.live_score_api import LiveScoreApiClient
+  0010: from app.services.live_prediction_engine import generate_live_predictions
+> 0011: from app.services.live_score_ingestor import sync_live_score_fixtures
+  0012: from app.services.odds_history import capture_pre_match_odds
+  0013: from app.services.fixture_reconciliation import reconciliation_summary
+  0014: from app.services.source_registry import (
+  0015:     get_source,
+  0009: from app.providers.live_score_api import LiveScoreApiClient
+  0010: from app.services.live_prediction_engine import generate_live_predictions
+  0011: from app.services.live_score_ingestor import sync_live_score_fixtures
+  0012: from app.services.odds_history import capture_pre_match_odds
+> 0013: from app.services.fixture_reconciliation import reconciliation_summary
+  0014: from app.services.source_registry import (
+  0015:     get_source,
+  0016:     mark_source_failure,
+  0017:     mark_source_success,
+  0027:     season: int,
+  0028:     threshold: float = 0.65,
+  0029:     max_pages: int | None = None,
+  0030: ) -> dict[str, Any]:
+> 0031:     """Refresh Live Score fixture payloads, capture changed odds, then lock new predictions.
+  0032: 
+  0033:     Existing live predictions are never rewritten. The final historical holdout is
+  0034:     not read by this workflow.
+  0035:     """
+  0048:         }
+  0049: 
+  0050:     try:
+  0051:         async with LiveScoreApiClient(settings) as client:
+> 0052:             sync = await sync_live_score_fixtures(
+  0053:                 session,
+  0054:                 client,
+  0055:                 competition_id=int(competition_id),
+  0056:                 season=int(season),
+  0058:             )
+  0059:         if sync.get("status") == "success":
+  0060:             mark_source_success(session, source, checked_at=when)
+  0061:         else:
+> 0062:             mark_source_failure(session, source, "Live Score fixture sync returned partial status", checked_at=when)
+  0063:         session.commit()
+  0064:     except Exception as exc:
+  0065:         # LiveScoreApiClient already sanitizes HTTP request failures; do not echo URLs.
+  0066:         detail = str(exc)
+
+NEEDLE: refresh | matches=7
+  0018:     seed_default_sources,
+  0019: )
+  0020: 
+  0021: 
+> 0022: async def refresh_live_market(
+  0023:     session: Session,
+  0024:     settings: Settings,
+  0025:     *,
+  0026:     competition_id: int,
+  0141:             now=when,
+  0142:         )
+  0143: 
+  0144:     if quality_gate == "FAIL":
+> 0145:         refresh_status = "blocked"
+  0146:     elif quality_gate in {"WARN", "STALE"} or sync.get("status") != "success":
+  0147:         refresh_status = "partial"
+  0148:     else:
+  0149:         refresh_status = "success"
+  0143: 
+  0144:     if quality_gate == "FAIL":
+  0145:         refresh_status = "blocked"
+  0146:     elif quality_gate in {"WARN", "STALE"} or sync.get("status") != "success":
+> 0147:         refresh_status = "partial"
+  0148:     else:
+  0149:         refresh_status = "success"
+  0150: 
+  0151:     return {
+  0145:         refresh_status = "blocked"
+  0146:     elif quality_gate in {"WARN", "STALE"} or sync.get("status") != "success":
+  0147:         refresh_status = "partial"
+  0148:     else:
+> 0149:         refresh_status = "success"
+  0150: 
+  0151:     return {
+  0152:         "status": refresh_status,
+  0153:         "provider": "live-score-api",
+
+NEEDLE: prediction | matches=11
+  0006: from sqlalchemy.orm import Session
+  0007: 
+  0008: from app.config import Settings
+  0009: from app.providers.live_score_api import LiveScoreApiClient
+> 0010: from app.services.live_prediction_engine import generate_live_predictions
+  0011: from app.services.live_score_ingestor import sync_live_score_fixtures
+  0012: from app.services.odds_history import capture_pre_match_odds
+  0013: from app.services.fixture_reconciliation import reconciliation_summary
+  0014: from app.services.source_registry import (
+  0029:     max_pages: int | None = None,
+  0030: ) -> dict[str, Any]:
+  0031:     """Refresh Live Score fixture payloads, capture changed odds, then lock new predictions.
+  0032: 
+> 0033:     Existing live predictions are never rewritten. The final historical holdout is
+  0034:     not read by this workflow.
+  0035:     """
+  0036:     seed_default_sources(session)
+  0037:     source = get_source(session, "live-score-api")
+  0117:         quality_gate = "STALE"
+  0118:         freshness = "MISSING_TIMESTAMP"
+  0119: 
+  0120:     if quality_gate == "FAIL":
+> 0121:         gate_action = "BLOCK_NEW_PREDICTIONS"
+  0122:         predictions = {
+  0123:             "locked_new": 0,
+  0124:             "already_locked": 0,
+  0125:             "high_confidence": 0,
+  0118:         freshness = "MISSING_TIMESTAMP"
+  0119: 
+  0120:     if quality_gate == "FAIL":
+  0121:         gate_action = "BLOCK_NEW_PREDICTIONS"
+> 0122:         predictions = {
+  0123:             "locked_new": 0,
+  0124:             "already_locked": 0,
+  0125:             "high_confidence": 0,
+  0126:             "pass": 0,
+
+NEEDLE: quality | matches=17
+  0087:         session,
+  0088:         competition_id=int(competition_id),
+  0089:         season=int(season),
+  0090:     )
+> 0091:     reported_quality_gate = str(reconciliation.get("quality_gate") or "UNKNOWN").upper()
+  0092:     quality_gate = reported_quality_gate
+  0093:     stale_after_minutes = max(1, int(settings.reconciliation_stale_after_minutes))
+  0094:     reconciliation_age_minutes = None
+  0095:     freshness = "NOT_INITIALIZED" if reported_quality_gate == "UNKNOWN" else "UNKNOWN"
+  0088:         competition_id=int(competition_id),
+  0089:         season=int(season),
+  0090:     )
+  0091:     reported_quality_gate = str(reconciliation.get("quality_gate") or "UNKNOWN").upper()
+> 0092:     quality_gate = reported_quality_gate
+  0093:     stale_after_minutes = max(1, int(settings.reconciliation_stale_after_minutes))
+  0094:     reconciliation_age_minutes = None
+  0095:     freshness = "NOT_INITIALIZED" if reported_quality_gate == "UNKNOWN" else "UNKNOWN"
+  0096: 
+  0091:     reported_quality_gate = str(reconciliation.get("quality_gate") or "UNKNOWN").upper()
+  0092:     quality_gate = reported_quality_gate
+  0093:     stale_after_minutes = max(1, int(settings.reconciliation_stale_after_minutes))
+  0094:     reconciliation_age_minutes = None
+> 0095:     freshness = "NOT_INITIALIZED" if reported_quality_gate == "UNKNOWN" else "UNKNOWN"
+  0096: 
+  0097:     last_checked_at = reconciliation.get("last_checked_at")
+  0098:     if last_checked_at:
+  0099:         try:
+  0105:                 0.0,
+  0106:                 (when - checked_at).total_seconds() / 60.0,
+  0107:             )
+  0108:             if reconciliation_age_minutes > stale_after_minutes:
+> 0109:                 quality_gate = "STALE"
+  0110:                 freshness = "STALE"
+  0111:             else:
+  0112:                 freshness = "FRESH"
+  0113:         except (TypeError, ValueError):
+  0110:                 freshness = "STALE"
+  0111:             else:
+  0112:                 freshness = "FRESH"
+  0113:         except (TypeError, ValueError):
+> 0114:             quality_gate = "STALE"
+  0115:             freshness = "INVALID_TIMESTAMP"
+  0116:     elif reported_quality_gate != "UNKNOWN":
+  0117:         quality_gate = "STALE"
+  0118:         freshness = "MISSING_TIMESTAMP"
+
+NEEDLE: gate | matches=19
+
+==============================================================================
+5. EXISTING PREDICTION / LOCK / GRADING / CONTENT HANDOFF
+==============================================================================
+
+--- app/services/live_prediction_engine.py ---
+
+NEEDLE: def  | matches=7
+  0016: MODEL_NAME = "bookmaker_open"
+  0017: MARKET_SOURCE = "odds.pre"
+  0018: 
+  0019: 
+> 0020: def _utc(value: datetime) -> datetime:
+  0021:     if value.tzinfo is None:
+  0022:         return value.replace(tzinfo=timezone.utc)
+  0023:     return value.astimezone(timezone.utc)
+  0024: 
+  0022:         return value.replace(tzinfo=timezone.utc)
+  0023:     return value.astimezone(timezone.utc)
+  0024: 
+  0025: 
+> 0026: def _safe_json(value: str | dict[str, Any] | None) -> dict[str, Any]:
+  0027:     if isinstance(value, dict):
+  0028:         return value
+  0029:     try:
+  0030:         parsed = json.loads(value or "{}")
+  0032:         return {}
+  0033:     return parsed if isinstance(parsed, dict) else {}
+  0034: 
+  0035: 
+> 0036: def _decimal_odd(value: Any) -> float:
+  0037:     try:
+  0038:         odd = float(value)
+  0039:     except (TypeError, ValueError) as exc:
+  0040:         raise ValueError("pre-match 1X2 odds are missing or invalid") from exc
+  0042:         raise ValueError("pre-match 1X2 decimal odds must be greater than 1.0")
+  0043:     return odd
+  0044: 
+  0045: 
+> 0046: def extract_pre_match_odds(raw: str | dict[str, Any] | None) -> tuple[float, float, float]:
+  0047:     payload = _safe_json(raw)
+  0048:     odds = payload.get("odds")
+  0049:     if not isinstance(odds, dict):
+  0050:         raise ValueError("fixture does not contain an odds object")
+  0053:         raise ValueError("fixture does not contain odds.pre")
+  0054:     return _decimal_odd(pre.get("1")), _decimal_odd(pre.get("X")), _decimal_odd(pre.get("2"))
+  0055: 
+  0056: 
+> 0057: def fair_probabilities_from_decimal_odds(home: float, draw: float, away: float) -> tuple[float, float, float, float]:
+  0058:     home = _decimal_odd(home)
+  0059:     draw = _decimal_odd(draw)
+  0060:     away = _decimal_odd(away)
+  0061:     implied = (1.0 / home, 1.0 / draw, 1.0 / away)
+
+NEEDLE: lock | matches=7
+  0118:         "model_name": MODEL_NAME,
+  0119:         "market_source": MARKET_SOURCE,
+  0120:         "threshold": float(threshold),
+  0121:         "candidates": len(candidates),
+> 0122:         "locked_new": 0,
+  0123:         "already_locked": 0,
+  0124:         "missing_or_invalid_odds": 0,
+  0125:         "already_started": 0,
+  0126:         "high_confidence": 0,
+  0119:         "market_source": MARKET_SOURCE,
+  0120:         "threshold": float(threshold),
+  0121:         "candidates": len(candidates),
+  0122:         "locked_new": 0,
+> 0123:         "already_locked": 0,
+  0124:         "missing_or_invalid_odds": 0,
+  0125:         "already_started": 0,
+  0126:         "high_confidence": 0,
+  0127:         "pass": 0,
+  0141:                 LivePrediction.policy_version == POLICY_VERSION,
+  0142:             )
+  0143:         )
+  0144:         if existing is not None:
+> 0145:             summary["already_locked"] += 1
+  0146:             continue
+  0147: 
+  0148:         try:
+  0149:             home_odds, draw_odds, away_odds = extract_pre_match_odds(fixture.raw_json)
+  0182:             threshold=decision.threshold,
+  0183:             selector_label=decision.label,
+  0184:             publish=decision.publish,
+  0185:             odds_snapshot_at=now_utc,
+> 0186:             locked_at=now_utc,
+  0187:             kickoff_utc=kickoff,
+  0188:         )
+  0189:         session.add(prediction)
+  0190:         summary["locked_new"] += 1
+  0186:             locked_at=now_utc,
+  0187:             kickoff_utc=kickoff,
+  0188:         )
+  0189:         session.add(prediction)
+> 0190:         summary["locked_new"] += 1
+  0191:         if decision.publish:
+  0192:             summary["high_confidence"] += 1
+  0193:         else:
+  0194:             summary["pass"] += 1
+
+NEEDLE: kickoff | matches=7
+  0101:             LeagueSeason.season == int(season),
+  0102:             Fixture.status_short == "NS",
+  0103:             Fixture.is_finished.is_(False),
+  0104:         )
+> 0105:         .order_by(Fixture.kickoff_utc, Fixture.id)
+  0106:     )
+  0107: 
+  0108:     candidates = list(session.execute(stmt).all())
+  0109:     if limit is not None:
+  0129:         "final_holdout_touched": False,
+  0130:     }
+  0131: 
+  0132:     for fixture, league, home_name, away_name in candidates:
+> 0133:         kickoff = _utc(fixture.kickoff_utc)
+  0134:         if kickoff <= now_utc:
+  0135:             summary["already_started"] += 1
+  0136:             continue
+  0137: 
+  0130:     }
+  0131: 
+  0132:     for fixture, league, home_name, away_name in candidates:
+  0133:         kickoff = _utc(fixture.kickoff_utc)
+> 0134:         if kickoff <= now_utc:
+  0135:             summary["already_started"] += 1
+  0136:             continue
+  0137: 
+  0138:         existing = session.scalar(
+  0183:             selector_label=decision.label,
+  0184:             publish=decision.publish,
+  0185:             odds_snapshot_at=now_utc,
+  0186:             locked_at=now_utc,
+> 0187:             kickoff_utc=kickoff,
+  0188:         )
+  0189:         session.add(prediction)
+  0190:         summary["locked_new"] += 1
+  0191:         if decision.publish:
+  0196:         summary["predictions"].append({
+  0197:             "fixture_id": fixture.provider_fixture_id,
+  0198:             "home": str(home_name),
+  0199:             "away": str(away_name),
+> 0200:             "kickoff_utc": kickoff.isoformat(),
+  0201:             "odds": {"H": home_odds, "D": draw_odds, "A": away_odds},
+  0202:             "fair_probabilities": {
+  0203:                 "H": round(p_home, 6),
+  0204:                 "D": round(p_draw, 6),
+
+NEEDLE: prediction | matches=23
+  0007: 
+  0008: from sqlalchemy import select
+  0009: from sqlalchemy.orm import Session, aliased
+  0010: 
+> 0011: from app.models import Fixture, LeagueSeason, LivePrediction, Team
+  0012: from app.services.high_confidence_selector import DEFAULT_THRESHOLD, POLICY_VERSION, select_prediction
+  0013: 
+  0014: 
+  0015: PROVIDER = "live-score-api"
+  0008: from sqlalchemy import select
+  0009: from sqlalchemy.orm import Session, aliased
+  0010: 
+  0011: from app.models import Fixture, LeagueSeason, LivePrediction, Team
+> 0012: from app.services.high_confidence_selector import DEFAULT_THRESHOLD, POLICY_VERSION, select_prediction
+  0013: 
+  0014: 
+  0015: PROVIDER = "live-score-api"
+  0016: MODEL_NAME = "bookmaker_open"
+  0069:         overround,
+  0070:     )
+  0071: 
+  0072: 
+> 0073: def generate_live_predictions(
+  0074:     session: Session,
+  0075:     *,
+  0076:     competition_id: int,
+  0077:     season: int,
+  0078:     threshold: float = DEFAULT_THRESHOLD,
+  0079:     now: datetime | None = None,
+  0080:     limit: int | None = None,
+  0081: ) -> dict[str, Any]:
+> 0082:     """Create immutable opening-market predictions for upcoming fixtures.
+  0083: 
+  0084:     Only fixtures from the requested Live Score competition/season are considered.
+  0085:     Existing rows for the frozen policy are skipped, never updated. This makes the
+  0086:     first captured pre-match odds snapshot auditable and leakage-safe.
+  0124:         "missing_or_invalid_odds": 0,
+  0125:         "already_started": 0,
+  0126:         "high_confidence": 0,
+  0127:         "pass": 0,
+> 0128:         "predictions": [],
+  0129:         "final_holdout_touched": False,
+  0130:     }
+  0131: 
+  0132:     for fixture, league, home_name, away_name in candidates:
+
+NEEDLE: immutable | matches=1
+
+--- app/services/sportsq_scorecall.py ---
+
+NEEDLE: def  | matches=14
+  0080: TRIGGER_UPDATE = "trg_sportsq_scorecall_locks_no_update"
+  0081: TRIGGER_DELETE = "trg_sportsq_scorecall_locks_no_delete"
+  0082: 
+  0083: 
+> 0084: def _utc(value: datetime) -> datetime:
+  0085:     if value.tzinfo is None:
+  0086:         return value.replace(tzinfo=timezone.utc)
+  0087:     return value.astimezone(timezone.utc)
+  0088: 
+  0086:         return value.replace(tzinfo=timezone.utc)
+  0087:     return value.astimezone(timezone.utc)
+  0088: 
+  0089: 
+> 0090: def _db_utc(value: datetime) -> datetime:
+  0091:     return _utc(value).replace(tzinfo=None)
+  0092: 
+  0093: 
+  0094: def _serialise(row: Any) -> dict[str, Any]:
+  0090: def _db_utc(value: datetime) -> datetime:
+  0091:     return _utc(value).replace(tzinfo=None)
+  0092: 
+  0093: 
+> 0094: def _serialise(row: Any) -> dict[str, Any]:
+  0095:     data = dict(row)
+  0096:     for key, value in list(data.items()):
+  0097:         if isinstance(value, datetime):
+  0098:             data[key] = _utc(value).isoformat()
+  0103:             data["evidence"] = None
+  0104:     return data
+  0105: 
+  0106: 
+> 0107: def ensure_scorecall_schema() -> dict[str, Any]:
+  0108:     metadata.create_all(
+  0109:         engine,
+  0110:         tables=[scorecall_locks_table],
+  0111:         checkfirst=True,
+  0153:         "delete_trigger": TRIGGER_DELETE,
+  0154:     }
+  0155: 
+  0156: 
+> 0157: def _poisson_probability(lam: float, goals: int) -> float:
+  0158:     lam = max(0.08, min(float(lam), 6.0))
+  0159:     return math.exp(-lam) * (lam ** goals) / math.factorial(goals)
+  0160: 
+  0161: 
+
+NEEDLE: lock | matches=69
+  0026: from app.db import engine
+  0027: from app.models import Fixture, LivePrediction
+  0028: 
+  0029: 
+> 0030: SCORECALL_TABLE_NAME = "sportsq_scorecall_locks"
+  0031: MODEL_NAME = "sportsq-scorecall-lock-conditioned-poisson"
+  0032: MODEL_VERSION = "1.0"
+  0033: MAX_GOALS = 8
+  0034: TEAM_VENUE_WINDOW = 20
+  0027: from app.models import Fixture, LivePrediction
+  0028: 
+  0029: 
+  0030: SCORECALL_TABLE_NAME = "sportsq_scorecall_locks"
+> 0031: MODEL_NAME = "sportsq-scorecall-lock-conditioned-poisson"
+  0032: MODEL_VERSION = "1.0"
+  0033: MAX_GOALS = 8
+  0034: TEAM_VENUE_WINDOW = 20
+  0035: PRIOR_WEIGHT = 8.0
+  0036: MIN_GLOBAL_HISTORY = 100
+  0037: 
+  0038: metadata = MetaData()
+  0039: 
+> 0040: scorecall_locks_table = Table(
+  0041:     SCORECALL_TABLE_NAME,
+  0042:     metadata,
+  0043:     Column("id", Integer, primary_key=True, autoincrement=True),
+  0044:     Column("live_prediction_id", Integer, nullable=False),
+  0046:     Column("provider_fixture_id", Integer, nullable=False),
+  0047:     Column("competition_id", Integer, nullable=False),
+  0048:     Column("season", Integer, nullable=False),
+  0049:     Column("policy_version", String(80), nullable=False),
+> 0050:     Column("locked_prediction", String(1), nullable=False),
+  0051:     Column("predicted_home_goals", Integer, nullable=False),
+  0052:     Column("predicted_away_goals", Integer, nullable=False),
+  0053:     Column("score_call", String(20), nullable=False),
+  0054:     Column("home_lambda", Float, nullable=False),
+  0058:     Column("outcome_probability_mass", Float, nullable=False),
+  0059:     Column("model_name", String(120), nullable=False),
+  0060:     Column("model_version", String(40), nullable=False),
+  0061:     Column("feature_cutoff_at", DateTime(timezone=True), nullable=False),
+> 0062:     Column("source_prediction_locked_at", DateTime(timezone=True), nullable=False),
+  0063:     Column("scorecall_locked_at", DateTime(timezone=True), nullable=False),
+  0064:     Column("history_matches", Integer, nullable=False),
+  0065:     Column("home_team_venue_matches", Integer, nullable=False),
+  0066:     Column("away_team_venue_matches", Integer, nullable=False),
+
+NEEDLE: score | matches=61
+  0037: 
+  0038: metadata = MetaData()
+  0039: 
+  0040: scorecall_locks_table = Table(
+> 0041:     SCORECALL_TABLE_NAME,
+  0042:     metadata,
+  0043:     Column("id", Integer, primary_key=True, autoincrement=True),
+  0044:     Column("live_prediction_id", Integer, nullable=False),
+  0045:     Column("fixture_id", Integer, nullable=False),
+  0049:     Column("policy_version", String(80), nullable=False),
+  0050:     Column("locked_prediction", String(1), nullable=False),
+  0051:     Column("predicted_home_goals", Integer, nullable=False),
+  0052:     Column("predicted_away_goals", Integer, nullable=False),
+> 0053:     Column("score_call", String(20), nullable=False),
+  0054:     Column("home_lambda", Float, nullable=False),
+  0055:     Column("away_lambda", Float, nullable=False),
+  0056:     Column("score_probability", Float, nullable=False),
+  0057:     Column("conditional_probability", Float, nullable=False),
+
+NEEDLE: immutable | matches=4
+  0120:                     BEFORE UPDATE ON {SCORECALL_TABLE_NAME}
+  0121:                     BEGIN
+  0122:                         SELECT RAISE(
+  0123:                             ABORT,
+> 0124:                             'sportsq_scorecall_locks is immutable'
+  0125:                         );
+  0126:                     END
+  0127:                     '''
+  0128:                 )
+  0134:                     BEFORE DELETE ON {SCORECALL_TABLE_NAME}
+  0135:                     BEGIN
+  0136:                         SELECT RAISE(
+  0137:                             ABORT,
+> 0138:                             'sportsq_scorecall_locks is immutable'
+  0139:                         );
+  0140:                     END
+  0141:                     '''
+  0142:                 )
+  0147:         raise RuntimeError("ScoreCall lock table was not created.")
+  0148: 
+  0149:     return {
+  0150:         "table": SCORECALL_TABLE_NAME,
+> 0151:         "immutable": True,
+  0152:         "update_trigger": TRIGGER_UPDATE,
+  0153:         "delete_trigger": TRIGGER_DELETE,
+  0154:     }
+  0155: 
+  0754:         "stage": 5,
+  0755:         "table_ready": table_ready,
+  0756:         "table": SCORECALL_TABLE_NAME,
+  0757:         "lock_count": len(locks),
+> 0758:         "immutable": True,
+  0759:         "model_name": MODEL_NAME,
+  0760:         "model_version": MODEL_VERSION,
+  0761:         "method": (
+  0762:             "lock-conditioned shrinkage Poisson"
+
+NEEDLE: kickoff | matches=14
+  0063:     Column("scorecall_locked_at", DateTime(timezone=True), nullable=False),
+  0064:     Column("history_matches", Integer, nullable=False),
+  0065:     Column("home_team_venue_matches", Integer, nullable=False),
+  0066:     Column("away_team_venue_matches", Integer, nullable=False),
+> 0067:     Column("history_latest_kickoff", DateTime(timezone=True), nullable=True),
+  0068:     Column("evidence_json", Text, nullable=False),
+  0069:     UniqueConstraint(
+  0070:         "live_prediction_id",
+  0071:         name="uq_sportsq_scorecall_live_prediction",
+  0288:         .where(
+  0289:             Fixture.is_finished.is_(True),
+  0290:             Fixture.home_goals.is_not(None),
+  0291:             Fixture.away_goals.is_not(None),
+> 0292:             Fixture.kickoff_utc < cutoff_db,
+  0293:         )
+  0294:         .order_by(
+  0295:             Fixture.kickoff_utc.desc(),
+  0296:             Fixture.id.desc(),
+  0291:             Fixture.away_goals.is_not(None),
+  0292:             Fixture.kickoff_utc < cutoff_db,
+  0293:         )
+  0294:         .order_by(
+> 0295:             Fixture.kickoff_utc.desc(),
+  0296:             Fixture.id.desc(),
+  0297:         )
+  0298:     )
+  0299: 
+  0354: 
+  0355:     home_lambda = max(0.15, min(home_lambda, 4.5))
+  0356:     away_lambda = max(0.15, min(away_lambda, 4.5))
+  0357: 
+> 0358:     latest_kickoff = max(
+  0359:         (_utc(row.kickoff_utc) for row in history),
+  0360:         default=None,
+  0361:     )
+  0362: 
+  0355:     home_lambda = max(0.15, min(home_lambda, 4.5))
+  0356:     away_lambda = max(0.15, min(away_lambda, 4.5))
+  0357: 
+  0358:     latest_kickoff = max(
+> 0359:         (_utc(row.kickoff_utc) for row in history),
+  0360:         default=None,
+  0361:     )
+  0362: 
+  0363:     return {
+
+--- app/services/prediction_grading.py ---
+
+NEEDLE: def  | matches=6
+  0013: 
+  0014: VALID_RESULTS = {"H", "D", "A"}
+  0015: 
+  0016: 
+> 0017: def _utc(value: datetime) -> datetime:
+  0018:     if value.tzinfo is None:
+  0019:         return value.replace(tzinfo=timezone.utc)
+  0020:     return value.astimezone(timezone.utc)
+  0021: 
+  0019:         return value.replace(tzinfo=timezone.utc)
+  0020:     return value.astimezone(timezone.utc)
+  0021: 
+  0022: 
+> 0023: def grade_live_predictions(
+  0024:     session: Session,
+  0025:     *,
+  0026:     competition_id: int,
+  0027:     season: int,
+  0071:         "final_holdout_touched": False,
+  0072:     }
+  0073: 
+  0074: 
+> 0075: def _prob_for_actual(pred: LivePrediction, actual: str) -> float:
+  0076:     if actual == "H":
+  0077:         return float(pred.p_home)
+  0078:     if actual == "D":
+  0079:         return float(pred.p_draw)
+  0081:         return float(pred.p_away)
+  0082:     raise ValueError(f"invalid actual result: {actual}")
+  0083: 
+  0084: 
+> 0085: def _brier(pred: LivePrediction, actual: str) -> float:
+  0086:     probs = [float(pred.p_home), float(pred.p_draw), float(pred.p_away)]
+  0087:     index = {"H": 0, "D": 1, "A": 2}[actual]
+  0088:     target = [0.0, 0.0, 0.0]
+  0089:     target[index] = 1.0
+  0089:     target[index] = 1.0
+  0090:     return sum((p - y) ** 2 for p, y in zip(probs, target))
+  0091: 
+  0092: 
+> 0093: def performance_summary(
+  0094:     session: Session,
+  0095:     *,
+  0096:     competition_id: int,
+  0097:     season: int,
+
+NEEDLE: grade | matches=16
+  0026:     competition_id: int,
+  0027:     season: int,
+  0028:     now: datetime | None = None,
+  0029: ) -> dict[str, Any]:
+> 0030:     """Grade immutable locked predictions after the fixture result is known."""
+  0031:     graded_at = _utc(now or datetime.now(timezone.utc))
+  0032: 
+  0033:     stmt = (
+  0034:         select(LivePrediction, Fixture)
+  0027:     season: int,
+  0028:     now: datetime | None = None,
+  0029: ) -> dict[str, Any]:
+  0030:     """Grade immutable locked predictions after the fixture result is known."""
+> 0031:     graded_at = _utc(now or datetime.now(timezone.utc))
+  0032: 
+  0033:     stmt = (
+  0034:         select(LivePrediction, Fixture)
+  0035:         .join(Fixture, LivePrediction.fixture_id == Fixture.id)
+  0043:         .order_by(LivePrediction.kickoff_utc, LivePrediction.id)
+  0044:     )
+  0045: 
+  0046:     candidates = list(session.execute(stmt).all())
+> 0047:     graded = 0
+  0048:     skipped_invalid_result = 0
+  0049: 
+  0050:     for pred, fixture in candidates:
+  0051:         actual = fixture.result_1x2
+  0054:             continue
+  0055: 
+  0056:         pred.actual_result = actual
+  0057:         pred.is_correct = pred.prediction == actual
+> 0058:         pred.graded_at = graded_at
+  0059:         graded += 1
+  0060: 
+  0061:     session.commit()
+  0062: 
+
+NEEDLE: finished | matches=1
+  0037:             LivePrediction.competition_id == int(competition_id),
+  0038:             LivePrediction.season == int(season),
+  0039:             LivePrediction.policy_version == POLICY_VERSION,
+  0040:             LivePrediction.actual_result.is_(None),
+> 0041:             Fixture.is_finished.is_(True),
+  0042:         )
+  0043:         .order_by(LivePrediction.kickoff_utc, LivePrediction.id)
+  0044:     )
+  0045: 
+
+NEEDLE: result | matches=19
+  0010: from app.models import Fixture, LivePrediction, Team
+  0011: from app.services.high_confidence_selector import POLICY_VERSION
+  0012: 
+  0013: 
+> 0014: VALID_RESULTS = {"H", "D", "A"}
+  0015: 
+  0016: 
+  0017: def _utc(value: datetime) -> datetime:
+  0018:     if value.tzinfo is None:
+  0036:         .where(
+  0037:             LivePrediction.competition_id == int(competition_id),
+  0038:             LivePrediction.season == int(season),
+  0039:             LivePrediction.policy_version == POLICY_VERSION,
+> 0040:             LivePrediction.actual_result.is_(None),
+  0041:             Fixture.is_finished.is_(True),
+  0042:         )
+  0043:         .order_by(LivePrediction.kickoff_utc, LivePrediction.id)
+  0044:     )
+  0044:     )
+  0045: 
+  0046:     candidates = list(session.execute(stmt).all())
+  0047:     graded = 0
+> 0048:     skipped_invalid_result = 0
+  0049: 
+  0050:     for pred, fixture in candidates:
+  0051:         actual = fixture.result_1x2
+  0052:         if actual not in VALID_RESULTS:
+  0047:     graded = 0
+  0048:     skipped_invalid_result = 0
+  0049: 
+  0050:     for pred, fixture in candidates:
+> 0051:         actual = fixture.result_1x2
+  0052:         if actual not in VALID_RESULTS:
+  0053:             skipped_invalid_result += 1
+  0054:             continue
+  0055: 
+
+NEEDLE: kickoff | matches=4
+  0039:             LivePrediction.policy_version == POLICY_VERSION,
+  0040:             LivePrediction.actual_result.is_(None),
+  0041:             Fixture.is_finished.is_(True),
+  0042:         )
+> 0043:         .order_by(LivePrediction.kickoff_utc, LivePrediction.id)
+  0044:     )
+  0045: 
+  0046:     candidates = list(session.execute(stmt).all())
+  0047:     graded = 0
+  0104:     )
+  0105:     if high_confidence_only:
+  0106:         base_stmt = base_stmt.where(LivePrediction.publish.is_(True))
+  0107: 
+> 0108:     rows = list(session.scalars(base_stmt.order_by(LivePrediction.kickoff_utc)).all())
+  0109:     graded = [p for p in rows if p.actual_result in VALID_RESULTS and p.is_correct is not None]
+  0110:     pending = len(rows) - len(graded)
+  0111: 
+  0112:     result: dict[str, Any] = {
+  0172:             LivePrediction.competition_id == int(competition_id),
+  0173:             LivePrediction.season == int(season),
+  0174:             LivePrediction.policy_version == POLICY_VERSION,
+  0175:         )
+> 0176:         .order_by(LivePrediction.kickoff_utc, LivePrediction.id)
+  0177:     )
+  0178:     if high_confidence_only:
+  0179:         stmt = stmt.where(LivePrediction.publish.is_(True))
+  0180: 
+  0183:         output.append({
+  0184:             "fixture_id": pred.provider_fixture_id,
+  0185:             "home": str(home_name),
+  0186:             "away": str(away_name),
+> 0187:             "kickoff_utc": _utc(pred.kickoff_utc).isoformat(),
+  0188:             "prediction": pred.prediction,
+  0189:             "confidence": round(float(pred.confidence), 6),
+  0190:             "label": pred.selector_label,
+  0191:             "publish": bool(pred.publish),
+
+--- app/services/sportsq_stage3.py ---
+
+NEEDLE: generate_fixture_content_package | matches=1
+  0996:         mutate=mutate,
+  0997:     )
+  0998: 
+  0999: 
+> 1000: def generate_fixture_content_package(
+  1001:     session: Session,
+  1002:     *,
+  1003:     fixture_id: int,
+  1004:     competition_id: int = 2,
+
+NEEDLE: generate_content_package | matches=1
+  0624:         "historical_holdout_touched": False,
+  0625:     }
+  0626: 
+  0627: 
+> 0628: def generate_content_package(
+  0629:     session: Session,
+  0630:     *,
+  0631:     competition_id: int = 2,
+  0632:     season: int = 2026,
+
+NEEDLE: fixture_id | matches=9
+  0658: 
+  0659:     for index, item in enumerate(preview["predictions"], start=1):
+  0660:         fixture = item.get("fixture") or {}
+  0661:         stem = _safe_stem(
+> 0662:             f"{fixture.get('fixture_id') or index}-"
+  0663:             f"{fixture.get('home_team') or 'home'}-vs-"
+  0664:             f"{fixture.get('away_team') or 'away'}"
+  0665:         )
+  0666: 
+  0716:                 "media_type": "image/png",
+  0717:             })
+  0718:         else:
+  0719:             news_skips.append({
+> 0720:                 "fixture_id": fixture.get("fixture_id"),
+  0721:                 "reason": news_result["reason"],
+  0722:             })
+  0723: 
+  0724:     accuracy_path = package_dir / "results-accuracy.png"
+  0999: 
+  1000: def generate_fixture_content_package(
+  1001:     session: Session,
+  1002:     *,
+> 1003:     fixture_id: int,
+  1004:     competition_id: int = 2,
+  1005:     season: int = 2026,
+  1006:     content_root: str | Path | None = None,
+  1007: ) -> dict[str, Any]:
+  1010:     packages.mkdir(parents=True, exist_ok=True)
+  1011: 
+  1012:     payload = get_sportsq_intelligence(
+  1013:         session,
+> 1014:         fixture_id=int(fixture_id),
+  1015:         competition_id=int(competition_id),
+  1016:         season=int(season),
+  1017:     )
+  1018: 
+  1018: 
+  1019:     if payload.get("status") != "success":
+  1020:         return {
+  1021:             "status": "not_found",
+> 1022:             "fixture_id": int(fixture_id),
+  1023:             "package_id": None,
+  1024:             "assets": [],
+  1025:             "reason": payload.get("status") or "fixture_not_found",
+  1026:         }
+
+NEEDLE: package | matches=44
+  0633:     limit: int = 3,
+  0634:     content_root: str | Path | None = None,
+  0635: ) -> dict[str, Any]:
+  0636:     root = _content_root(content_root)
+> 0637:     packages = root / "packages"
+  0638:     packages.mkdir(parents=True, exist_ok=True)
+  0639: 
+  0640:     package_id = (
+  0641:         _utc_now().strftime("%Y%m%dT%H%M%SZ")
+  0634:     content_root: str | Path | None = None,
+  0635: ) -> dict[str, Any]:
+  0636:     root = _content_root(content_root)
+  0637:     packages = root / "packages"
+> 0638:     packages.mkdir(parents=True, exist_ok=True)
+  0639: 
+  0640:     package_id = (
+  0641:         _utc_now().strftime("%Y%m%dT%H%M%SZ")
+  0642:         + "-"
+  0636:     root = _content_root(content_root)
+  0637:     packages = root / "packages"
+  0638:     packages.mkdir(parents=True, exist_ok=True)
+  0639: 
+> 0640:     package_id = (
+  0641:         _utc_now().strftime("%Y%m%dT%H%M%SZ")
+  0642:         + "-"
+  0643:         + uuid.uuid4().hex[:8]
+  0644:     )
+  0641:         _utc_now().strftime("%Y%m%dT%H%M%SZ")
+  0642:         + "-"
+  0643:         + uuid.uuid4().hex[:8]
+  0644:     )
+> 0645:     package_dir = packages / package_id
+  0646:     package_dir.mkdir(parents=True, exist_ok=False)
+  0647: 
+  0648:     preview = content_preview(
+  0649:         session,
+
+--- app/services/social_content.py ---
+
+NEEDLE: render_prediction_card | matches=2
+  0077:         value = value.replace("--", "-")
+  0078:     return value.strip("-") or "prediction"
+  0079: 
+  0080: 
+> 0081: def render_prediction_card(row: dict[str, Any], output_path: str | Path) -> Path:
+  0082:     output = Path(output_path)
+  0083:     output.parent.mkdir(parents=True, exist_ok=True)
+  0084: 
+  0085:     home = row["home"]
+  0228:         stem = f"{row['fixture_id']}-{_safe_name(row['home'])}-vs-{_safe_name(row['away'])}"
+  0229:         card_path = cards_dir / f"{stem}.png"
+  0230:         caption_path = captions_dir / f"{stem}.txt"
+  0231: 
+> 0232:         render_prediction_card(row, card_path)
+  0233:         caption_path.write_text(_caption(row), encoding="utf-8")
+  0234:         card_paths.append(card_path)
+  0235: 
+  0236:         generated.append({
+
+NEEDLE: queue | matches=0
+
+NEEDLE: approve | matches=0
+
+NEEDLE: process | matches=2
+  0001: from __future__ import annotations
+  0002: 
+  0003: import json
+  0004: import shutil
+> 0005: import subprocess
+  0006: from datetime import datetime, timezone
+  0007: from pathlib import Path
+  0008: from typing import Any
+  0009: 
+  0178:         "-c:v", "libx264",
+  0179:         "-movflags", "+faststart",
+  0180:         str(output_path),
+  0181:     ]
+> 0182:     run = subprocess.run(cmd, capture_output=True, text=True)
+  0183:     try:
+  0184:         concat.unlink()
+  0185:     except OSError:
+  0186:         pass
+
+==============================================================================
+6. SCHEDULER / CONFIG CADENCE
+==============================================================================
+
+NEEDLE: fixture_sync_every_hours | matches=1
+  0050:     # Live Score competition_id:season_start_year
+  0051:     ls_tracked_competitions: str = "2:2026"
+  0052: 
+> 0053:     fixture_sync_every_hours: int = 6
+  0054:     result_sync_every_minutes: int = 60
+  0055:     result_lookback_hours: int = 36
+  0056:     fixture_lookback_days: int = 1
+
+NEEDLE: result_sync_every_minutes | matches=1
+  0051:     ls_tracked_competitions: str = "2:2026"
+  0052: 
+  0053:     fixture_sync_every_hours: int = 6
+> 0054:     result_sync_every_minutes: int = 60
+  0055:     result_lookback_hours: int = 36
+  0056:     fixture_lookback_days: int = 1
+  0057:     fixture_lookahead_days: int = 7
+
+NEEDLE: result_lookback_hours | matches=1
+  0052: 
+  0053:     fixture_sync_every_hours: int = 6
+  0054:     result_sync_every_minutes: int = 60
+> 0055:     result_lookback_hours: int = 36
+  0056:     fixture_lookback_days: int = 1
+  0057:     fixture_lookahead_days: int = 7
+  0058: 
+
+NEEDLE: fixture_lookback_days | matches=1
+  0053:     fixture_sync_every_hours: int = 6
+  0054:     result_sync_every_minutes: int = 60
+  0055:     result_lookback_hours: int = 36
+> 0056:     fixture_lookback_days: int = 1
+  0057:     fixture_lookahead_days: int = 7
+  0058: 
+  0059:     # Our own API / multi-source public-web collector
+
+NEEDLE: fixture_lookahead_days | matches=1
+  0054:     result_sync_every_minutes: int = 60
+  0055:     result_lookback_hours: int = 36
+  0056:     fixture_lookback_days: int = 1
+> 0057:     fixture_lookahead_days: int = 7
+  0058: 
+  0059:     # Our own API / multi-source public-web collector
+  0060:     own_api_require_key: bool = False
+
+NEEDLE: ls_tracked_competitions | matches=3
+  0048:     tracked_leagues: str = "39:2024"
+  0049: 
+  0050:     # Live Score competition_id:season_start_year
+> 0051:     ls_tracked_competitions: str = "2:2026"
+  0052: 
+  0053:     fixture_sync_every_hours: int = 6
+  0054:     result_sync_every_minutes: int = 60
+  0110: 
+  0111:     def live_score_competitions(self) -> List[Tuple[int, int]]:
+  0112:         out: List[Tuple[int, int]] = []
+> 0113:         if not self.ls_tracked_competitions.strip():
+  0114:             return out
+  0115:         for part in self.ls_tracked_competitions.split(","):
+  0116:             competition, season = part.strip().split(":", 1)
+  0112:         out: List[Tuple[int, int]] = []
+  0113:         if not self.ls_tracked_competitions.strip():
+  0114:             return out
+> 0115:         for part in self.ls_tracked_competitions.split(","):
+  0116:             competition, season = part.strip().split(":", 1)
+  0117:             out.append((int(competition), int(season)))
+  0118:         return out
+
+NEEDLE: tracked_leagues | matches=3
+  0045:     ls_max_pages: int = 50
+  0046: 
+  0047:     # API-Football league_id:season_start_year
+> 0048:     tracked_leagues: str = "39:2024"
+  0049: 
+  0050:     # Live Score competition_id:season_start_year
+  0051:     ls_tracked_competitions: str = "2:2026"
+  0101: 
+  0102:     def tracked_competitions(self) -> List[Tuple[int, int]]:
+  0103:         out: List[Tuple[int, int]] = []
+> 0104:         if not self.tracked_leagues.strip():
+  0105:             return out
+  0106:         for part in self.tracked_leagues.split(","):
+  0107:             league, season = part.strip().split(":", 1)
+  0103:         out: List[Tuple[int, int]] = []
+  0104:         if not self.tracked_leagues.strip():
+  0105:             return out
+> 0106:         for part in self.tracked_leagues.split(","):
+  0107:             league, season = part.strip().split(":", 1)
+  0108:             out.append((int(league), int(season)))
+  0109:         return out
+
+FILE: .env
+relevant_environment_names=["AF_API_KEY", "AF_BASE_URL", "AF_MAX_RETRIES", "AF_TIMEOUT_SECONDS", "FIXTURE_LOOKAHEAD_DAYS", "FIXTURE_LOOKBACK_DAYS", "FIXTURE_SYNC_EVERY_HOURS", "LS_API_KEY", "LS_API_SECRET", "LS_BASE_URL", "RESULT_LOOKBACK_HOURS", "RESULT_SYNC_EVERY_MINUTES", "TRACKED_LEAGUES"]
+secret_values_displayed=NO
+
+FILE: .env.example
+relevant_environment_names=["AF_API_KEY", "AF_BASE_URL", "AF_MAX_RETRIES", "AF_TIMEOUT_SECONDS", "FIXTURE_LOOKAHEAD_DAYS", "FIXTURE_LOOKBACK_DAYS", "FIXTURE_SYNC_EVERY_HOURS", "LS_API_KEY", "LS_API_SECRET", "LS_BASE_URL", "LS_CONNECT_TIMEOUT_SECONDS", "LS_MAX_PAGES", "LS_MAX_RETRIES", "LS_POOL_TIMEOUT_SECONDS", "LS_READ_TIMEOUT_SECONDS", "LS_RETRY_BASE_SECONDS", "LS_RETRY_MAX_SECONDS", "LS_TIMEOUT_SECONDS", "LS_TRACKED_COMPETITIONS", "LS_WRITE_TIMEOUT_SECONDS", "RESULT_LOOKBACK_HOURS", "RESULT_SYNC_EVERY_MINUTES", "TRACKED_LEAGUES"]
+secret_values_displayed=NO
+
+==============================================================================
+7. DATABASE SCHEMA / CURRENT LIFECYCLE DATA
+==============================================================================
+database_dialect=sqlite
+table_count=21
+tables=["data_sources", "fixture_reconciliations", "fixtures", "league_seasons", "live_predictions", "market_safety_alert_deliveries", "market_safety_events", "market_safety_incidents", "market_safety_sla_alerts", "odds_snapshots", "source_observations", "source_policies", "source_snapshots", "sportsq_media_assets", "sportsq_rights_verifications", "sportsq_scorecall_locks", "sportsq_sources", "sportsq_team_news_events", "sync_runs", "teams", "web_collection_targets"]
+
+TABLE: fixtures
+exists=True
+columns=["id", "provider", "provider_fixture_id", "league_season_id", "home_team_id", "away_team_id", "kickoff_utc", "timezone", "round_name", "referee", "venue_id", "venue_name", "venue_city", "status_short", "status_long", "elapsed", "home_goals", "away_goals", "halftime_home", "halftime_away", "fulltime_home", "fulltime_away", "extratime_home", "extratime_away", "penalty_home", "penalty_away", "is_finished", "result_1x2", "raw_json", "provider_updated_at", "created_at", "updated_at"]
+row_count=2268
+
+TABLE: teams
+exists=True
+columns=["id", "provider", "provider_team_id", "name", "code", "country", "logo_url", "created_at", "updated_at"]
+row_count=48
+
+TABLE: live_predictions
+exists=True
+columns=["id", "fixture_id", "provider", "provider_fixture_id", "competition_id", "season", "model_name", "policy_version", "market_source", "home_odds", "draw_odds", "away_odds", "market_overround", "p_home", "p_draw", "p_away", "prediction", "confidence", "threshold", "selector_label", "publish", "odds_snapshot_at", "locked_at", "kickoff_utc", "actual_result", "is_correct", "graded_at", "created_at"]
+row_count=18
+
+TABLE: sportsq_scorecall_locks
+exists=True
+columns=["id", "live_prediction_id", "fixture_id", "provider_fixture_id", "competition_id", "season", "policy_version", "locked_prediction", "predicted_home_goals", "predicted_away_goals", "score_call", "home_lambda", "away_lambda", "score_probability", "conditional_probability", "outcome_probability_mass", "model_name", "model_version", "feature_cutoff_at", "source_prediction_locked_at", "scorecall_locked_at", "history_matches", "home_team_venue_matches", "away_team_venue_matches", "history_latest_kickoff", "evidence_json"]
+row_count=18
+
+TABLE: sportsq_team_news_events
+exists=True
+columns=["id", "event_key", "provider", "source_id", "source_verified", "source_trust_class", "provider_fixture_id", "internal_fixture_id", "provider_league_id", "season", "provider_team_id", "internal_team_id", "team_name", "provider_player_id", "player_name", "event_category", "availability_status", "raw_type", "reason", "lineup_role", "formation", "observed_at", "fixture_kickoff_at", "valid_until_at", "verification_state", "payload_json", "created_at"]
+row_count=0
+
+TABLE: sync_runs
+exists=True
+columns=["id", "run_type", "provider", "started_at", "finished_at", "status", "requested", "received", "inserted", "updated", "rejected", "error_message"]
+row_count=81
+
+TABLE: fixture_reconciliations
+exists=True
+columns=["id", "competition_id", "season", "canonical_key", "primary_source", "secondary_source", "primary_fixture_id", "secondary_entity_key", "home_team", "away_team", "primary_date", "secondary_date", "date_status", "primary_finished", "primary_score", "secondary_score", "result_status", "overall_status", "checked_at", "created_at", "updated_at"]
+row_count=380
+
+==============================================================================
+8. FIXTURE STATUS / UPCOMING SAMPLE
+==============================================================================
+fixture_columns=["away_goals", "away_team_id", "created_at", "elapsed", "extratime_away", "extratime_home", "fulltime_away", "fulltime_home", "halftime_away", "halftime_home", "home_goals", "home_team_id", "id", "is_finished", "kickoff_utc", "league_season_id", "penalty_away", "penalty_home", "provider", "provider_fixture_id", "provider_updated_at", "raw_json", "referee", "result_1x2", "round_name", "status_long", "status_short", "timezone", "updated_at", "venue_city", "venue_id", "venue_name"]
+status_candidates=[]
+kickoff_candidates=["kickoff_utc"]
+latest_fixture_sample=[
+  {
+    "id": 380,
+    "provider_fixture_id": 1877633,
+    "home_team_id": 15,
+    "away_team_id": 10,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 379,
+    "provider_fixture_id": 1877632,
+    "home_team_id": 13,
+    "away_team_id": 18,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 378,
+    "provider_fixture_id": 1877631,
+    "home_team_id": 9,
+    "away_team_id": 11,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 377,
+    "provider_fixture_id": 1877630,
+    "home_team_id": 6,
+    "away_team_id": 20,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 376,
+    "provider_fixture_id": 1877629,
+    "home_team_id": 8,
+    "away_team_id": 12,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 375,
+    "provider_fixture_id": 1877628,
+    "home_team_id": 7,
+    "away_team_id": 19,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 374,
+    "provider_fixture_id": 1877627,
+    "home_team_id": 5,
+    "away_team_id": 2,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 373,
+    "provider_fixture_id": 1877626,
+    "home_team_id": 14,
+    "away_team_id": 16,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 372,
+    "provider_fixture_id": 1877625,
+    "home_team_id": 3,
+    "away_team_id": 1,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 371,
+    "provider_fixture_id": 1877624,
+    "home_team_id": 17,
+    "away_team_id": 4,
+    "kickoff_utc": "2027-05-30 15:00:00.000000"
+  },
+  {
+    "id": 370,
+    "provider_fixture_id": 1877623,
+    "home_team_id": 10,
+    "away_team_id": 8,
+    "kickoff_utc": "2027-05-23 14:00:00.000000"
+  },
+  {
+    "id": 369,
+    "provider_fixture_id": 1877622,
+    "home_team_id": 19,
+    "away_team_id": 13,
+    "kickoff_utc": "2027-05-23 14:00:00.000000"
+  }
+]
+
+==============================================================================
+9. TEST COVERAGE RELEVANT TO STAGE 7
+==============================================================================
+stage7_relevant_tests=["test_api_football.py", "test_baseline_models.py", "test_cli_baseline_command.py", "test_cli_ensemble_command.py", "test_cli_features_command.py", "test_cli_football_data_command.py", "test_cli_live_prediction_command.py", "test_cli_market_residual_command.py", "test_cli_odds_history_command.py", "test_cli_phase10a2_command.py", "test_cli_phase10a3_command.py", "test_cli_phase10a5_command.py", "test_cli_phase10a_command.py", "test_cli_phase8_command.py", "test_cli_phase9_command.py", "test_ensemble_models.py", "test_feature_engineering.py", "test_fixture_reconciliation.py", "test_football_data_history.py", "test_football_data_local_file.py", "test_high_confidence_selector.py", "test_ingestion.py", "test_live_prediction_engine.py", "test_live_score_api.py", "test_live_score_history_pagination.py", "test_live_score_ingestion.py", "test_live_score_pagination.py", "test_live_score_resilience.py", "test_live_score_validation.py", "test_market_refresh.py", "test_market_reliability.py", "test_market_residual.py", "test_market_safety.py", "test_market_safety_alerts.py", "test_market_safety_events.py", "test_market_safety_incidents.py", "test_market_safety_telegram.py", "test_market_scheduler_reconciliation.py", "test_odds_history.py", "test_phase10a2_api.py", "test_phase10a5_reconciliation_api.py", "test_phase10a_api.py", "test_phase10a_odds_api.py", "test_phase8_api.py", "test_prediction_grading.py", "test_public_web_collector.py", "test_reconciliation_health.py", "test_result_refresh.py", "test_social_content.py", "test_source_health_monitor.py", "test_source_policy.py", "test_source_registry.py", "test_sportsq_intelligence.py", "test_sportsq_stage3.py", "test_sportsq_stage3_gui_polish.py", "test_sportsq_stage4.py", "test_sportsq_stage5_scorecall.py", "test_sportsq_stage6_news_impact.py", "test_validation.py", "test_web_targets.py"]
+
+test_api_football.py: ["test_connector_sends_api_key_and_fixture_filters", "test_ids_are_limited_to_twenty"]
+
+test_baseline_models.py: ["test_metrics_are_zero_or_one_for_perfect_probabilities", "test_production_features_exclude_targets_ids_and_closing_market", "test_evaluate_baselines_writes_report_without_touching_holdout"]
+
+test_cli_baseline_command.py: ["test_cli_lists_evaluate_baselines_command", "test_evaluate_baselines_help_lists_required_arguments"]
+
+test_cli_ensemble_command.py: ["test_cli_lists_evaluate_ensemble_command", "test_evaluate_ensemble_help_lists_fold_arguments"]
+
+test_cli_features_command.py: ["test_cli_lists_build_features", "test_build_features_help"]
+
+test_cli_football_data_command.py: ["test_cli_help_lists_football_data_history_command", "test_football_data_history_help_has_required_options"]
+
+test_cli_live_prediction_command.py: ["test_cli_lists_phase7_commands", "test_run_live_predictions_help"]
+
+test_cli_market_residual_command.py: ["test_cli_lists_market_residual_command", "test_market_residual_help_lists_fold_arguments"]
+
+test_cli_odds_history_command.py: ["test_cli_has_odds_history_commands"]
+
+test_cli_phase10a2_command.py: ["test_cli_exposes_phase10a2_commands"]
+
+test_cli_phase10a3_command.py: ["test_cli_exposes_phase10a3_commands"]
+
+test_cli_phase10a5_command.py: ["test_cli_has_reconciliation_commands"]
+
+test_cli_phase10a_command.py: ["test_cli_has_phase10a_commands"]
+
+test_cli_phase8_command.py: ["test_cli_has_phase8_commands"]
+
+test_cli_phase9_command.py: ["test_cli_has_phase9_command"]
+
+test_ensemble_models.py: ["test_curated_features_are_production_safe", "test_temperature_preserves_probability_rows", "test_blend_weights_are_normalized", "test_weight_optimizer_can_select_strong_model", "test_phase4_end_to_end_keeps_holdout_sealed"]
+
+test_feature_engineering.py: ["test_feature_rows_do_not_leak_current_match_stats", "test_market_probabilities_are_devigged", "test_season_state_resets", "test_build_feature_dataset_writes_csv_and_metadata"]
+
+test_fixture_reconciliation.py: ["test_reconciliation_exact_fixture_passes_quality_gate", "test_reconciliation_detects_date_conflict", "test_reconciliation_detects_finished_result_conflict", "test_reconciliation_missing_secondary_is_warning", "test_reconciliation_is_idempotent_and_summary_reads_persisted_state"]
+
+test_football_data_history.py: ["test_season_code", "test_parse_and_ingest_is_idempotent", "test_client_url_and_sync"]
+
+test_football_data_local_file.py: ["test_local_csv_import", "test_local_csv_import_is_idempotent"]
+
+test_high_confidence_selector.py: ["test_high_confidence", "test_pass", "test_csv"]
+
+test_ingestion.py: ["test_ingestion_is_idempotent", "test_finished_result_updates_existing_fixture"]
+
+test_live_prediction_engine.py: ["test_extract_and_devig_pre_match_odds", "test_live_prediction_is_locked_and_idempotent", "test_missing_odds_are_skipped", "test_competition_filter_is_enforced", "test_pass_prediction_is_saved_but_not_published"]
+
+test_live_score_api.py: ["test_live_score_connector_adds_credentials_and_filters"]
+
+test_live_score_history_pagination.py: ["test_history_sync_probes_next_page_when_full_page_has_no_next_page", "test_history_sync_stops_on_empty_probe_page", "test_history_sync_duplicate_page_guard"]
+
+test_live_score_ingestion.py: ["test_live_fixture_ingestion_is_idempotent", "test_history_updates_existing_fixture_and_grades_result"]
+
+test_live_score_pagination.py: ["test_fixture_sync_auto_paginates", "test_fixture_sync_stops_and_reports_resume_page"]
+
+test_live_score_resilience.py: ["test_retries_429_without_exposing_credentials", "test_final_http_error_message_does_not_leak_credentials"]
+
+test_live_score_validation.py: ["test_fixture_is_utc_and_not_started", "test_finished_history_parses_scores", "test_rejects_same_team"]
+
+test_market_refresh.py: ["test_market_refresh_requires_live_score_credentials", "test_reconciliation_gate_controls_new_prediction_locks", "test_stale_reconciliation_is_unverified_not_blocking"]
+
+test_market_reliability.py: ["test_degraded_warning_and_critical_are_persistent", "test_blocked_warning_stage", "test_crash_gap_recovery_opens_missing_incident", "test_integrity_report_passes", "test_reliability_heartbeat_detects_stale_scheduler", "test_reliability_api_routes_exist", "test_sla_telegram_delivery_success"]
+
+test_market_residual.py: ["test_log_pool_zero_weights_equals_market", "test_market_bias_probabilities_are_normalized", "test_residual_fit_prefers_helpful_model", "test_bootstrap_reports_negative_delta_for_better_candidate"]
+
+test_market_safety.py: ["test_market_safety_ready_when_required_layers_are_healthy", "test_market_safety_degraded_for_stale_primary_source", "test_market_safety_degraded_for_stale_reconciliation", "test_market_safety_blocked_only_by_actual_prediction_gate", "test_market_safety_api_route_exists"]
+
+test_market_safety_alerts.py: ["test_delivery_audit_api_exists", "test_no_transition_means_no_external_delivery", "test_disabled_delivery_is_audited", "test_successful_webhook_delivery", "test_network_failure_retries_and_is_audited", "test_same_event_delivery_is_idempotent", "test_scheduler_delivers_only_transition_alert"]
+
+test_market_safety_events.py: ["test_market_safety_transitions_and_alerts", "test_safety_history_api_routes_exist", "test_scheduler_records_safety_after_refresh", "test_observability_failure_is_isolated"]
+
+test_market_safety_incidents.py: ["test_bootstrap_degraded_opens_incident", "test_repeated_degraded_updates_same_incident", "test_degraded_to_blocked_escalates", "test_ready_closes_incident_and_calculates_mttr", "test_same_event_is_idempotent", "test_ready_without_open_incident_is_noop", "test_telegram_message_contains_incident_context", "test_incident_api_routes_exist"]
+
+test_market_safety_telegram.py: ["test_telegram_message_contains_operational_state", "test_native_telegram_delivery_success", "test_telegram_missing_credentials_is_audited", "test_telegram_api_rejection_is_failure_isolated", "test_telegram_delivery_is_idempotent"]
+
+test_market_scheduler_reconciliation.py: ["test_automatic_openfootball_reconciliation_fetches_stores_and_reconciles", "test_live_market_job_reconciles_before_prediction_refresh"]
+
+test_odds_history.py: ["test_capture_is_idempotent_for_unchanged_market", "test_changed_market_creates_second_snapshot_and_movement", "test_missing_odds_are_skipped"]
+
+test_phase10a2_api.py: ["test_market_status_route_exists"]
+
+test_phase10a5_reconciliation_api.py: ["test_reconciliation_api_routes_exist"]
+
+test_phase10a_api.py: ["test_phase10a_health", "test_sources_endpoint"]
+
+test_phase10a_odds_api.py: ["test_odds_history_api_routes_exist"]
+
+test_phase8_api.py: ["test_phase8_health", "test_phase8_routes_exist"]
+
+test_prediction_grading.py: ["test_grades_finished_prediction", "test_does_not_grade_unfinished", "test_performance_summary"]
+
+test_public_web_collector.py: ["test_public_url_requires_allowlist", "test_public_url_blocks_private_resolution", "test_public_collector_respects_robots_and_records_snapshot", "test_public_collector_rejects_robots_disallow"]
+
+test_reconciliation_health.py: ["test_operational_reconciliation_states", "test_uninitialized_reconciliation_is_visible_and_nonblocking", "test_missing_timestamp_becomes_stale"]
+
+test_result_refresh.py: ["test_refresh_unfinished_result"]
+
+test_social_content.py: ["test_render_prediction_card", "test_ffmpeg_resolver_returns_string_or_none"]
+
+test_source_health_monitor.py: ["test_health_summary_marks_old_success_stale", "test_missing_optional_api_football_key_is_config_required_not_failed"]
+
+test_source_policy.py: ["test_openfootball_policy_is_seeded_approved_cc0", "test_unreviewed_web_source_is_blocked_by_policy"]
+
+test_source_registry.py: ["test_seed_default_sources_is_idempotent", "test_source_priority_resolves_conflict", "test_add_web_source"]
+
+test_sportsq_intelligence.py: ["test_brand_hierarchy_is_official", "test_1x2_normalization", "test_confidence_bands", "test_score_call_does_not_fabricate", "test_score_call_uses_existing_locked_score", "test_form_index_uses_only_supplied_prior_matches", "test_stage2_routes_exist", "test_capabilities_preserve_prediction_contract", "test_news_impact_is_not_fabricated"]
+
+test_sportsq_stage3.py: ["test_brand_and_approved_theme", "test_prediction_square_render", "test_prediction_vertical_render", "test_news_card_is_not_fabricated", "test_platform_readiness_never_exposes_secret_values", "test_queue_approval_and_manual_export", "test_external_platform_is_not_falsely_published", "test_unapproved_item_cannot_process", "test_invalid_platform_rejected", "test_cancel_queue_item", "test_queue_persists", "test_stage3_routes_and_gui_exist"]
+
+test_sportsq_stage3_gui_polish.py: ["test_gui_polish_route_exists", "test_dashboard_has_accuracy_cards_and_modal", "test_dashboard_js_has_fixture_generation_and_scorecall_no_fabrication", "test_dashboard_js_has_confidence_bands_and_kickoff", "test_gui_keeps_approved_brand_colours"]
+
+test_sportsq_stage4.py: ["test_stage4_schema_and_policies_are_ready", "test_stage4_seed_counts_match_resources", "test_stage4_routes_are_read_only", "test_verified_media_can_pass", "test_reuse_gate_fails_closed", "test_missing_rights_fails_closed", "test_unknown_asset_is_blocked", "test_official_sources_are_not_media_licences", "test_prediction_safety_flags_remain_read_only"]
+
+test_sportsq_stage5_scorecall.py: ["test_exact_score_is_conditioned_on_locked_1x2", "test_scorecall_stage5_status_and_schema", "test_scorecall_locks_match_source_prediction", "test_scorecall_evidence_has_temporal_provenance", "test_scorecall_lock_table_rejects_update", "test_scorecall_lock_table_rejects_delete", "test_unknown_scorecall_returns_none", "test_sportsq_intelligence_reads_scorecall_lock", "test_scorecall_lock_rows_do_not_contain_grading"]
+
+test_sportsq_stage6_news_impact.py: ["test_sqlite_text_datetime_is_parsed_to_utc", "test_api_football_injury_parser", "test_api_football_lineup_parser", "test_no_events_preserves_no_fabrication", "test_verified_availability_burden", "test_unverified_event_blocks_score", "test_conflicted_verified_sources_fail_closed", "test_future_observation_is_excluded", "test_stage6_schema_status_and_live_gate", "test_stage6_event_table_is_append_only", "test_current_live_intelligence_still_does_not_fabricate", "test_stage6_routes_are_read_only"]
+
+test_validation.py: ["test_normalizes_finished_fixture", "test_rejects_finished_fixture_without_score", "test_rejects_same_home_and_away_team", "test_rejects_negative_score"]
+
+test_web_targets.py: ["test_add_and_list_web_target", "test_collection_stays_config_required_without_allowlist"]
+
+==============================================================================
+10. ROUTE / CLI INTEGRATION POINTS
+==============================================================================
+
+MAIN ROUTE HINTS
+
+NEEDLE: /api/v1/sportsq | matches=25
+  0541: # ======================================================================
+  0542: 
+  0543: @app.get(
+> 0544:     "/api/v1/sportsq/intelligence",
+  0545:     dependencies=[Depends(_own_api_guard)],
+  0546: )
+  0547: def api_v1_sportsq_intelligence(
+  0558:         )
+  0559: 
+  0560: @app.get(
+> 0561:     "/api/v1/sportsq/intelligence/{fixture_id}",
+  0562:     dependencies=[Depends(_own_api_guard)],
+  0563: )
+  0564: def api_v1_sportsq_fixture_intelligence(
+  0575:         )
+  0576: 
+  0577: @app.get(
+> 0578:     "/api/v1/sportsq/form/{fixture_id}",
+  0579:     dependencies=[Depends(_own_api_guard)],
+  0580: )
+  0581: def api_v1_sportsq_form_index(
+  0609: 
+  0610: 
+  0611: @app.get(
+> 0612:     "/api/v1/sportsq/news-impact/status",
+  0613:     dependencies=[Depends(_own_api_guard)],
+  0614: )
+  0615: def api_v1_sportsq_news_impact_status() -> dict:
+  0618: 
+  0619: 
+  0620: @app.get(
+> 0621:     "/api/v1/sportsq/news-impact/events",
+  0622:     dependencies=[Depends(_own_api_guard)],
+  0623: )
+  0624: def api_v1_sportsq_news_impact_events(
+
+NEEDLE: fixture | matches=47
+  0011:     content_preview,
+  0012:     enqueue_package,
+  0013:     generate_content_package,
+> 0014:     generate_fixture_content_package,
+  0015:     list_queue,
+  0016:     process_queue_item,
+  0017:     stage3_status,
+  0036: from app import __version__
+  0037: from app.config import get_settings
+  0038: from app.db import SessionLocal, init_db
+> 0039: from app.models import Fixture, LeagueSeason, OddsSnapshot, Team
+  0040: from app.services.prediction_grading import live_prediction_rows, performance_summary
+  0041: from app.services.source_registry import list_sources, resolve_field, source_health_summary
+  0042: from app.services.odds_history import list_odds_history, odds_movement
+  0042: from app.services.odds_history import list_odds_history, odds_movement
+  0043: from app.services.source_policy import list_source_policies
+  0044: from app.services.web_targets import list_web_targets
+> 0045: from app.services.fixture_reconciliation import reconciliation_summary, reconciliation_issues
+  0046: from app.services.reconciliation_health import reconciliation_health
+  0047: from app.services.market_safety import market_safety_status
+  0048: from app.services.market_safety_events import list_market_safety_events
+  0087: @app.get("/status")
+  0088: def status() -> dict:
+  0089:     with SessionLocal() as session:
+> 0090:         fixtures = session.scalar(select(func.count(Fixture.id))) or 0
+  0091:         teams = session.scalar(select(func.count(Team.id))) or 0
+  0092:         leagues = session.scalar(select(func.count(LeagueSeason.id))) or 0
+  0093:         finished = session.scalar(select(func.count(Fixture.id)).where(Fixture.is_finished.is_(True))) or 0
+  0090:         fixtures = session.scalar(select(func.count(Fixture.id))) or 0
+  0091:         teams = session.scalar(select(func.count(Team.id))) or 0
+  0092:         leagues = session.scalar(select(func.count(LeagueSeason.id))) or 0
+> 0093:         finished = session.scalar(select(func.count(Fixture.id)).where(Fixture.is_finished.is_(True))) or 0
+  0094:     return {
+  0095:         "fixtures": fixtures,
+  0096:         "finished_fixtures": finished,
+
+NEEDLE: prediction | matches=14
+  0037: from app.config import get_settings
+  0038: from app.db import SessionLocal, init_db
+  0039: from app.models import Fixture, LeagueSeason, OddsSnapshot, Team
+> 0040: from app.services.prediction_grading import live_prediction_rows, performance_summary
+  0041: from app.services.source_registry import list_sources, resolve_field, source_health_summary
+  0042: from app.services.odds_history import list_odds_history, odds_movement
+  0043: from app.services.source_policy import list_source_policies
+  0066: 
+  0067: 
+  0068: app = FastAPI(
+> 0069:     title="AI Football Prediction Data Service",
+  0070:     version=__version__,
+  0071:     description="MDRN SportsQ multi-source football intelligence and prediction API.",
+  0072:     lifespan=lifespan,
+  0068: app = FastAPI(
+  0069:     title="AI Football Prediction Data Service",
+  0070:     version=__version__,
+> 0071:     description="MDRN SportsQ multi-source football intelligence and prediction API.",
+  0072:     lifespan=lifespan,
+  0073: )
+  0074: 
+  0123:         return result
+  0124: 
+  0125: 
+> 0126: @app.get("/predictions/live")
+  0127: def predictions_live(
+  0128:     competition: int = Query(default=2),
+  0129:     season: int = Query(default=2026),
+  0124: 
+  0125: 
+  0126: @app.get("/predictions/live")
+> 0127: def predictions_live(
+  0128:     competition: int = Query(default=2),
+  0129:     season: int = Query(default=2026),
+  0130:     high_confidence_only: bool = Query(default=False),
+
+NEEDLE: accuracy | matches=4
+  0021: from app.services.sportsq_intelligence import (
+  0022:     get_sportsq_intelligence,
+  0023:     list_sportsq_intelligence,
+> 0024:     sportsq_accuracy_summary,
+  0025:     sportsq_capabilities,
+  0026: )
+  0027: 
+  0664:     }
+  0665: 
+  0666: @app.get(
+> 0667:     "/api/v1/sportsq/accuracy",
+  0668:     dependencies=[Depends(_own_api_guard)],
+  0669: )
+  0670: def api_v1_sportsq_accuracy(
+  0667:     "/api/v1/sportsq/accuracy",
+  0668:     dependencies=[Depends(_own_api_guard)],
+  0669: )
+> 0670: def api_v1_sportsq_accuracy(
+  0671:     competition: int = Query(default=2),
+  0672:     season: int = Query(default=2026),
+  0673: ) -> dict:
+  0672:     season: int = Query(default=2026),
+  0673: ) -> dict:
+  0674:     with SessionLocal() as session:
+> 0675:         return sportsq_accuracy_summary(
+  0676:             session,
+  0677:             competition_id=competition,
+  0678:             season=season,
+
+NEEDLE: stage3/generate | matches=2
+  0739:         )
+  0740: 
+  0741: @app.post(
+> 0742:     "/api/v1/sportsq/stage3/generate",
+  0743:     dependencies=[Depends(_own_api_guard)],
+  0744: )
+  0745: def api_v1_sportsq_stage3_generate(
+  0823: 
+  0824: 
+  0825: @app.post(
+> 0826:     "/api/v1/sportsq/stage3/generate/{fixture_id}",
+  0827:     dependencies=[Depends(_own_api_guard)],
+  0828: )
+  0829: def api_v1_sportsq_stage3_generate_fixture(
+
+CLI HINTS
+
+NEEDLE: fixture | matches=23
+  0010: from app.providers.live_score_api import LiveScoreApiClient
+  0011: from app.providers.football_data import FootballDataClient
+  0012: from app.providers.public_web import PublicWebClient
+> 0013: from app.services.fixture_ingestor import refresh_unfinished_results, sync_fixture_window
+  0014: from app.services.live_score_ingestor import sync_live_score_fixtures, sync_live_score_history
+  0015: from app.services.football_data_ingestor import sync_football_data_history, sync_football_data_history_file
+  0016: from app.services.feature_engineering import build_feature_dataset
+  0011: from app.providers.football_data import FootballDataClient
+  0012: from app.providers.public_web import PublicWebClient
+  0013: from app.services.fixture_ingestor import refresh_unfinished_results, sync_fixture_window
+> 0014: from app.services.live_score_ingestor import sync_live_score_fixtures, sync_live_score_history
+  0015: from app.services.football_data_ingestor import sync_football_data_history, sync_football_data_history_file
+  0016: from app.services.feature_engineering import build_feature_dataset
+  0017: from app.services.baseline_models import evaluate_baselines
+  0030: from app.services.source_policy import list_source_policies, seed_known_source_policies, upsert_source_policy
+  0031: from app.providers.openfootball_json import OpenFootballJsonClient
+  0032: from app.services.openfootball_sync import store_openfootball_document, crosscheck_openfootball_vs_live
+> 0033: from app.services.fixture_reconciliation import (
+  0034:     reconcile_openfootball_payload,
+  0035:     reconciliation_summary,
+  0036:     reconciliation_issues,
+  0046:     settings.require_api_key()
+  0047:     with SessionLocal() as session:
+  0048:         async with ApiFootballClient(settings) as client:
+> 0049:             summary = await sync_fixture_window(
+  0050:                 session,
+  0051:                 client,
+  0052:                 league=args.league,
+  0070:     print(dict(summary))
+  0071: 
+  0072: 
+> 0073: async def _sync_live_fixtures(args) -> None:
+  0074:     settings = get_settings()
+  0075:     settings.require_live_score_credentials()
+  0076:     with SessionLocal() as session:
+
+NEEDLE: result | matches=5
+  0062:     settings.require_api_key()
+  0063:     with SessionLocal() as session:
+  0064:         async with ApiFootballClient(settings) as client:
+> 0065:             summary = await refresh_unfinished_results(
+  0066:                 session,
+  0067:                 client,
+  0068:                 lookback_hours=args.lookback_hours or settings.result_lookback_hours,
+  0065:             summary = await refresh_unfinished_results(
+  0066:                 session,
+  0067:                 client,
+> 0068:                 lookback_hours=args.lookback_hours or settings.result_lookback_hours,
+  0069:             )
+  0070:     print(dict(summary))
+  0071: 
+  0563:     sync.add_argument("--from", dest="from_date", type=_date, required=True)
+  0564:     sync.add_argument("--to", dest="to_date", type=_date, required=True)
+  0565: 
+> 0566:     refresh = sub.add_parser("refresh-results", help="API-Football result refresh")
+  0567:     refresh.add_argument("--lookback-hours", type=int)
+  0568: 
+  0569:     live_fix = sub.add_parser(
+  0846:         print("Database initialized.")
+  0847:     elif args.command == "sync-fixtures":
+  0848:         asyncio.run(_sync_api_football(args))
+> 0849:     elif args.command == "refresh-results":
+  0850:         asyncio.run(_refresh_api_football(args))
+  0851:     elif args.command == "sync-live-fixtures":
+  0852:         asyncio.run(_sync_live_fixtures(args))
+
+NEEDLE: scheduler | matches=0
+
+NEEDLE: refresh | matches=19
+  0025: from app.services.web_collector import collect_public_url
+  0026: from app.services.odds_history import capture_pre_match_odds, list_odds_history, odds_movement
+  0027: from app.services.source_health import run_source_health_checks
+> 0028: from app.services.market_refresh import refresh_live_market
+  0029: from app.services.web_targets import add_web_target, collect_due_web_targets, list_web_targets
+  0030: from app.services.source_policy import list_source_policies, seed_known_source_policies, upsert_source_policy
+  0031: from app.providers.openfootball_json import OpenFootballJsonClient
+  0057:     print(dict(summary))
+  0058: 
+  0059: 
+> 0060: async def _refresh_api_football(args) -> None:
+  0061:     settings = get_settings()
+  0062:     settings.require_api_key()
+  0063:     with SessionLocal() as session:
+  0380:     print(summary)
+  0381: 
+  0382: 
+> 0383: def _refresh_live_market(args) -> None:
+  0384:     init_db()
+  0385:     settings = get_settings()
+  0386:     with SessionLocal() as session:
+
+NEEDLE: prediction | matches=27
+  0018: from app.services.ensemble_models import evaluate_phase4_ensemble
+  0019: from app.services.market_residual import evaluate_market_residual
+  0020: from app.services.high_confidence_selector import run_selector_csv
+> 0021: from app.services.live_prediction_engine import generate_live_predictions, list_live_predictions
+  0022: from app.services.prediction_grading import grade_live_predictions, performance_summary
+  0023: from app.services.social_content import generate_social_package
+  0024: from app.services.source_registry import list_sources, resolve_field, seed_default_sources, upsert_source
+  0019: from app.services.market_residual import evaluate_market_residual
+  0020: from app.services.high_confidence_selector import run_selector_csv
+  0021: from app.services.live_prediction_engine import generate_live_predictions, list_live_predictions
+> 0022: from app.services.prediction_grading import grade_live_predictions, performance_summary
+  0023: from app.services.social_content import generate_social_package
+  0024: from app.services.source_registry import list_sources, resolve_field, seed_default_sources, upsert_source
+  0025: from app.services.web_collector import collect_public_url
+  0203: 
+  0204: 
+  0205: 
+> 0206: def _run_live_predictions(args) -> None:
+  0207:     init_db()
+  0208:     with SessionLocal() as session:
+  0209:         summary = generate_live_predictions(
+  0206: def _run_live_predictions(args) -> None:
+  0207:     init_db()
+  0208:     with SessionLocal() as session:
+> 0209:         summary = generate_live_predictions(
+  0210:             session,
+  0211:             competition_id=args.competition,
+  0212:             season=args.season,
+  0213:             threshold=args.threshold,
+  0214:             limit=args.limit,
+  0215:         )
+> 0216:     compact = {key: value for key, value in summary.items() if key != "predictions"}
+  0217:     new_high = [row for row in summary.get("predictions", []) if row.get("publish")]
+  0218:     compact["new_high_confidence_predictions"] = new_high
+  0219:     print(compact)
+
+NEEDLE: grade | matches=11
+  0232: 
+  0233: 
+  0234: 
+> 0235: def _grade_live_predictions(args) -> None:
+  0236:     init_db()
+  0237:     with SessionLocal() as session:
+  0238:         summary = grade_live_predictions(
+  0235: def _grade_live_predictions(args) -> None:
+  0236:     init_db()
+  0237:     with SessionLocal() as session:
+> 0238:         summary = grade_live_predictions(
+  0239:             session,
+  0240:             competition_id=args.competition,
+  0241:             season=args.season,
+  0663:     live_list.add_argument("--season", type=int, default=2026)
+  0664:     live_list.add_argument("--high-confidence-only", action="store_true")
+  0665: 
+> 0666:     grade = sub.add_parser(
+  0667:         "grade-live-predictions",
+  0668:         help="Grade locked live predictions whose fixtures are finished",
+  0669:     )
+  0664:     live_list.add_argument("--high-confidence-only", action="store_true")
+  0665: 
+  0666:     grade = sub.add_parser(
+> 0667:         "grade-live-predictions",
+  0668:         help="Grade locked live predictions whose fixtures are finished",
+  0669:     )
+  0670:     grade.add_argument("--competition", type=int, default=2)
+
+==============================================================================
+11. PROTECTED STAGE 6 BASELINE HASHES
+==============================================================================
+app/services/baseline_models.py | 26a07a2e798a09f0db218f732d8a29c2b576c33383c93c5739b92a5014213014
+app/services/ensemble_models.py | 762a6d1b7dff760c6f0026c158182493701cbe239335724051ed63b595d4e4bc
+app/services/feature_engineering.py | 244443c6ae96cb566645223eee44833d6a0d0ef21f3a529ea2f3413e92086081
+app/services/high_confidence_selector.py | 78af20c65ac59fb3eed6e57d2a2dde376b0c76f8d3727f076c113f6f8a7b90ce
+app/services/live_prediction_engine.py | c36a6d0f9089bb58c219a74fb1513e249949d363ec3bb6a5df4bc78c78e84192
+app/services/prediction_grading.py | 593300da77b912a9efa593f139f0652c2d263477ea164317969344ddbaa4f7e9
+app/services/social_content.py | 2678e8a9c000b077ecf495d727e509387985b774f27888787440c02d174f310c
+app/services/sportsq_intelligence.py | 3487355e2198bb4b0a7f4eff4591720789cdf8c343c03f145e32da7d8464daef
+app/services/sportsq_source_rights.py | cbda8ee8435219d5a8170c9a1a6608f887fcaf47e6e7c43809b003f2b49b5ecd
+app/services/sportsq_scorecall.py | 9f8af0581272a8aa1fc24630723b5230442a48f02ae38b9c8ce5f5f571ef51ab
+app/services/sportsq_news_impact.py | b1b24541fa8c9eb79e1853445d99fbf27adbd71b7500e6682f90496fb09078eb
+
+==============================================================================
+12. PROTECTED ROW COUNTS
+==============================================================================
+live_predictions=18 expected_stage6=18
+PASS: live_predictions remains at Stage 6 final baseline 18
+sportsq_scorecall_locks=18 expected_stage6=18
+PASS: sportsq_scorecall_locks remains at Stage 6 final baseline 18
+sportsq_sources=17 expected_stage6=17
+PASS: sportsq_sources remains at Stage 6 final baseline 17
+sportsq_media_assets=0 expected_stage6=0
+PASS: sportsq_media_assets remains at Stage 6 final baseline 0
+sportsq_rights_verifications=0 expected_stage6=0
+PASS: sportsq_rights_verifications remains at Stage 6 final baseline 0
+fixtures=2268 expected_stage6=2268
+PASS: fixtures remains at Stage 6 final baseline 2268
+teams=48 expected_stage6=48
+PASS: teams remains at Stage 6 final baseline 48
+sportsq_team_news_events=0 expected_stage6=0
+PASS: sportsq_team_news_events remains at Stage 6 final baseline 0
+
+==============================================================================
+13. HOLDOUT SAFETY
+==============================================================================
+holdout_tables=[]
+holdout_files=[]
+PASS: No holdout database tables appeared
+PASS: No holdout files appeared
+
+==============================================================================
+14. STAGE 7 GAP ANALYSIS SIGNALS
+==============================================================================
+{
+  "content_handoff_exists": true,
+  "fixture_ingestor_exists": true,
+  "grading_exists": true,
+  "live_score_ingestor_exists": true,
+  "prediction_engine_exists": true,
+  "scheduler_exists": true,
+  "scorecall_exists": true
+}
+PASS: Fixture ingestion component already exists
+PASS: Existing live prediction engine is available for orchestration
+PASS: Existing ScoreCall service is available for orchestration
+PASS: Existing prediction grading is available for orchestration
+
+==============================================================================
+15. PROPOSED STAGE 7 IMPLEMENTATION BOUNDARY
+==============================================================================
+Stage 7 goal: remove manual fixture lifecycle handling by adding a thin, auditable orchestration layer around existing components.
+Proposed lifecycle:
+1. DISCOVER / REFRESH FIXTURES using existing providers and ingestors.
+2. CLASSIFY fixture lifecycle state from authoritative fixture data.
+3. PRE-MATCH ELIGIBILITY gate: future kickoff, adequate source state, no existing immutable prediction lock.
+4. CALL existing live prediction engine; do not rewrite model logic.
+5. PRESERVE immutable LivePrediction lock semantics.
+6. CALL existing ScoreCall lock service only after a valid 1X2 lock exists.
+7. MARK content handoff readiness; do not redesign Stage 3/Stage 8 content here.
+8. REFRESH unfinished results using existing result ingestion.
+9. GRADE only completed fixtures with pre-kickoff immutable locks.
+10. EXPOSE lifecycle status / audit summary through a new Stage 7 service/API.
+Explicit exclusions:
+- No prediction-model rewrite.
+- No mutation of existing LivePrediction locks.
+- No mutation of existing ScoreCall locks.
+- No final holdout access.
+- No enabling of blocked 2026 News Impact ingestion.
+- No social auto-posting in Stage 7.
+- No Content v2 redesign in Stage 7.
+
+==============================================================================
+16. INSPECTION DECISION
+==============================================================================
+STAGE7_INSPECTION=PASS
+base_version=1.0.4-stage6-news-impact
+proposed_version=1.0.5-stage7-fixture-lifecycle
+application_source_modified=NO
+database_modified=NO
+prediction_engine_modified=NO
+live_prediction_locks_modified=NO
+scorecall_locks_modified=NO
+historical_holdout_touched=NO
+stage6_news_ingestion_state_modified=NO

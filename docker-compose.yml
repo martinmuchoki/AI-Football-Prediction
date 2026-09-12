@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ai-football-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: football_ai
+      POSTGRES_USER: football
+      POSTGRES_PASSWORD: football_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - football_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U football -d football_ai"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  football_pgdata:

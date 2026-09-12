@@ -1,0 +1,10 @@
+﻿source_id,name,category,scope,base_url,trust_class,use_for,media_reuse_default,notes
+official-premier-league,Premier League,competition,Premier League,https://www.premierleague.com/en,OFFICIAL,"fixtures, results, tables, competition news",NO,Authoritative football-information source. Do not assume video/highlight reuse rights.
+official-uefa,UEFA,governing_body,UEFA competitions / Champions League,https://www.uefa.com/,OFFICIAL,"fixtures, results, competition news, official announcements",NO,Authoritative information source. Media reuse requires separate rights basis.
+official-fifa,FIFA,governing_body,FIFA competitions,https://www.fifa.com/,OFFICIAL,"fixtures, results, competition news, official announcements",NO,Authoritative information source. Media reuse requires separate rights basis.
+club-arsenal,Arsenal,club,Arsenal,https://www.arsenal.com/,OFFICIAL,"team news, injuries when published, interviews, fixtures",NO,Use for information verification; club video is not automatically reusable.
+club-manchester-united,Manchester United,club,Manchester United,https://www.manutd.com/en,OFFICIAL,"team news, injuries when published, interviews, fixtures",NO,Use for information verification; club video is not automatically reusable.
+club-manchester-city,Manchester City,club,Manchester City,https://www.mancity.com/,OFFICIAL,"team news, injuries when published, interviews, fixtures",NO,Use for information verification; club video is not automatically reusable.
+club-tottenham,Tottenham Hotspur,club,Tottenham Hotspur,https://www.tottenhamhotspur.com/,OFFICIAL,"team news, injuries when published, interviews, fixtures",NO,Use for information verification; club video is not automatically reusable.
+club-chelsea,Chelsea FC,club,Chelsea,https://www.chelseafc.com/,OFFICIAL,"team news, injuries when published, interviews, fixtures",NO,Seeded as official club domain; verify individual media rights separately.
+club-liverpool,Liverpool FC,club,Liverpool,https://www.liverpoolfc.com/,OFFICIAL,"team news, injuries when published, interviews, fixtures",NO,Seeded as official club domain; verify individual media rights separately.

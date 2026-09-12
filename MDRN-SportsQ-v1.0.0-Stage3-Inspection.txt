@@ -1,0 +1,751 @@
+﻿
+==============================================================================
+VERSION
+==============================================================================
+0.12.0-sportsq-prediction-intelligence
+
+==============================================================================
+PROJECT ROOT
+==============================================================================
+D:\Mprojet\AI-Football-Prediction-v0.1.0-Phase1-Source\AI-Football-Prediction-v0.1.0-Phase1
+
+==============================================================================
+TOP-LEVEL FILES / DIRECTORIES
+==============================================================================
+FILE .env
+FILE .env.before-telegram-20260910-013028.backup
+FILE .env.before-telegram-20260910-013306.backup
+FILE .env.example
+FILE .gitignore
+DIR .pytest_cache
+FILE _stage3_probe.py
+DIR app
+DIR data
+FILE docker-compose.yml
+FILE MDRN-SportsQ-v012-Core-Inspection.txt
+FILE PHASE1-CHECKLIST.md
+FILE PHASE10A-CHECKLIST.md
+FILE PHASE10A.1-CHECKLIST.md
+FILE PHASE10A.2-CHECKLIST.md
+FILE PHASE10A.3-CHECKLIST.md
+FILE PHASE10A.4-CHECKLIST.md
+FILE PHASE10A.4a-HOTFIX.md
+FILE PHASE10A.5-CHECKLIST.md
+FILE PHASE2-CHECKLIST.md
+FILE PHASE3-CHECKLIST.md
+FILE PHASE4-CHECKLIST.md
+FILE PHASE4.1-CHECKLIST.md
+FILE PHASE5-CHECKLIST.md
+FILE PHASE7-CHECKLIST.md
+FILE PHASE8-CHECKLIST.md
+FILE PHASE9-CHECKLIST.md
+FILE PHASE9.1-CHECKLIST.md
+FILE pytest.ini
+FILE README.md
+FILE requirements.txt
+FILE schema.sql
+DIR scripts
+DIR tests
+
+==============================================================================
+EXISTING CONTENT / GUI / SOCIAL SERVICE FILES
+==============================================================================
+app\services\social_content.py
+app\services\sportsq_intelligence.py
+
+==============================================================================
+SOCIAL_CONTENT SOURCE INVENTORY
+==============================================================================
+FunctionDef line=19 name=_resolve_ffmpeg
+FunctionDef line=35 name=_font
+FunctionDef line=57 name=_utc
+FunctionDef line=64 name=_prediction_name
+FunctionDef line=68 name=_safe_name
+FunctionDef line=81 name=render_prediction_card
+FunctionDef line=138 name=_caption
+FunctionDef line=153 name=_make_static_video
+FunctionDef line=199 name=generate_social_package
+
+--- IMPORTS ---
+from __future__ import annotations
+import json
+import shutil
+import subprocess
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+from PIL import Image, ImageDraw, ImageFont
+from sqlalchemy.orm import Session
+from app.services.prediction_grading import live_prediction_rows
+
+==============================================================================
+PUBLIC ROUTES RELEVANT TO STAGE 3
+==============================================================================
+GET /api/v1/sportsq/intelligence
+GET /api/v1/sportsq/intelligence/{fixture_id}
+GET /api/v1/sportsq/form/{fixture_id}
+GET /api/v1/sportsq/news-impact/{fixture_id}
+GET /api/v1/sportsq/accuracy
+GET /api/v1/sportsq/capabilities
+
+==============================================================================
+FRONTEND / GUI CANDIDATES
+==============================================================================
+
+==============================================================================
+PACKAGE / BUILD FILES
+==============================================================================
+requirements.txt
+
+==============================================================================
+PACKAGE.JSON SAFE SUMMARY
+==============================================================================
+NO_PACKAGE_JSON
+
+==============================================================================
+FFMPEG / VIDEO CAPABILITY
+==============================================================================
+PIL=AVAILABLE
+moviepy=UNAVAILABLE
+imageio_ffmpeg=AVAILABLE
+cv2=UNAVAILABLE
+
+==============================================================================
+CONFIG FIELD NAMES RELEVANT TO SOCIAL / MEDIA
+==============================================================================
+af_max_retries
+fd_max_retries
+ls_max_retries
+ls_retry_max_seconds
+ls_max_pages
+public_web_max_body_bytes
+safety_alert_max_retries
+safety_alert_telegram_enabled
+safety_alert_telegram_bot_token
+safety_alert_telegram_chat_id
+
+==============================================================================
+ENVIRONMENT VARIABLE NAMES ONLY
+==============================================================================
+SAFETY_ALERT_TELEGRAM_ENABLED
+
+==============================================================================
+STAGE 3 RELATED TEST FILES
+==============================================================================
+test_api_football.py
+test_live_score_api.py
+test_phase10a2_api.py
+test_phase10a3_api.py
+test_phase10a4_policy_api.py
+test_phase10a5_reconciliation_api.py
+test_phase10a_api.py
+test_phase10a_odds_api.py
+test_phase8_api.py
+test_social_content.py
+test_sportsq_intelligence.py
+
+==============================================================================
+EXISTING STATIC / TEMPLATE ASSETS
+==============================================================================
+
+==============================================================================
+READ-ONLY SAFETY ASSERTIONS
+==============================================================================
+database_write_operations=0
+prediction_mutations=0
+prediction_lock_mutations=0
+final_holdout_mutations=0
+secret_values_printed=0
+inspection_complete=True
+
+==============================================================================
+POWERSHELL SOURCE INVENTORY
+==============================================================================
+
+
+  app\providers\openfootball_json.py:31:            headers={
+> app\providers\openfootball_json.py:32:                "User-Agent": "MDRN-SportsQ-OpenFootball/0.10.4",
+  app\providers\openfootball_json.py:33:                "Accept": "application/vnd.github+json",
+  app\providers\openfootball_json.py:34:                "X-GitHub-Api-Version": "2022-11-28",
+  app\providers\openfootball_json.py:35:            },
+  app\services\baseline_models.py:168:    Closing odds and odds-movement fields are intentionally excluded because
+> app\services\baseline_models.py:169:    the live prediction may be published before a true closing market exists.
+  app\services\baseline_models.py:170:    Targets and identifiers are always excluded.
+  app\services\baseline_models.py:171:    """
+  app\services\baseline_models.py:172:    result: list[str] = []
+  app\services\high_confidence_selector.py:18:    threshold: float
+> app\services\high_confidence_selector.py:19:    publish: bool
+  app\services\high_confidence_selector.py:20:    policy_version: str = POLICY_VERSION
+  app\services\high_confidence_selector.py:21:
+  app\services\high_confidence_selector.py:22:    def to_dict(self) -> dict[str, Any]:
+  app\services\high_confidence_selector.py:37:    confidence = normalized[prediction]
+> app\services\high_confidence_selector.py:38:    publish = confidence >= threshold
+  app\services\high_confidence_selector.py:39:    return SelectionDecision(
+> app\services\high_confidence_selector.py:40:        label="HIGH_CONFIDENCE" if publish else "PASS",
+  app\services\high_confidence_selector.py:41:        prediction=prediction,
+  app\services\high_confidence_selector.py:42:        confidence=round(confidence, 8),
+  app\services\high_confidence_selector.py:43:        threshold=float(threshold),
+> app\services\high_confidence_selector.py:44:        publish=publish,
+  app\services\high_confidence_selector.py:45:    )
+  app\services\high_confidence_selector.py:46:
+  app\services\high_confidence_selector.py:47:
+  app\services\high_confidence_selector.py:64:            "selector_threshold": decision.threshold,
+> app\services\high_confidence_selector.py:65:            "selector_publish": int(decision.publish),
+  app\services\high_confidence_selector.py:66:            "selector_policy_version": decision.policy_version,
+  app\services\high_confidence_selector.py:67:        })
+  app\services\high_confidence_selector.py:68:        output.append(row)
+  app\services\high_confidence_selector.py:86:        writer.writerows(selected)
+> app\services\high_confidence_selector.py:87:    high = sum(int(row["selector_publish"]) for row in selected)
+  app\services\high_confidence_selector.py:88:    manifest = {
+  app\services\high_confidence_selector.py:89:        "status": "success",
+  app\services\high_confidence_selector.py:90:        "policy_version": POLICY_VERSION,
+  app\services\live_prediction_engine.py:183:            selector_label=decision.label,
+> app\services\live_prediction_engine.py:184:            publish=decision.publish,
+  app\services\live_prediction_engine.py:185:            odds_snapshot_at=now_utc,
+  app\services\live_prediction_engine.py:186:            locked_at=now_utc,
+  app\services\live_prediction_engine.py:187:            kickoff_utc=kickoff,
+  app\services\live_prediction_engine.py:190:        summary["locked_new"] += 1
+> app\services\live_prediction_engine.py:191:        if decision.publish:
+  app\services\live_prediction_engine.py:192:            summary["high_confidence"] += 1
+  app\services\live_prediction_engine.py:193:        else:
+  app\services\live_prediction_engine.py:194:            summary["pass"] += 1
+  app\services\live_prediction_engine.py:209:            "label": decision.label,
+> app\services\live_prediction_engine.py:210:            "publish": decision.publish,
+  app\services\live_prediction_engine.py:211:            "locked_at": now_utc.isoformat(),
+  app\services\live_prediction_engine.py:212:        })
+  app\services\live_prediction_engine.py:213:
+  app\services\live_prediction_engine.py:239:    if high_confidence_only:
+> app\services\live_prediction_engine.py:240:        stmt = stmt.where(LivePrediction.publish.is_(True))
+  app\services\live_prediction_engine.py:241:
+  app\services\live_prediction_engine.py:242:    rows = []
+  app\services\live_prediction_engine.py:243:    for pred, home_name, away_name in session.execute(stmt).all():
+  app\services\live_prediction_engine.py:251:            "label": pred.selector_label,
+> app\services\live_prediction_engine.py:252:            "publish": bool(pred.publish),
+  app\services\live_prediction_engine.py:253:            "locked_at": _utc(pred.locked_at).isoformat(),
+  app\services\live_prediction_engine.py:254:        })
+  app\services\live_prediction_engine.py:255:    return rows
+  app\services\market_reliability.py:388:    message = (
+> app\services\market_reliability.py:389:        f"{icon} MDRN SportsQ SLA Escalation\n"
+  app\services\market_reliability.py:390:        f"\n"
+  app\services\market_reliability.py:391:        f"Stage: {alert['stage']}\n"
+  app\services\market_reliability.py:392:        f"Severity: {severity}\n"
+  app\services\market_reliability.py:546:
+> app\services\market_reliability.py:547:                response = await client.post(
+  app\services\market_reliability.py:548:                    url,
+  app\services\market_reliability.py:549:                    json=payload,
+  app\services\market_reliability.py:550:                )
+  app\services\market_safety_alerts.py:156:    return {
+> app\services\market_safety_alerts.py:157:        "brand": "MDRN SportsQ",
+  app\services\market_safety_alerts.py:158:        "type": "market_safety_transition",
+  app\services\market_safety_alerts.py:159:
+  app\services\market_safety_alerts.py:160:        "alert_type": event.get(
+  app\services\market_safety_alerts.py:303:    message = (
+> app\services\market_safety_alerts.py:304:        f"{icon} MDRN SportsQ Safety Alert\n"
+  app\services\market_safety_alerts.py:305:        f"\n"
+  app\services\market_safety_alerts.py:306:        f"Alert: {alert_type}\n"
+  app\services\market_safety_alerts.py:307:        f"Transition: {event.get('transition') or 'N/A'}\n"
+  app\services\market_safety_alerts.py:437:        "Content-Type": "application/json",
+> app\services\market_safety_alerts.py:438:        "User-Agent": "MDRN-SportsQ-Safety/0.10",
+  app\services\market_safety_alerts.py:439:    }
+  app\services\market_safety_alerts.py:440:
+  app\services\market_safety_alerts.py:441:    if token:
+  app\services\market_safety_alerts.py:465:
+> app\services\market_safety_alerts.py:466:                response = await client.post(
+  app\services\market_safety_alerts.py:467:                    webhook_url,
+  app\services\market_safety_alerts.py:468:                    json=payload,
+  app\services\market_safety_alerts.py:469:                    headers=headers,
+  app\services\market_safety_alerts.py:662:
+> app\services\market_safety_alerts.py:663:                response = await client.post(
+  app\services\market_safety_alerts.py:664:                    url,
+  app\services\market_safety_alerts.py:665:                    json=payload,
+  app\services\market_safety_alerts.py:666:                )
+  app\services\prediction_grading.py:105:    if high_confidence_only:
+> app\services\prediction_grading.py:106:        base_stmt = base_stmt.where(LivePrediction.publish.is_(True))
+  app\services\prediction_grading.py:107:
+  app\services\prediction_grading.py:108:    rows = list(session.scalars(base_stmt.order_by(LivePrediction.kickoff_utc)).all())
+  app\services\prediction_grading.py:109:    graded = [p for p in rows if p.actual_result in VALID_RESULTS and p.is_correct is not None]
+  app\services\prediction_grading.py:178:    if high_confidence_only:
+> app\services\prediction_grading.py:179:        stmt = stmt.where(LivePrediction.publish.is_(True))
+  app\services\prediction_grading.py:180:
+  app\services\prediction_grading.py:181:    output = []
+  app\services\prediction_grading.py:182:    for pred, home_name, away_name in session.execute(stmt).all():
+  app\services\prediction_grading.py:190:            "label": pred.selector_label,
+> app\services\prediction_grading.py:191:            "publish": bool(pred.publish),
+  app\services\prediction_grading.py:192:            "locked_at": _utc(pred.locked_at).isoformat(),
+  app\services\prediction_grading.py:193:            "actual_result": pred.actual_result,
+  app\services\prediction_grading.py:194:            "is_correct": pred.is_correct,
+  app\services\social_content.py:18:
+> app\services\social_content.py:19:def _resolve_ffmpeg() -> str | None:
+> app\services\social_content.py:20:    system = shutil.which("ffmpeg")
+  app\services\social_content.py:21:    if system:
+  app\services\social_content.py:22:        return system
+  app\services\social_content.py:23:
+  app\services\social_content.py:24:    try:
+> app\services\social_content.py:25:        import imageio_ffmpeg
+> app\services\social_content.py:26:        bundled = imageio_ffmpeg.get_ffmpeg_exe()
+  app\services\social_content.py:27:        if bundled and Path(bundled).exists():
+  app\services\social_content.py:28:            return str(bundled)
+  app\services\social_content.py:29:    except Exception:
+  app\services\social_content.py:80:
+> app\services\social_content.py:81:def render_prediction_card(row: dict[str, Any], output_path: str | Path) -> Path:
+  app\services\social_content.py:82:    output = Path(output_path)
+  app\services\social_content.py:83:    output.parent.mkdir(parents=True, exist_ok=True)
+  app\services\social_content.py:84:
+  app\services\social_content.py:153:def _make_static_video(card_paths: list[Path], output_path: Path, seconds_per_card: int = 6) -> dict[str, Any]:
+> app\services\social_content.py:154:    ffmpeg = _resolve_ffmpeg()
+> app\services\social_content.py:155:    if not ffmpeg:
+> app\services\social_content.py:156:        return {"created": False, "reason": "ffmpeg_not_found", "output": None}
+  app\services\social_content.py:157:
+  app\services\social_content.py:158:    if not card_paths:
+  app\services\social_content.py:159:        return {"created": False, "reason": "no_cards", "output": None}
+  app\services\social_content.py:171:    cmd = [
+> app\services\social_content.py:172:        ffmpeg,
+  app\services\social_content.py:173:        "-y",
+  app\services\social_content.py:174:        "-f", "concat",
+  app\services\social_content.py:175:        "-safe", "0",
+  app\services\social_content.py:190:            "created": False,
+> app\services\social_content.py:191:            "reason": "ffmpeg_failed",
+  app\services\social_content.py:192:            "output": None,
+  app\services\social_content.py:193:            "error_tail": run.stderr[-1200:],
+  app\services\social_content.py:194:        }
+  app\services\social_content.py:224:    for row in rows:
+> app\services\social_content.py:225:        if high_confidence_only and not row.get("publish"):
+  app\services\social_content.py:226:            continue
+  app\services\social_content.py:227:
+  app\services\social_content.py:228:        stem = f"{row['fixture_id']}-{_safe_name(row['home'])}-vs-{_safe_name(row['away'])}"
+  app\services\social_content.py:231:
+> app\services\social_content.py:232:        render_prediction_card(row, card_path)
+  app\services\social_content.py:233:        caption_path.write_text(_caption(row), encoding="utf-8")
+  app\services\social_content.py:234:        card_paths.append(card_path)
+  app\services\social_content.py:235:
+  app\services\source_health.py:65:        follow_redirects=True,
+> app\services\source_health.py:66:        headers={"User-Agent": "MDRN-SportsQ-Health/0.10.2"},
+  app\services\source_health.py:67:    ) as client:
+  app\services\source_health.py:68:        response = await client.get(url)
+  app\services\source_health.py:69:        response.raise_for_status()
+  app\services\sportsq_intelligence.py:12:BRAND_HIERARCHY = {
+> app\services\sportsq_intelligence.py:13:    "brand": "MDRN SportsQ",
+> app\services\sportsq_intelligence.py:14:    "predict": "SportsQ Predict",
+> app\services\sportsq_intelligence.py:15:    "score_call": "SportsQ ScoreCall",
+> app\services\sportsq_intelligence.py:16:    "confidence": "SportsQ Confidence",
+> app\services\sportsq_intelligence.py:17:    "news_impact": "SportsQ News Impact",
+> app\services\sportsq_intelligence.py:18:    "form_index": "SportsQ Form Index",
+  app\services\sportsq_intelligence.py:19:}
+  app\services\sportsq_intelligence.py:20:
+  app\services\sportsq_intelligence.py:21:FORM_WINDOW = 5
+  app\services\sportsq_intelligence.py:29:    "prediction_grading",
+> app\services\sportsq_intelligence.py:30:    "social_content",
+  app\services\sportsq_intelligence.py:31:)
+  app\services\sportsq_intelligence.py:32:
+  app\services\sportsq_intelligence.py:33:PREDICTION_FIELDS = (
+  app\services\sportsq_intelligence.py:475:    return {
+> app\services\sportsq_intelligence.py:476:        "brand": "MDRN SportsQ",
+  app\services\sportsq_intelligence.py:477:        "fixture": {
+  app\services\sportsq_intelligence.py:478:            "fixture_id": int(internal_fixture_id) if internal_fixture_id is not None else None,
+  app\services\sportsq_intelligence.py:479:            "provider_fixture_id": (
+  app\services\sportsq_intelligence.py:489:        },
+> app\services\sportsq_intelligence.py:490:        "sportsq_predict": {
+  app\services\sportsq_intelligence.py:491:            "name": BRAND_HIERARCHY["predict"],
+  app\services\sportsq_intelligence.py:492:            "prediction": prediction,
+  app\services\sportsq_intelligence.py:493:            "status": "AVAILABLE" if prediction is not None else "UNAVAILABLE",
+  app\services\sportsq_intelligence.py:496:        },
+> app\services\sportsq_intelligence.py:497:        "sportsq_score_call": {
+  app\services\sportsq_intelligence.py:498:            "name": BRAND_HIERARCHY["score_call"],
+  app\services\sportsq_intelligence.py:499:            "score": score_call,
+  app\services\sportsq_intelligence.py:500:            "status": (
+  app\services\sportsq_intelligence.py:506:        },
+> app\services\sportsq_intelligence.py:507:        "sportsq_confidence": {
+  app\services\sportsq_intelligence.py:508:            "name": BRAND_HIERARCHY["confidence"],
+  app\services\sportsq_intelligence.py:509:            "percent": confidence,
+  app\services\sportsq_intelligence.py:510:            "band": _confidence_band(confidence),
+  app\services\sportsq_intelligence.py:513:        },
+> app\services\sportsq_intelligence.py:514:        "sportsq_form_index": {
+  app\services\sportsq_intelligence.py:515:            "name": BRAND_HIERARCHY["form_index"],
+  app\services\sportsq_intelligence.py:516:            "window": FORM_WINDOW,
+  app\services\sportsq_intelligence.py:517:            "method": (
+  app\services\sportsq_intelligence.py:530:        },
+> app\services\sportsq_intelligence.py:531:        "sportsq_news_impact": {
+  app\services\sportsq_intelligence.py:532:            "name": BRAND_HIERARCHY["news_impact"],
+  app\services\sportsq_intelligence.py:533:            **_news_impact(),
+  app\services\sportsq_intelligence.py:534:        },
+  app\services\sportsq_intelligence.py:541:            ),
+> app\services\sportsq_intelligence.py:542:            "publish": row.get("publish"),
+  app\services\sportsq_intelligence.py:543:            "immutable_source": True,
+  app\services\sportsq_intelligence.py:544:        },
+  app\services\sportsq_intelligence.py:545:        "safety": {
+  app\services\sportsq_intelligence.py:548:            "historical_holdout_touched": False,
+> app\services\sportsq_intelligence.py:549:            "post_kickoff_features_used": False,
+  app\services\sportsq_intelligence.py:550:        },
+  app\services\sportsq_intelligence.py:551:    }
+  app\services\sportsq_intelligence.py:552:
+> app\services\sportsq_intelligence.py:553:def list_sportsq_intelligence(
+  app\services\sportsq_intelligence.py:554:    session: Session,
+  app\services\sportsq_intelligence.py:555:    *,
+  app\services\sportsq_intelligence.py:556:    competition_id: int = 2,
+  app\services\sportsq_intelligence.py:580:
+> app\services\sportsq_intelligence.py:581:def get_sportsq_intelligence(
+  app\services\sportsq_intelligence.py:582:    session: Session,
+  app\services\sportsq_intelligence.py:583:    *,
+  app\services\sportsq_intelligence.py:584:    fixture_id: int,
+  app\services\sportsq_intelligence.py:623:
+> app\services\sportsq_intelligence.py:624:def sportsq_accuracy_summary(
+  app\services\sportsq_intelligence.py:625:    session: Session,
+  app\services\sportsq_intelligence.py:626:    *,
+  app\services\sportsq_intelligence.py:627:    competition_id: int = 2,
+  app\services\sportsq_intelligence.py:644:        "status": status,
+> app\services\sportsq_intelligence.py:645:        "brand": "MDRN SportsQ",
+  app\services\sportsq_intelligence.py:646:        "competition_id": int(competition_id),
+  app\services\sportsq_intelligence.py:647:        "season": int(season),
+  app\services\sportsq_intelligence.py:648:        "grading_source": "existing_prediction_grading",
+  app\services\sportsq_intelligence.py:657:
+> app\services\sportsq_intelligence.py:658:def sportsq_capabilities(session: Session) -> dict[str, Any]:
+  app\services\sportsq_intelligence.py:659:    tables = _table_names(session)
+  app\services\sportsq_intelligence.py:660:    live_columns = (
+  app\services\sportsq_intelligence.py:661:        _columns(session, "live_predictions")
+  app\services\sportsq_intelligence.py:710:        },
+> app\services\sportsq_intelligence.py:711:        "sportsq_predict": {
+  app\services\sportsq_intelligence.py:712:            "available": prediction_columns or probability_columns,
+  app\services\sportsq_intelligence.py:713:            "uses_existing_locked_prediction": True,
+  app\services\sportsq_intelligence.py:714:        },
+> app\services\sportsq_intelligence.py:715:        "sportsq_score_call": {
+  app\services\sportsq_intelligence.py:716:            "available": score_call_columns,
+  app\services\sportsq_intelligence.py:717:            "fabricated_when_missing": False,
+  app\services\sportsq_intelligence.py:718:        },
+> app\services\sportsq_intelligence.py:719:        "sportsq_confidence": {
+  app\services\sportsq_intelligence.py:720:            "available": confidence_columns or probability_columns,
+  app\services\sportsq_intelligence.py:721:            "uses_locked_values_only": True,
+  app\services\sportsq_intelligence.py:722:        },
+> app\services\sportsq_intelligence.py:723:        "sportsq_form_index": {
+  app\services\sportsq_intelligence.py:724:            "available": "fixtures" in tables,
+  app\services\sportsq_intelligence.py:725:            "window": FORM_WINDOW,
+  app\services\sportsq_intelligence.py:726:            "lookahead_protection": True,
+  app\services\sportsq_intelligence.py:727:        },
+> app\services\sportsq_intelligence.py:728:        "sportsq_news_impact": {
+  app\services\sportsq_intelligence.py:729:            "status": "NO_STRUCTURED_TEAM_NEWS_INPUT",
+  app\services\sportsq_intelligence.py:730:            "fabricated": False,
+  app\services\sportsq_intelligence.py:731:        },
+  app\cli.py:22:from app.services.prediction_grading import grade_live_predictions, performance_summary
+> app\cli.py:23:from app.services.social_content import generate_social_package
+  app\cli.py:24:from app.services.source_registry import list_sources, resolve_field, seed_default_sources, upsert_source
+  app\cli.py:25:from app.services.web_collector import collect_public_url
+  app\cli.py:26:from app.services.odds_history import capture_pre_match_odds, list_odds_history, odds_movement
+  app\cli.py:216:    compact = {key: value for key, value in summary.items() if key != "predictions"}
+> app\cli.py:217:    new_high = [row for row in summary.get("predictions", []) if row.get("publish")]
+  app\cli.py:218:    compact["new_high_confidence_predictions"] = new_high
+  app\cli.py:219:    print(compact)
+  app\cli.py:220:
+  app\cli.py:258:
+> app\cli.py:259:def _generate_social_content(args) -> None:
+  app\cli.py:260:    init_db()
+  app\cli.py:261:    with SessionLocal() as session:
+  app\cli.py:262:        summary = generate_social_package(
+  app\cli.py:682:        "generate-social-content",
+> app\cli.py:683:        help="Generate Instagram-ready prediction cards, captions and an optional static MP4",
+  app\cli.py:684:    )
+  app\cli.py:685:    social.add_argument("--competition", type=int, default=2)
+  app\cli.py:686:    social.add_argument("--season", type=int, default=2026)
+  app\cli.py:875:    elif args.command == "generate-social-content":
+> app\cli.py:876:        _generate_social_content(args)
+  app\cli.py:877:    elif args.command == "seed-data-sources":
+  app\cli.py:878:        _seed_data_sources(args)
+  app\cli.py:879:    elif args.command == "list-data-sources":
+  app\config.py:64:    public_web_allowed_domains: str = ""
+> app\config.py:65:    public_web_user_agent: str = "MDRN-SportsQ-Collector/0.10"
+  app\config.py:66:    public_web_timeout_seconds: float = 20.0
+  app\config.py:67:    public_web_max_body_bytes: int = 2_000_000
+  app\config.py:68:    public_web_robots_fail_closed: bool = True
+  app\main.py:2:
+> app\main.py:3:from app.services.sportsq_intelligence import (
+> app\main.py:4:    get_sportsq_intelligence,
+> app\main.py:5:    list_sportsq_intelligence,
+> app\main.py:6:    sportsq_accuracy_summary,
+> app\main.py:7:    sportsq_capabilities,
+  app\main.py:8:)
+  app\main.py:9:
+  app\main.py:10:
+  app\main.py:52:    version=__version__,
+> app\main.py:53:    description="MDRN SportsQ multi-source football intelligence and prediction API.",
+  app\main.py:54:    lifespan=lifespan,
+  app\main.py:55:)
+  app\main.py:56:
+  app\main.py:153:        "status": "ok",
+> app\main.py:154:        "service": "MDRN SportsQ API",
+  app\main.py:155:        "version": __version__,
+  app\main.py:156:        "phase": "10A",
+  app\main.py:157:        "utc": datetime.now(timezone.utc).isoformat(),
+  app\main.py:521:# ======================================================================
+> app\main.py:522:# MDRN SportsQ v0.12.0 Prediction Intelligence
+  app\main.py:523:# ======================================================================
+  app\main.py:524:
+  app\main.py:525:@app.get(
+> app\main.py:526:    "/api/v1/sportsq/intelligence",
+  app\main.py:527:    dependencies=[Depends(_own_api_guard)],
+  app\main.py:528:)
+> app\main.py:529:def api_v1_sportsq_intelligence(
+  app\main.py:530:    competition: int = Query(default=2),
+  app\main.py:531:    season: int = Query(default=2026),
+  app\main.py:532:    limit: int = Query(default=100, ge=1, le=1000),
+  app\main.py:534:    with SessionLocal() as session:
+> app\main.py:535:        return list_sportsq_intelligence(
+  app\main.py:536:            session,
+  app\main.py:537:            competition_id=competition,
+  app\main.py:538:            season=season,
+  app\main.py:542:@app.get(
+> app\main.py:543:    "/api/v1/sportsq/intelligence/{fixture_id}",
+  app\main.py:544:    dependencies=[Depends(_own_api_guard)],
+  app\main.py:545:)
+> app\main.py:546:def api_v1_sportsq_fixture_intelligence(
+  app\main.py:547:    fixture_id: int,
+  app\main.py:548:    competition: int = Query(default=2),
+  app\main.py:549:    season: int = Query(default=2026),
+  app\main.py:551:    with SessionLocal() as session:
+> app\main.py:552:        return get_sportsq_intelligence(
+  app\main.py:553:            session,
+  app\main.py:554:            fixture_id=fixture_id,
+  app\main.py:555:            competition_id=competition,
+  app\main.py:559:@app.get(
+> app\main.py:560:    "/api/v1/sportsq/form/{fixture_id}",
+  app\main.py:561:    dependencies=[Depends(_own_api_guard)],
+  app\main.py:562:)
+> app\main.py:563:def api_v1_sportsq_form_index(
+  app\main.py:564:    fixture_id: int,
+  app\main.py:565:    competition: int = Query(default=2),
+  app\main.py:566:    season: int = Query(default=2026),
+  app\main.py:568:    with SessionLocal() as session:
+> app\main.py:569:        result = get_sportsq_intelligence(
+  app\main.py:570:            session,
+  app\main.py:571:            fixture_id=fixture_id,
+  app\main.py:572:            competition_id=competition,
+  app\main.py:580:        "fixture": item["fixture"],
+> app\main.py:581:        "sportsq_form_index": item["sportsq_form_index"],
+  app\main.py:582:        "historical_holdout_touched": False,
+  app\main.py:583:    }
+  app\main.py:584:
+  app\main.py:585:@app.get(
+> app\main.py:586:    "/api/v1/sportsq/news-impact/{fixture_id}",
+  app\main.py:587:    dependencies=[Depends(_own_api_guard)],
+  app\main.py:588:)
+> app\main.py:589:def api_v1_sportsq_news_impact(
+  app\main.py:590:    fixture_id: int,
+  app\main.py:591:    competition: int = Query(default=2),
+  app\main.py:592:    season: int = Query(default=2026),
+  app\main.py:594:    with SessionLocal() as session:
+> app\main.py:595:        result = get_sportsq_intelligence(
+  app\main.py:596:            session,
+  app\main.py:597:            fixture_id=fixture_id,
+  app\main.py:598:            competition_id=competition,
+  app\main.py:606:        "fixture": item["fixture"],
+> app\main.py:607:        "sportsq_news_impact": item["sportsq_news_impact"],
+  app\main.py:608:        "historical_holdout_touched": False,
+  app\main.py:609:    }
+  app\main.py:610:
+  app\main.py:611:@app.get(
+> app\main.py:612:    "/api/v1/sportsq/accuracy",
+  app\main.py:613:    dependencies=[Depends(_own_api_guard)],
+  app\main.py:614:)
+> app\main.py:615:def api_v1_sportsq_accuracy(
+  app\main.py:616:    competition: int = Query(default=2),
+  app\main.py:617:    season: int = Query(default=2026),
+  app\main.py:618:) -> dict:
+  app\main.py:619:    with SessionLocal() as session:
+> app\main.py:620:        return sportsq_accuracy_summary(
+  app\main.py:621:            session,
+  app\main.py:622:            competition_id=competition,
+  app\main.py:623:            season=season,
+  app\main.py:626:@app.get(
+> app\main.py:627:    "/api/v1/sportsq/capabilities",
+  app\main.py:628:    dependencies=[Depends(_own_api_guard)],
+  app\main.py:629:)
+> app\main.py:630:def api_v1_sportsq_capabilities() -> dict:
+  app\main.py:631:    with SessionLocal() as session:
+> app\main.py:632:        return sportsq_capabilities(session)
+  app\main.py:633:
+  app\market_scheduler.py:386:
+> app\market_scheduler.py:387:    print("MDRN SportsQ market scheduler running. Press Ctrl+C to stop.")
+  app\market_scheduler.py:388:    try:
+  app\market_scheduler.py:389:        await asyncio.Event().wait()
+  app\market_scheduler.py:390:    finally:
+  app\models.py:146:        Index("ix_live_predictions_kickoff", "kickoff_utc"),
+> app\models.py:147:        Index("ix_live_predictions_publish", "publish"),
+  app\models.py:148:        Index("ix_live_predictions_locked", "locked_at"),
+  app\models.py:149:    )
+  app\models.py:150:
+  app\models.py:174:    selector_label: Mapped[str] = mapped_column(String(32), nullable=False)
+> app\models.py:175:    publish: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+  app\models.py:176:
+  app\models.py:177:    odds_snapshot_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+  app\models.py:178:    locked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+> app\__init__.py:1:__version__ = "0.12.0-sportsq-prediction-intelligence"
+  tests\test_high_confidence_selector.py:8:    assert d.prediction == "H"
+> tests\test_high_confidence_selector.py:9:    assert d.publish is True
+  tests\test_high_confidence_selector.py:10:
+  tests\test_high_confidence_selector.py:11:def test_pass():
+  tests\test_high_confidence_selector.py:12:    d = select_prediction(0.50, 0.30, 0.20)
+  tests\test_high_confidence_selector.py:13:    assert d.label == "PASS"
+> tests\test_high_confidence_selector.py:14:    assert d.publish is False
+  tests\test_high_confidence_selector.py:15:
+  tests\test_high_confidence_selector.py:16:def test_csv(tmp_path: Path):
+  tests\test_high_confidence_selector.py:17:    src = tmp_path / "in.csv"
+  tests\test_live_prediction_engine.py:57:    assert stored.prediction == "H"
+> tests\test_live_prediction_engine.py:58:    assert stored.publish is True
+  tests\test_live_prediction_engine.py:59:
+  tests\test_live_prediction_engine.py:60:    fixture = session.scalar(select(Fixture))
+  tests\test_live_prediction_engine.py:61:    raw = json.loads(fixture.raw_json)
+  tests\test_live_prediction_engine.py:87:
+> tests\test_live_prediction_engine.py:88:def test_pass_prediction_is_saved_but_not_published(session):
+  tests\test_live_prediction_engine.py:89:    odds = {"pre": {"1": 2.5, "X": 3.4, "2": 2.62}}
+  tests\test_live_prediction_engine.py:90:    ingest_fixture(session, live_fixture(fixture_id=1877289, odds=odds))
+  tests\test_live_prediction_engine.py:91:    result = generate_live_predictions(session, competition_id=2, season=2026)
+  tests\test_live_prediction_engine.py:95:    assert stored.selector_label == "PASS"
+> tests\test_live_prediction_engine.py:96:    assert stored.publish is False
+  tests\test_live_prediction_engine.py:97:    assert result["final_holdout_touched"] is False
+  tests\test_market_reliability.py:334:
+> tests\test_market_reliability.py:335:        async def post(
+  tests\test_market_reliability.py:336:            self,
+  tests\test_market_reliability.py:337:            url,
+  tests\test_market_reliability.py:338:            *,
+  tests\test_market_reliability.py:373:    assert (
+> tests\test_market_reliability.py:374:        "MDRN SportsQ SLA Escalation"
+  tests\test_market_reliability.py:375:        in captured["json"]["text"]
+  tests\test_market_reliability.py:376:    )
+  tests\test_market_reliability.py:377:
+  tests\test_market_safety_alerts.py:92:    safety_alert_webhook_url = (
+> tests\test_market_safety_alerts.py:93:        "https://alerts.example.test/sportsq"
+  tests\test_market_safety_alerts.py:94:    )
+  tests\test_market_safety_alerts.py:95:    safety_alert_webhook_bearer_token = (
+  tests\test_market_safety_alerts.py:96:        "secret-test-token"
+  tests\test_market_safety_alerts.py:175:
+> tests\test_market_safety_alerts.py:176:        async def post(
+  tests\test_market_safety_alerts.py:177:            self,
+  tests\test_market_safety_alerts.py:178:            url,
+  tests\test_market_safety_alerts.py:179:            *,
+  tests\test_market_safety_alerts.py:217:        captured["json"]["brand"]
+> tests\test_market_safety_alerts.py:218:        == "MDRN SportsQ"
+  tests\test_market_safety_alerts.py:219:    )
+  tests\test_market_safety_alerts.py:220:
+  tests\test_market_safety_alerts.py:221:    assert (
+  tests\test_market_safety_alerts.py:269:
+> tests\test_market_safety_alerts.py:270:        async def post(
+  tests\test_market_safety_alerts.py:271:            self,
+  tests\test_market_safety_alerts.py:272:            url,
+  tests\test_market_safety_alerts.py:273:            *,
+  tests\test_market_safety_alerts.py:279:            request = httpx.Request(
+> tests\test_market_safety_alerts.py:280:                "POST",
+  tests\test_market_safety_alerts.py:281:                url,
+  tests\test_market_safety_alerts.py:282:            )
+  tests\test_market_safety_alerts.py:283:
+  tests\test_market_safety_telegram.py:127:
+> tests\test_market_safety_telegram.py:128:    assert "MDRN SportsQ" in message
+  tests\test_market_safety_telegram.py:129:    assert "BLOCKED" in message
+  tests\test_market_safety_telegram.py:130:    assert "DEGRADED->BLOCKED" in message
+  tests\test_market_safety_telegram.py:131:    assert "Prediction Locking: BLOCKED" in message
+  tests\test_market_safety_telegram.py:175:
+> tests\test_market_safety_telegram.py:176:        async def post(
+  tests\test_market_safety_telegram.py:177:            self,
+  tests\test_market_safety_telegram.py:178:            url,
+  tests\test_market_safety_telegram.py:179:            *,
+  tests\test_market_safety_telegram.py:223:    assert (
+> tests\test_market_safety_telegram.py:224:        "MDRN SportsQ"
+  tests\test_market_safety_telegram.py:225:        in captured["json"]["text"]
+  tests\test_market_safety_telegram.py:226:    )
+  tests\test_market_safety_telegram.py:227:
+  tests\test_market_safety_telegram.py:313:
+> tests\test_market_safety_telegram.py:314:        async def post(
+  tests\test_market_safety_telegram.py:315:            self,
+  tests\test_market_safety_telegram.py:316:            url,
+  tests\test_market_safety_telegram.py:317:            *,
+  tests\test_market_safety_telegram.py:383:
+> tests\test_market_safety_telegram.py:384:        async def post(
+  tests\test_market_safety_telegram.py:385:            self,
+  tests\test_market_safety_telegram.py:386:            url,
+  tests\test_market_safety_telegram.py:387:            *,
+  tests\test_phase10a_api.py:17:        assert body["phase"] == "10A"
+> tests\test_phase10a_api.py:18:        assert body["service"] == "MDRN SportsQ API"
+  tests\test_phase10a_api.py:19:
+  tests\test_phase10a_api.py:20:
+  tests\test_phase10a_api.py:21:def test_sources_endpoint(monkeypatch):
+  tests\test_prediction_grading.py:6:
+> tests\test_prediction_grading.py:7:def _seed(session, *, finished=True, actual="H", prediction="H", publish=True):
+  tests\test_prediction_grading.py:8:    league = LeagueSeason(
+  tests\test_prediction_grading.py:9:        provider="live-score-api",
+  tests\test_prediction_grading.py:10:        provider_league_id=2,
+  tests\test_prediction_grading.py:52:        threshold=0.65,
+> tests\test_prediction_grading.py:53:        selector_label="HIGH_CONFIDENCE" if publish else "PASS",
+> tests\test_prediction_grading.py:54:        publish=publish,
+  tests\test_prediction_grading.py:55:        odds_snapshot_at=datetime(2026, 8, 30, tzinfo=timezone.utc),
+  tests\test_prediction_grading.py:56:        locked_at=datetime(2026, 8, 30, tzinfo=timezone.utc),
+  tests\test_prediction_grading.py:57:        kickoff_utc=datetime(2026, 9, 1, tzinfo=timezone.utc),
+  tests\test_social_content.py:1:from pathlib import Path
+> tests\test_social_content.py:2:from app.services.social_content import render_prediction_card
+  tests\test_social_content.py:3:
+  tests\test_social_content.py:4:
+> tests\test_social_content.py:5:def test_render_prediction_card(tmp_path: Path):
+  tests\test_social_content.py:6:    output = tmp_path / "card.png"
+  tests\test_social_content.py:7:    row = {
+  tests\test_social_content.py:8:        "fixture_id": 1,
+  tests\test_social_content.py:13:        "confidence": 0.751067,
+> tests\test_social_content.py:14:        "publish": True,
+  tests\test_social_content.py:15:    }
+> tests\test_social_content.py:16:    result = render_prediction_card(row, output)
+  tests\test_social_content.py:17:    assert result.exists()
+  tests\test_social_content.py:18:    assert result.stat().st_size > 1000
+  tests\test_social_content.py:19:
+  tests\test_social_content.py:20:
+> tests\test_social_content.py:21:def test_ffmpeg_resolver_returns_string_or_none():
+> tests\test_social_content.py:22:    from app.services.social_content import _resolve_ffmpeg
+> tests\test_social_content.py:23:    value = _resolve_ffmpeg()
+  tests\test_social_content.py:24:    assert value is None or isinstance(value, str)
+  tests\test_sportsq_intelligence.py:3:from app.main import app
+> tests\test_sportsq_intelligence.py:4:from app.services.sportsq_intelligence import (
+  tests\test_sportsq_intelligence.py:5:    BRAND_HIERARCHY,
+  tests\test_sportsq_intelligence.py:6:    _confidence_band,
+  tests\test_sportsq_intelligence.py:7:    _form_index_from_matches,
+  tests\test_sportsq_intelligence.py:9:    _score_call,
+> tests\test_sportsq_intelligence.py:10:    sportsq_capabilities,
+  tests\test_sportsq_intelligence.py:11:)
+  tests\test_sportsq_intelligence.py:12:
+  tests\test_sportsq_intelligence.py:13:def test_brand_hierarchy_is_official():
+> tests\test_sportsq_intelligence.py:14:    assert BRAND_HIERARCHY["brand"] == "MDRN SportsQ"
+> tests\test_sportsq_intelligence.py:15:    assert BRAND_HIERARCHY["predict"] == "SportsQ Predict"
+> tests\test_sportsq_intelligence.py:16:    assert BRAND_HIERARCHY["score_call"] == "SportsQ ScoreCall"
+> tests\test_sportsq_intelligence.py:17:    assert BRAND_HIERARCHY["confidence"] == "SportsQ Confidence"
+> tests\test_sportsq_intelligence.py:18:    assert BRAND_HIERARCHY["news_impact"] == "SportsQ News Impact"
+> tests\test_sportsq_intelligence.py:19:    assert BRAND_HIERARCHY["form_index"] == "SportsQ Form Index"
+  tests\test_sportsq_intelligence.py:20:
+  tests\test_sportsq_intelligence.py:21:def test_1x2_normalization():
+  tests\test_sportsq_intelligence.py:22:    assert _normalise_1x2("1") == "HOME"
+  tests\test_sportsq_intelligence.py:69:    required = {
+> tests\test_sportsq_intelligence.py:70:        "/api/v1/sportsq/intelligence",
+> tests\test_sportsq_intelligence.py:71:        "/api/v1/sportsq/intelligence/{fixture_id}",
+> tests\test_sportsq_intelligence.py:72:        "/api/v1/sportsq/form/{fixture_id}",
+> tests\test_sportsq_intelligence.py:73:        "/api/v1/sportsq/news-impact/{fixture_id}",
+> tests\test_sportsq_intelligence.py:74:        "/api/v1/sportsq/accuracy",
+> tests\test_sportsq_intelligence.py:75:        "/api/v1/sportsq/capabilities",
+  tests\test_sportsq_intelligence.py:76:    }
+  tests\test_sportsq_intelligence.py:77:    assert required.issubset(paths)
+  tests\test_sportsq_intelligence.py:78:
+  tests\test_sportsq_intelligence.py:79:def test_capabilities_preserve_prediction_contract(session):
+> tests\test_sportsq_intelligence.py:80:    result = sportsq_capabilities(session)
+  tests\test_sportsq_intelligence.py:81:    assert result["safety"]["prediction_engine_rewritten"] is False
+  tests\test_sportsq_intelligence.py:82:    assert result["safety"]["live_prediction_rows_modified"] is False
+  tests\test_sportsq_intelligence.py:83:    assert result["safety"]["existing_prediction_locks_immutable"] is True
+  tests\test_sportsq_intelligence.py:86:def test_news_impact_is_not_fabricated(session):
+> tests\test_sportsq_intelligence.py:87:    result = sportsq_capabilities(session)
+> tests\test_sportsq_intelligence.py:88:    news = result["sportsq_news_impact"]
+  tests\test_sportsq_intelligence.py:89:    assert news["fabricated"] is False
+  tests\test_sportsq_intelligence.py:90:    assert news["status"] == "NO_STRUCTURED_TEAM_NEWS_INPUT"
+
+
+
+
+==============================================================================
+STAGE 3 INSPECTION COMPLETE
+==============================================================================
+READ ONLY
+NO DATABASE WRITES
+NO PREDICTION MUTATIONS
+NO PREDICTION LOCK MUTATIONS
+HISTORICAL HOLDOUT UNTOUCHED
+NO SECRET VALUES DISPLAYED
+==============================================================================
+

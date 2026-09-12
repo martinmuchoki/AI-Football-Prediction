@@ -1,0 +1,141 @@
+
+==============================================================================
+1. APPLICATION VERSION
+==============================================================================
+app.__version__=1.0.4-stage6-news-impact
+PASS: Installed version is 1.0.4-stage6-news-impact
+
+==============================================================================
+2. STAGE 6 FILES / PYTHON SYNTAX
+==============================================================================
+PASS: app\services\sportsq_news_impact.py exists
+PASS: app\services\sportsq_news_impact.py parses as Python
+PASS: tests\test_sportsq_stage6_news_impact.py exists
+PASS: tests\test_sportsq_stage6_news_impact.py parses as Python
+PASS: app\services\sportsq_intelligence.py exists
+PASS: app\services\sportsq_intelligence.py parses as Python
+PASS: app\main.py exists
+PASS: app\main.py parses as Python
+
+==============================================================================
+3. STAGE 6 IMPORT / CAPABILITY STATUS
+==============================================================================
+{
+  "brand": "MDRN SportsQ",
+  "product": "SportsQ News Impact",
+  "stage": 6,
+  "table_ready": true,
+  "table": "sportsq_team_news_events",
+  "event_rows": 0,
+  "append_only_evidence": true,
+  "model_name": "sportsq-news-impact-availability-burden",
+  "model_version": "1.0",
+  "historical_provider_schema_validated": true,
+  "historical_validation_fixture_id": 1208021,
+  "injury_adapter_schema_validated": true,
+  "lineup_adapter_schema_validated": true,
+  "provider": "api-football",
+  "provider_source_verified": true,
+  "provider_source_registry": "data_sources",
+  "provider_trust_class": "STRUCTURED_PROVIDER",
+  "live_2026_ingestion_enabled": false,
+  "live_2026_block_reason": "CURRENT_API_PLAN_DID_NOT_ALLOW_2026_DURING_STAGE6_VALIDATION",
+  "strict_temporal_cutoff": true,
+  "fail_closed_verification": true,
+  "player_quality_weighting_inferred": false,
+  "prediction_engine_modified": false,
+  "live_prediction_rows_modified": false,
+  "scorecall_rows_modified": false,
+  "final_holdout_touched": false
+}
+PASS: News Impact reports Stage 6
+PASS: Structured team-news table is ready
+PASS: Team-news evidence is append-only
+PASS: Historical provider schema is validated
+PASS: API-Football injury adapter schema is validated
+PASS: API-Football lineup adapter schema is validated
+PASS: Strict temporal cutoff protection is active
+PASS: Fail-closed verification is active
+PASS: No fabricated player-quality weighting is used
+PASS: 2026 live News Impact ingestion remains disabled
+PASS: No historical probe rows were seeded into live Stage 6 evidence
+
+==============================================================================
+4. DATABASE TABLE / IMMUTABILITY TRIGGERS
+==============================================================================
+PASS: sportsq_team_news_events exists
+columns=["id", "event_key", "provider", "source_id", "source_verified", "source_trust_class", "provider_fixture_id", "internal_fixture_id", "provider_league_id", "season", "provider_team_id", "internal_team_id", "team_name", "provider_player_id", "player_name", "event_category", "availability_status", "raw_type", "reason", "lineup_role", "formation", "observed_at", "fixture_kickoff_at", "valid_until_at", "verification_state", "payload_json", "created_at"]
+PASS: Stage 6 evidence table contains required provenance fields
+triggers=["trg_sportsq_team_news_events_no_delete", "trg_sportsq_team_news_events_no_update"]
+PASS: Append-only UPDATE trigger exists
+PASS: Append-only DELETE trigger exists
+
+==============================================================================
+5. READ-ONLY ROUTES / ROUTE ORDER
+==============================================================================
+PASS: Route exists: /api/v1/sportsq/news-impact/status
+PASS: GET enabled: /api/v1/sportsq/news-impact/status
+PASS: Route is read-only: /api/v1/sportsq/news-impact/status
+PASS: Route exists: /api/v1/sportsq/news-impact/events
+PASS: GET enabled: /api/v1/sportsq/news-impact/events
+PASS: Route is read-only: /api/v1/sportsq/news-impact/events
+PASS: Route exists: /api/v1/sportsq/news-impact/{fixture_id}
+PASS: GET enabled: /api/v1/sportsq/news-impact/{fixture_id}
+PASS: Route is read-only: /api/v1/sportsq/news-impact/{fixture_id}
+PASS: /api/v1/sportsq/news-impact/status is registered before dynamic fixture route
+PASS: /api/v1/sportsq/news-impact/events is registered before dynamic fixture route
+
+==============================================================================
+6. CURRENT 2026 INTELLIGENCE FAIL-CLOSED CHECK
+==============================================================================
+intelligence_item_count=18
+PASS: Current SportsQ intelligence returns fixtures
+PASS: 2026 fixtures remain NO_STRUCTURED_TEAM_NEWS_INPUT without verified live ingestion
+PASS: No 2026 News Impact score is fabricated
+
+==============================================================================
+7. PROTECTED BASELINE COUNTS
+==============================================================================
+live_predictions=18
+PASS: live_predictions count preserved at 18
+sportsq_scorecall_locks=18
+PASS: sportsq_scorecall_locks count preserved at 18
+sportsq_sources=17
+PASS: sportsq_sources count preserved at 17
+sportsq_media_assets=0
+PASS: sportsq_media_assets count preserved at 0
+sportsq_rights_verifications=0
+PASS: sportsq_rights_verifications count preserved at 0
+fixtures=2268
+PASS: fixtures count preserved at 2268
+teams=48
+PASS: teams count preserved at 48
+
+==============================================================================
+8. HOLDOUT CHECK
+==============================================================================
+holdout_tables=[]
+holdout_files=[]
+PASS: No holdout database tables appeared
+PASS: No holdout files appeared
+
+==============================================================================
+9. SUCCESSFUL INSTALL BACKUP EVIDENCE
+==============================================================================
+successful_backup=D:\Mprojet\backups\AI-Football-before-v1.0.4-stage6-news-impact-20260911-013326
+protected_state_before_sha256=8ab6c4c189cee524acfdfbf9d298b11e59b6aa35df47712789fda542213351a6
+protected_state_final_sha256=8ab6c4c189cee524acfdfbf9d298b11e59b6aa35df47712789fda542213351a6
+PASS: Pre-existing protected state is byte-identical before vs final validation
+PASS: Pre-Stage-6 SQLite backup exists
+
+==============================================================================
+10. FINAL DECISION
+==============================================================================
+STAGE6_FINAL_VERIFICATION=PASS
+installed_version=1.0.4-stage6-news-impact
+prediction_engine_changed=NO
+live_prediction_locks_preserved=YES
+scorecall_locks_preserved=YES
+historical_holdout_touched=NO
+2026_live_news_ingestion_enabled=NO
+historical_probe_data_seeded=NO

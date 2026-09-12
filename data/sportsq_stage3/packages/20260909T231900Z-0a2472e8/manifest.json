@@ -1,0 +1,34 @@
+{
+  "assets": [
+    {
+      "filename": "results-accuracy.png",
+      "kind": "RESULTS_ACCURACY",
+      "media_type": "image/png"
+    }
+  ],
+  "brand": "MDRN SportsQ",
+  "breaking_news_skips": [],
+  "competition_id": 0,
+  "created_at": "2026-09-09T23:19:00.521481+00:00",
+  "package_id": "20260909T231900Z-0a2472e8",
+  "prediction_count": 0,
+  "rights": {
+    "attribution_is_not_license": true,
+    "licensed_clip_metadata_required": true,
+    "third_party_clips_used": false,
+    "unverified_clip_insertion_allowed": false
+  },
+  "safety": {
+    "historical_holdout_touched": false,
+    "post_kickoff_features_used": false,
+    "prediction_engine_rewritten": false,
+    "prediction_locks_modified": false,
+    "prediction_rows_modified": false
+  },
+  "season": 2026,
+  "static_video": {
+    "created": false,
+    "output": null,
+    "reason": "no_vertical_prediction_cards"
+  }
+}
