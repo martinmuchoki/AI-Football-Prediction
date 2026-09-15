@@ -13,6 +13,8 @@ from app.services.sportsq_stage3 import (
     approve_queue_item,
     cancel_queue_item,
     enqueue_package,
+    _fixture_content_fingerprint,
+    _find_fixture_content_package,
     list_queue,
     platform_readiness,
     process_queue_item,
@@ -195,6 +197,229 @@ def test_queue_persists(tmp_path: Path):
         content_root=tmp_path,
     )
     assert len(list_queue(content_root=tmp_path)) == 1
+
+def test_enqueue_same_package_is_idempotent(tmp_path: Path):
+    create_manifest(tmp_path)
+
+    first = enqueue_package(
+        "pkg-1",
+        platforms=["manual_export"],
+        content_root=tmp_path,
+    )
+    second = enqueue_package(
+        "pkg-1",
+        platforms=["manual_export"],
+        content_root=tmp_path,
+    )
+
+    assert second["queue_id"] == first["queue_id"]
+    assert second["status"] == "DRAFT"
+    assert len(list_queue(content_root=tmp_path)) == 1
+
+
+def test_fixture_content_fingerprint_is_stable():
+    item = {
+        "prediction_lock": {
+            "locked_at": "2026-09-11T23:02:06+00:00",
+            "publish": True,
+        },
+        "sportsq_predict": {
+            "prediction": "HOME",
+            "source": "existing_locked_prediction",
+        },
+        "sportsq_score_call": {
+            "score": "2-1",
+            "source": "sportsq_scorecall_lock",
+        },
+        "sportsq_confidence": {
+            "percent": 66.17,
+            "band": "HIGH",
+            "source": "existing_locked_confidence",
+        },
+    }
+
+    first = _fixture_content_fingerprint(
+        item,
+        fixture_id=2300,
+        competition_id=39,
+        season=2026,
+    )
+    second = _fixture_content_fingerprint(
+        item,
+        fixture_id=2300,
+        competition_id=39,
+        season=2026,
+    )
+
+    assert first == second
+    assert len(first) == 64
+
+
+def test_fixture_content_fingerprint_changes_with_locked_content():
+    base = {
+        "prediction_lock": {
+            "locked_at": "2026-09-11T23:02:06+00:00",
+            "publish": True,
+        },
+        "sportsq_predict": {
+            "prediction": "HOME",
+            "source": "existing_locked_prediction",
+        },
+        "sportsq_score_call": {
+            "score": "2-1",
+            "source": "sportsq_scorecall_lock",
+        },
+        "sportsq_confidence": {
+            "percent": 66.17,
+            "band": "HIGH",
+            "source": "existing_locked_confidence",
+        },
+    }
+
+    changed = {
+        **base,
+        "sportsq_score_call": {
+            "score": "1-0",
+            "source": "sportsq_scorecall_lock",
+        },
+    }
+
+    first = _fixture_content_fingerprint(
+        base,
+        fixture_id=2300,
+        competition_id=39,
+        season=2026,
+    )
+    second = _fixture_content_fingerprint(
+        changed,
+        fixture_id=2300,
+        competition_id=39,
+        season=2026,
+    )
+
+    assert first != second
+
+
+def test_fixture_content_fingerprint_changes_with_form_index():
+    base = {
+        "prediction_lock": {"locked_at": "lock-1", "publish": True},
+        "sportsq_predict": {"prediction": "HOME", "source": "locked"},
+        "sportsq_score_call": {"score": "2-1", "source": "locked"},
+        "sportsq_confidence": {
+            "percent": 66.17,
+            "band": "HIGH",
+            "source": "locked",
+        },
+        "sportsq_form_index": {
+            "home": {"index": 72},
+            "away": {"index": 55},
+        },
+        "sportsq_news_impact": {"verified": False},
+    }
+
+    changed = {
+        **base,
+        "sportsq_form_index": {
+            "home": {"index": 73},
+            "away": {"index": 55},
+        },
+    }
+
+    first = _fixture_content_fingerprint(
+        base,
+        fixture_id=2300,
+        competition_id=39,
+        season=2026,
+    )
+    second = _fixture_content_fingerprint(
+        changed,
+        fixture_id=2300,
+        competition_id=39,
+        season=2026,
+    )
+
+    assert first != second
+
+
+def test_fixture_content_fingerprint_changes_with_verified_news():
+    base = {
+        "prediction_lock": {"locked_at": "lock-1", "publish": True},
+        "sportsq_predict": {"prediction": "HOME", "source": "locked"},
+        "sportsq_score_call": {"score": "2-1", "source": "locked"},
+        "sportsq_confidence": {
+            "percent": 66.17,
+            "band": "HIGH",
+            "source": "locked",
+        },
+        "sportsq_form_index": {
+            "home": {"index": 72},
+            "away": {"index": 55},
+        },
+        "sportsq_news_impact": {"verified": False},
+    }
+
+    changed = {
+        **base,
+        "sportsq_news_impact": {
+            "verified": True,
+            "direction": "NEGATIVE",
+            "impact_score": -0.35,
+        },
+    }
+
+    first = _fixture_content_fingerprint(
+        base,
+        fixture_id=2300,
+        competition_id=39,
+        season=2026,
+    )
+    second = _fixture_content_fingerprint(
+        changed,
+        fixture_id=2300,
+        competition_id=39,
+        season=2026,
+    )
+
+    assert first != second
+
+
+def test_find_fixture_content_package_reuses_matching_manifest(tmp_path: Path):
+    import json
+
+    packages = tmp_path / "packages"
+    package_dir = packages / "pkg-fixture-2300"
+    package_dir.mkdir(parents=True)
+
+    fingerprint = "a" * 64
+
+    manifest = {
+        "status": "success",
+        "package_id": "pkg-fixture-2300",
+        "fixture_id": 2300,
+        "competition_id": 39,
+        "season": 2026,
+        "content_fingerprint": fingerprint,
+        "idempotent_reuse": False,
+    }
+
+    (package_dir / "manifest.json").write_text(
+        json.dumps(manifest),
+        encoding="utf-8",
+    )
+
+    found = _find_fixture_content_package(
+        packages,
+        fixture_id=2300,
+        competition_id=39,
+        season=2026,
+        content_fingerprint=fingerprint,
+    )
+
+    assert found is not None
+    assert found["package_id"] == "pkg-fixture-2300"
+    assert found["idempotent_reuse"] is True
+    assert len(list(packages.glob("*/manifest.json"))) == 1
+
 
 def test_stage3_routes_and_gui_exist():
     paths = {route.path for route in app.routes}

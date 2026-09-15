@@ -10,6 +10,7 @@ from app.providers.openfootball_json import OpenFootballJsonClient
 from app.services.fixture_reconciliation import reconcile_openfootball_payload
 from app.services.market_refresh import refresh_live_market
 from app.services.sportsq_fixture_lifecycle import run_fixture_lifecycle_post_refresh
+from app.services.sportsq_content_automation import automate_ready_fixture_content
 from app.services.market_safety import market_safety_status
 from app.services.market_safety_events import record_market_safety_event
 from app.services.market_safety_incidents import process_market_safety_incident
@@ -182,6 +183,46 @@ async def live_market_job() -> None:
                 )
             if isinstance(result, dict):
                 result["stage7_lifecycle"] = stage7_lifecycle
+
+            # Content automation is downstream of Stage 7 and isolated from
+            # market refresh, lifecycle processing, and observability.
+            if stage7_lifecycle.get("status") != "isolated_failure":
+                try:
+                    content_automation = automate_ready_fixture_content(
+                        session,
+                        competition_id=competition,
+                        season=season,
+                        provider="api-football",
+                    )
+                except Exception as exc:
+                    content_automation = {
+                        "status": "isolated_failure",
+                        "detail": type(exc).__name__,
+                        "safety": {
+                            "approval_performed": False,
+                            "queue_processing_performed": False,
+                            "social_auto_posting_performed": False,
+                            "network_posting_performed": False,
+                        },
+                    }
+                    print(
+                        "[content-automation] isolated_failure "
+                        f"detail={type(exc).__name__}"
+                    )
+            else:
+                content_automation = {
+                    "status": "skipped",
+                    "reason": "stage7_lifecycle_isolated_failure",
+                    "safety": {
+                        "approval_performed": False,
+                        "queue_processing_performed": False,
+                        "social_auto_posting_performed": False,
+                        "network_posting_performed": False,
+                    },
+                }
+
+            if isinstance(result, dict):
+                result["content_automation"] = content_automation
 
             print(
                 f"[market-refresh] "

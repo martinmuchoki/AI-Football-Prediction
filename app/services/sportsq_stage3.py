@@ -1,5 +1,6 @@
 ﻿from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -859,6 +860,22 @@ def enqueue_package(
 
     queue = _read_queue(root)
 
+    # Idempotency guard:
+    # Re-enqueuing the same immutable package for the same platform set and
+    # schedule returns the existing queue item instead of creating duplicates.
+    requested_key = sorted(requested)
+    for existing in queue:
+        existing_platforms = sorted(
+            str(value).strip().lower()
+            for value in (existing.get("platforms") or [])
+        )
+        if (
+            existing.get("package_id") == package_id
+            and existing_platforms == requested_key
+            and existing.get("scheduled_for") == scheduled_for
+        ):
+            return existing
+
     item = {
         "queue_id": uuid.uuid4().hex,
         "package_id": package_id,
@@ -997,6 +1014,84 @@ def process_queue_item(
     )
 
 
+def _fixture_content_fingerprint(
+    item: dict[str, Any],
+    *,
+    fixture_id: int,
+    competition_id: int,
+    season: int,
+) -> str:
+    """Return a stable fingerprint of immutable pre-match content."""
+    lock = item.get("prediction_lock") or {}
+    predict = item.get("sportsq_predict") or {}
+    score_call = item.get("sportsq_score_call") or {}
+    confidence = item.get("sportsq_confidence") or {}
+    form = item.get("sportsq_form_index") or {}
+    news = item.get("sportsq_news_impact") or {}
+
+    home_form = form.get("home") or {}
+    away_form = form.get("away") or {}
+
+    identity = {
+        "fixture_id": int(fixture_id),
+        "competition_id": int(competition_id),
+        "season": int(season),
+        "locked_at": lock.get("locked_at"),
+        "publish": lock.get("publish"),
+        "prediction": predict.get("prediction"),
+        "prediction_source": predict.get("source"),
+        "score_call": score_call.get("score"),
+        "score_call_source": score_call.get("source"),
+        "confidence_percent": confidence.get("percent"),
+        "confidence_band": confidence.get("band"),
+        "confidence_source": confidence.get("source"),
+        "home_form_index": home_form.get("index"),
+        "away_form_index": away_form.get("index"),
+        "news_verified": bool(news.get("verified")),
+        "news_direction": news.get("direction"),
+        "news_impact_score": news.get("impact_score"),
+    }
+
+    canonical = json.dumps(
+        identity,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    )
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def _find_fixture_content_package(
+    packages: Path,
+    *,
+    fixture_id: int,
+    competition_id: int,
+    season: int,
+    content_fingerprint: str,
+) -> dict[str, Any] | None:
+    """Return an existing package with exactly the same content identity."""
+    for manifest_path in packages.glob("*/manifest.json"):
+        try:
+            manifest = json.loads(
+                manifest_path.read_text(encoding="utf-8")
+            )
+        except (OSError, json.JSONDecodeError, UnicodeDecodeError):
+            continue
+
+        if (
+            manifest.get("status") == "success"
+            and manifest.get("fixture_id") == int(fixture_id)
+            and manifest.get("competition_id") == int(competition_id)
+            and manifest.get("season") == int(season)
+            and manifest.get("content_fingerprint") == content_fingerprint
+        ):
+            result = dict(manifest)
+            result["idempotent_reuse"] = True
+            return result
+
+    return None
+
+
 def generate_fixture_content_package(
     session: Session,
     *,
@@ -1034,6 +1129,23 @@ def generate_fixture_content_package(
             "assets": [],
             "reason": "fixture_intelligence_not_available",
         }
+
+    content_fingerprint = _fixture_content_fingerprint(
+        item,
+        fixture_id=int(fixture_id),
+        competition_id=int(competition_id),
+        season=int(season),
+    )
+
+    existing = _find_fixture_content_package(
+        packages,
+        fixture_id=int(fixture_id),
+        competition_id=int(competition_id),
+        season=int(season),
+        content_fingerprint=content_fingerprint,
+    )
+    if existing is not None:
+        return existing
 
     package_id = (
         _utc_now().strftime("%Y%m%dT%H%M%SZ")
@@ -1138,6 +1250,8 @@ def generate_fixture_content_package(
         "fixture_id": int(fixture_id),
         "competition_id": int(competition_id),
         "season": int(season),
+        "content_fingerprint": content_fingerprint,
+        "idempotent_reuse": False,
         "prediction_count": 1,
         "assets": assets,
         "static_video": video_result,

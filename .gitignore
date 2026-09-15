@@ -39,3 +39,13 @@ dist/
 Thumbs.db
 .idea/
 .vscode/
+
+# Local database/recovery backups
+/backups/
+
+# MDRN SportsQ generated content/runtime state
+/data/content-automation-proof-*/
+/data/e2e-content-gate/
+/data/fixture-idempotency-proof-*/
+/data/sportsq_stage3/packages/
+/data/sportsq_stage3/publishing_queue.json
