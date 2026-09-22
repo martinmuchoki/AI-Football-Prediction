@@ -1,4 +1,4 @@
-﻿from datetime import datetime, timezone
+from datetime import datetime, timezone
 
 import pytest
 
@@ -79,7 +79,7 @@ def test_operational_reconciliation_states(
 ):
     monkeypatch.setattr(
         health_service,
-        "reconciliation_summary",
+        "composite_reconciliation_summary",
         lambda *args, **kwargs: {
             "status": "success",
             "competition_id": 2,
@@ -135,7 +135,7 @@ def test_uninitialized_reconciliation_is_visible_and_nonblocking(
 ):
     monkeypatch.setattr(
         health_service,
-        "reconciliation_summary",
+        "composite_reconciliation_summary",
         lambda *args, **kwargs: {
             "status": "not_initialized",
             "competition_id": 2,
@@ -171,7 +171,7 @@ def test_missing_timestamp_becomes_stale(
 ):
     monkeypatch.setattr(
         health_service,
-        "reconciliation_summary",
+        "composite_reconciliation_summary",
         lambda *args, **kwargs: {
             "status": "success",
             "competition_id": 2,
@@ -198,4 +198,56 @@ def test_missing_timestamp_becomes_stale(
     assert result["freshness"] == "MISSING_TIMESTAMP"
     assert result["prediction_lock_allowed"] is True
     assert result["action"] == "ALLOW_UNVERIFIED"
+    assert result["final_holdout_touched"] is False
+
+
+
+def test_composite_verifier_conflict_blocks_new_predictions(
+    session,
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        health_service,
+        "composite_reconciliation_summary",
+        lambda *args, **kwargs: {
+            "status": "success",
+            "competition_id": 39,
+            "season": 2026,
+            "primary_source": "api-football",
+            "secondary_source": "openfootball-json",
+            "schedule_source": "openfootball-json",
+            "result_verifier_source": "live-score-api",
+            "verification_mode":
+                "openfootball-with-livescore-result-fallback",
+            "total": 380,
+            "overall_counts": {
+                "MATCH": 379,
+                "CONFLICT": 1,
+            },
+            "fixture_agreement_rate": 0.997368,
+            "quality_gate": "FAIL",
+            "last_checked_at":
+                "2026-09-09T23:30:00+00:00",
+            "fallback_verified_count": 0,
+            "verifier_conflict_count": 1,
+            "unverified_result_lag_count": 0,
+            "result_verifier_pair_count": 380,
+            "final_holdout_touched": False,
+        },
+    )
+
+    result = health_service.reconciliation_health(
+        session,
+        competition_id=39,
+        season=2026,
+        stale_after_minutes=180,
+        now=NOW,
+    )
+
+    assert result["reported_quality_gate"] == "FAIL"
+    assert result["quality_gate"] == "FAIL"
+    assert result["operational_status"] == "BLOCKED"
+    assert result["prediction_lock_allowed"] is False
+    assert result["action"] == "BLOCK_NEW_PREDICTIONS"
+    assert result["conflict_count"] == 1
     assert result["final_holdout_touched"] is False

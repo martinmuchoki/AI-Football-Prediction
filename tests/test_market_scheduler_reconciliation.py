@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from types import SimpleNamespace
 
@@ -185,3 +185,181 @@ async def test_live_market_job_reconciles_before_prediction_refresh(monkeypatch)
         "market",
     ]
 
+
+
+async def test_live_market_job_runs_result_verifier_after_successful_lifecycle(
+    monkeypatch,
+):
+    events = []
+
+    monkeypatch.setattr(scheduler, "settings", _Settings())
+    monkeypatch.setattr(
+        scheduler,
+        "SessionLocal",
+        lambda: _SessionContext(),
+    )
+
+    async def fake_reconciliation():
+        events.append("reconciliation")
+        return {
+            "status": "success",
+            "results": [],
+            "final_holdout_touched": False,
+        }
+
+    async def fake_market_refresh(
+        session,
+        settings,
+        *,
+        competition_id,
+        season,
+    ):
+        events.append("market")
+        return {
+            "status": "success",
+            "final_holdout_touched": False,
+        }
+
+    async def fake_lifecycle(
+        session,
+        settings,
+        *,
+        competition_id,
+        season,
+        market_result,
+        provider,
+    ):
+        events.append("lifecycle")
+        return {
+            "status": "success",
+            "result_refresh": {
+                "status": "success",
+            },
+            "final_holdout_touched": False,
+        }
+
+    def fake_verifier(
+        session,
+        *,
+        competition_id,
+        season,
+        **kwargs,
+    ):
+        events.append("verifier")
+        assert competition_id == 39
+        assert season == 2026
+        return {
+            "status": "success",
+            "quality_gate": "PASS",
+            "final_holdout_touched": False,
+        }
+
+    monkeypatch.setattr(
+        scheduler,
+        "openfootball_reconciliation_job",
+        fake_reconciliation,
+    )
+    monkeypatch.setattr(
+        scheduler,
+        "refresh_live_market",
+        fake_market_refresh,
+    )
+    monkeypatch.setattr(
+        scheduler,
+        "run_fixture_lifecycle_post_refresh",
+        fake_lifecycle,
+    )
+    monkeypatch.setattr(
+        scheduler,
+        "reconcile_stored_provider_pair",
+        fake_verifier,
+    )
+
+    await scheduler.live_market_job()
+
+    assert events.index("reconciliation") < events.index("market")
+    assert events.index("market") < events.index("lifecycle")
+    assert events.index("lifecycle") < events.index("verifier")
+
+
+async def test_live_market_job_skips_result_verifier_when_refresh_not_successful(
+    monkeypatch,
+):
+    verifier_called = False
+
+    monkeypatch.setattr(scheduler, "settings", _Settings())
+    monkeypatch.setattr(
+        scheduler,
+        "SessionLocal",
+        lambda: _SessionContext(),
+    )
+
+    async def fake_reconciliation():
+        return {
+            "status": "success",
+            "results": [],
+            "final_holdout_touched": False,
+        }
+
+    async def fake_market_refresh(
+        session,
+        settings,
+        *,
+        competition_id,
+        season,
+    ):
+        return {
+            "status": "success",
+            "final_holdout_touched": False,
+        }
+
+    async def fake_lifecycle(
+        session,
+        settings,
+        *,
+        competition_id,
+        season,
+        market_result,
+        provider,
+    ):
+        return {
+            "status": "partial",
+            "result_refresh": {
+                "status": "config_required",
+            },
+            "final_holdout_touched": False,
+        }
+
+    def fake_verifier(*args, **kwargs):
+        nonlocal verifier_called
+        verifier_called = True
+
+        return {
+            "status": "success",
+            "final_holdout_touched": False,
+        }
+
+    monkeypatch.setattr(
+        scheduler,
+        "openfootball_reconciliation_job",
+        fake_reconciliation,
+    )
+    monkeypatch.setattr(
+        scheduler,
+        "refresh_live_market",
+        fake_market_refresh,
+    )
+    monkeypatch.setattr(
+        scheduler,
+        "run_fixture_lifecycle_post_refresh",
+        fake_lifecycle,
+    )
+    monkeypatch.setattr(
+        scheduler,
+        "reconcile_stored_provider_pair",
+        fake_verifier,
+    )
+
+    await scheduler.live_market_job()
+
+    assert verifier_called is False

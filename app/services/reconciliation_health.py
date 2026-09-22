@@ -1,11 +1,11 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.services.fixture_reconciliation import reconciliation_summary
+from app.services.result_verification import composite_reconciliation_summary
 
 
 def _utc(value: datetime) -> datetime:
@@ -35,7 +35,7 @@ def reconciliation_health(
     when = _utc(now or datetime.now(timezone.utc))
     stale_after = max(1, int(stale_after_minutes))
 
-    summary = reconciliation_summary(
+    summary = composite_reconciliation_summary(
         session,
         competition_id=int(competition_id),
         season=int(season),
