@@ -1,1 +1,1 @@
-__version__ = "1.0.5-stage7-fixture-lifecycle"
+__version__ = "1.0.6"
