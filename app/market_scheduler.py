@@ -9,6 +9,7 @@ from app.db import SessionLocal, init_db
 from app.providers.openfootball_json import OpenFootballJsonClient
 from app.services.fixture_reconciliation import reconcile_openfootball_payload
 from app.services.result_verification import reconcile_stored_provider_pair
+from app.services.sportsq_result_intelligence import grade_verified_scorecall_locks
 from app.services.market_refresh import refresh_live_market
 from app.services.sportsq_fixture_lifecycle import run_fixture_lifecycle_post_refresh
 from app.services.sportsq_content_automation import automate_ready_fixture_content
@@ -201,10 +202,42 @@ async def live_market_job() -> None:
                         competition_id=competition,
                         season=season,
                     )
+                    if (
+                        isinstance(result_verification, dict)
+                        and result_verification.get("status") == "success"
+                    ):
+                        try:
+                            result_intelligence = (
+                                grade_verified_scorecall_locks(
+                                    session,
+                                    competition_id=competition,
+                                    season=season,
+                                )
+                            )
+                        except Exception as exc:
+                            result_intelligence = {
+                                "status": "failed",
+                                "detail": type(exc).__name__,
+                                "verified_results_only": True,
+                                "final_holdout_touched": False,
+                            }
+                    else:
+                        result_intelligence = {
+                            "status": "skipped",
+                            "reason": "result_verification_not_successful",
+                            "verified_results_only": True,
+                            "final_holdout_touched": False,
+                        }
                 except Exception as exc:
                     result_verification = {
                         "status": "failed",
                         "detail": type(exc).__name__,
+                        "final_holdout_touched": False,
+                    }
+                    result_intelligence = {
+                        "status": "skipped",
+                        "reason": "result_verification_failed",
+                        "verified_results_only": True,
                         "final_holdout_touched": False,
                     }
             else:
@@ -213,9 +246,16 @@ async def live_market_job() -> None:
                     "reason": "live_score_result_refresh_not_successful",
                     "final_holdout_touched": False,
                 }
+                result_intelligence = {
+                    "status": "skipped",
+                    "reason": "result_verification_not_run",
+                    "verified_results_only": True,
+                    "final_holdout_touched": False,
+                }
 
             if isinstance(result, dict):
                 result["result_verification"] = result_verification
+                result["result_intelligence"] = result_intelligence
 
             # Content automation is downstream of Stage 7 and isolated from
             # market refresh, lifecycle processing, and observability.
