@@ -1,7 +1,11 @@
 from types import SimpleNamespace
 
+from unittest.mock import patch
+
 from app.services.result_verification import (
     _effective_status,
+    _stored_result_quality_gate,
+    reconcile_stored_provider_pair,
 )
 
 
@@ -22,6 +26,103 @@ def row(
         primary_score=primary_score,
         secondary_score=secondary_score,
     )
+
+
+
+
+def test_stored_result_gate_warns_for_schedule_only_conflict():
+    assert (
+        _stored_result_quality_gate(
+            {
+                "MATCH": 339,
+                "CONFLICT": 31,
+                "SOURCE_LAG": 10,
+            },
+            schedule_only_conflicts=31,
+        )
+        == "WARN"
+    )
+
+
+def test_stored_result_gate_fails_for_hard_result_conflict():
+    assert (
+        _stored_result_quality_gate(
+            {
+                "MATCH": 339,
+                "CONFLICT": 31,
+                "SOURCE_LAG": 10,
+            },
+            schedule_only_conflicts=30,
+        )
+        == "FAIL"
+    )
+
+
+
+def test_stored_pair_ignores_secondary_only_history(
+    session,
+):
+    primary = {
+        "epl:2026:arsenal:chelsea": {
+            "fixture_id": 1001,
+            "home": "Arsenal",
+            "away": "Chelsea",
+            "date": "2026-09-01",
+            "finished": True,
+            "score": "2-1",
+        }
+    }
+
+    secondary = {
+        "epl:2026:arsenal:chelsea": {
+            "fixture_id": 2001,
+            "home": "Arsenal",
+            "away": "Chelsea",
+            "date": "2026-09-01",
+            "finished": True,
+            "score": "2-1",
+        },
+        "epl:2026:old-team-a:old-team-b": {
+            "fixture_id": 2999,
+            "home": "Old Team A",
+            "away": "Old Team B",
+            "date": "2024-01-01",
+            "finished": True,
+            "score": "1-0",
+        },
+    }
+
+    def fake_live_rows(
+        session_arg,
+        *,
+        competition_id,
+        season,
+        primary_source,
+    ):
+        if primary_source == "api-football":
+            return primary
+
+        if primary_source == "live-score-api":
+            return secondary
+
+        raise AssertionError(primary_source)
+
+    with patch(
+        "app.services.result_verification._live_rows",
+        side_effect=fake_live_rows,
+    ):
+        result = reconcile_stored_provider_pair(
+            session,
+            competition_id=39,
+            season=2026,
+        )
+
+    assert result["total"] == 1
+    assert result["overall_counts"] == {
+        "MATCH": 1,
+    }
+    assert result["fixture_agreement_rate"] == 1.0
+    assert result["quality_gate"] == "PASS"
 
 
 def test_existing_openfootball_match_is_preserved():

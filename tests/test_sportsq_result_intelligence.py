@@ -687,6 +687,156 @@ def test_result_intelligence_schema_is_separate_and_immutable(
     )
 
 
+
+def test_legacy_empty_grading_table_is_upgraded(
+    session,
+):
+    bind = session.get_bind()
+
+    if bind.dialect.name != "sqlite":
+        pytest.fail("Expected isolated SQLite test DB.")
+
+    # Reproduce the pre-verification production schema.
+    with bind.begin() as conn:
+        conn.execute(
+            text(
+                """
+                CREATE TABLE sportsq_scorecall_grades (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    scorecall_lock_id INTEGER NOT NULL,
+                    live_prediction_id INTEGER NOT NULL,
+                    fixture_id INTEGER NOT NULL,
+                    provider_fixture_id INTEGER NOT NULL,
+                    competition_id INTEGER NOT NULL,
+                    season INTEGER NOT NULL,
+                    predicted_home_goals INTEGER NOT NULL,
+                    predicted_away_goals INTEGER NOT NULL,
+                    actual_home_goals INTEGER NOT NULL,
+                    actual_away_goals INTEGER NOT NULL,
+                    predicted_score VARCHAR(20) NOT NULL,
+                    actual_score VARCHAR(20) NOT NULL,
+                    exact_score_correct BOOLEAN NOT NULL,
+                    outcome_correct BOOLEAN NOT NULL,
+                    grading_version VARCHAR(40) NOT NULL,
+                    graded_at DATETIME NOT NULL,
+                    UNIQUE (scorecall_lock_id),
+                    UNIQUE (fixture_id, grading_version)
+                )
+                """
+            )
+        )
+
+    status = ensure_scorecall_grading_schema(session)
+
+    columns = {
+        column["name"]
+        for column in inspect(bind).get_columns(
+            SCORECALL_GRADES_TABLE_NAME
+        )
+    }
+
+    expected = {
+        "verification_reconciliation_id",
+        "verification_primary_source",
+        "verification_secondary_source",
+        "verification_date_status",
+        "verification_result_status",
+        "verification_overall_status",
+        "verification_checked_at",
+    }
+
+    assert expected <= columns
+    assert status["immutable"] is True
+    assert status["verified_results_only"] is True
+
+    # Prove migration is idempotent.
+    ensure_scorecall_grading_schema(session)
+
+    columns_after_second_run = {
+        column["name"]
+        for column in inspect(bind).get_columns(
+            SCORECALL_GRADES_TABLE_NAME
+        )
+    }
+
+    assert columns_after_second_run == columns
+
+
+def test_populated_legacy_grading_table_fails_closed(
+    session,
+):
+    bind = session.get_bind()
+
+    if bind.dialect.name != "sqlite":
+        pytest.fail("Expected isolated SQLite test DB.")
+
+    with bind.begin() as conn:
+        conn.execute(
+            text(
+                """
+                CREATE TABLE sportsq_scorecall_grades (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    scorecall_lock_id INTEGER NOT NULL,
+                    live_prediction_id INTEGER NOT NULL,
+                    fixture_id INTEGER NOT NULL,
+                    provider_fixture_id INTEGER NOT NULL,
+                    competition_id INTEGER NOT NULL,
+                    season INTEGER NOT NULL,
+                    predicted_home_goals INTEGER NOT NULL,
+                    predicted_away_goals INTEGER NOT NULL,
+                    actual_home_goals INTEGER NOT NULL,
+                    actual_away_goals INTEGER NOT NULL,
+                    predicted_score VARCHAR(20) NOT NULL,
+                    actual_score VARCHAR(20) NOT NULL,
+                    exact_score_correct BOOLEAN NOT NULL,
+                    outcome_correct BOOLEAN NOT NULL,
+                    grading_version VARCHAR(40) NOT NULL,
+                    graded_at DATETIME NOT NULL
+                )
+                """
+            )
+        )
+
+        conn.execute(
+            text(
+                """
+                INSERT INTO sportsq_scorecall_grades (
+                    scorecall_lock_id,
+                    live_prediction_id,
+                    fixture_id,
+                    provider_fixture_id,
+                    competition_id,
+                    season,
+                    predicted_home_goals,
+                    predicted_away_goals,
+                    actual_home_goals,
+                    actual_away_goals,
+                    predicted_score,
+                    actual_score,
+                    exact_score_correct,
+                    outcome_correct,
+                    grading_version,
+                    graded_at
+                )
+                VALUES (
+                    1, 1, 1, 1, 39, 2026,
+                    1, 0, 2, 2,
+                    '1-0', '2-2',
+                    0, 0,
+                    'legacy',
+                    '2026-09-01 00:00:00'
+                )
+                """
+            )
+        )
+
+    with pytest.raises(
+        RuntimeError,
+        match="automatic migration refused",
+    ):
+        ensure_scorecall_grading_schema(session)
+
+
 def test_verified_match_creates_grade(
     session,
 ):

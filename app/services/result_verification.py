@@ -43,6 +43,43 @@ def _quality_gate(counts: dict[str, int]) -> str:
     return "PASS"
 
 
+def _stored_result_quality_gate(
+    counts: dict[str, int],
+    *,
+    schedule_only_conflicts: int = 0,
+) -> str:
+    """Gate stored result verification without hiding schedule drift.
+
+    A date-only conflict on an unfinished fixture with no scores is
+    schedule uncertainty, not a contradictory match result.  It remains
+    visible and produces WARN.  Any other conflict remains FAIL.
+    """
+    conflicts = int(counts.get("CONFLICT", 0))
+    schedule_only = max(
+        0,
+        int(schedule_only_conflicts),
+    )
+    hard_conflicts = max(
+        0,
+        conflicts - schedule_only,
+    )
+
+    if hard_conflicts:
+        return "FAIL"
+
+    warning = (
+        schedule_only
+        + int(counts.get("MISSING_PRIMARY", 0))
+        + int(counts.get("MISSING_SECONDARY", 0))
+        + int(counts.get("SOURCE_LAG", 0))
+    )
+
+    if warning:
+        return "WARN"
+
+    return "PASS"
+
+
 def _effective_status(
     base: Any,
     verifier: Any | None,
@@ -141,8 +178,12 @@ def reconcile_stored_provider_pair(
         primary_source=secondary_source,
     )
 
+    # API-Football is the authoritative fixture universe for this
+    # stored result-verification pair.  LiveScore is a secondary
+    # verifier only.  Secondary-only history must not manufacture
+    # MISSING_PRIMARY rows or dilute the verifier quality gate.
     all_keys = sorted(
-        set(primary) | set(secondary)
+        set(primary)
     )
 
     existing = {
@@ -167,6 +208,7 @@ def reconcile_stored_provider_pair(
     inserted = 0
     updated = 0
     counts: dict[str, int] = {}
+    schedule_only_conflicts = 0
 
     for key in all_keys:
 
@@ -265,6 +307,20 @@ def reconcile_stored_provider_pair(
             counts.get(overall, 0) + 1
         )
 
+        if (
+            overall == "CONFLICT"
+            and date_status == "CONFLICT"
+            and result_status == "PENDING"
+            and p is not None
+            and not bool(p.get("finished"))
+            and p.get("score") is None
+            and (
+                q is None
+                or q.get("score") is None
+            )
+        ):
+            schedule_only_conflicts += 1
+
     stale_keys = (
         set(existing)
         - set(all_keys)
@@ -322,8 +378,19 @@ def reconcile_stored_provider_pair(
             if total
             else None
         ),
-        "quality_gate": _quality_gate(
-            counts
+        "quality_gate": _stored_result_quality_gate(
+            counts,
+            schedule_only_conflicts=(
+                schedule_only_conflicts
+            ),
+        ),
+        "schedule_only_conflicts": (
+            schedule_only_conflicts
+        ),
+        "hard_result_conflicts": max(
+            0,
+            int(counts.get("CONFLICT", 0))
+            - schedule_only_conflicts,
         ),
         "final_holdout_touched": False,
     }

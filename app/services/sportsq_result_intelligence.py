@@ -128,7 +128,83 @@ def ensure_scorecall_grading_schema(
         checkfirst=True,
     )
 
+    # Upgrade legacy Result Intelligence tables created before
+    # verification provenance became mandatory.  Never invent
+    # provenance for existing grade rows: a populated legacy table
+    # requires an explicit/manual migration decision.
     if bind.dialect.name == "sqlite":
+        inspector = inspect(bind)
+        existing_columns = {
+            column["name"]
+            for column in inspector.get_columns(
+                SCORECALL_GRADES_TABLE_NAME
+            )
+        }
+
+        required_provenance_columns = {
+            "verification_reconciliation_id": "INTEGER",
+            "verification_primary_source": "VARCHAR(80)",
+            "verification_secondary_source": "VARCHAR(80)",
+            "verification_date_status": "VARCHAR(30)",
+            "verification_result_status": "VARCHAR(30)",
+            "verification_overall_status": "VARCHAR(30)",
+            "verification_checked_at": "DATETIME",
+        }
+
+        missing_columns = {
+            name: sql_type
+            for name, sql_type
+            in required_provenance_columns.items()
+            if name not in existing_columns
+        }
+
+        if missing_columns:
+            with bind.connect() as conn:
+                legacy_row_count = int(
+                    conn.execute(
+                        text(
+                            f"SELECT COUNT(*) "
+                            f"FROM {SCORECALL_GRADES_TABLE_NAME}"
+                        )
+                    ).scalar_one()
+                )
+
+            if legacy_row_count:
+                raise RuntimeError(
+                    "Legacy sportsq_scorecall_grades contains "
+                    f"{legacy_row_count} row(s) without verification "
+                    "provenance; automatic migration refused."
+                )
+
+            with bind.begin() as conn:
+                for column_name, sql_type in missing_columns.items():
+                    conn.execute(
+                        text(
+                            f"ALTER TABLE "
+                            f"{SCORECALL_GRADES_TABLE_NAME} "
+                            f"ADD COLUMN {column_name} "
+                            f"{sql_type} NOT NULL"
+                        )
+                    )
+
+        upgraded_columns = {
+            column["name"]
+            for column in inspect(bind).get_columns(
+                SCORECALL_GRADES_TABLE_NAME
+            )
+        }
+
+        still_missing = (
+            set(required_provenance_columns)
+            - upgraded_columns
+        )
+
+        if still_missing:
+            raise RuntimeError(
+                "ScoreCall grading schema migration incomplete: "
+                + ", ".join(sorted(still_missing))
+            )
+
         with bind.begin() as conn:
             conn.execute(
                 text(
