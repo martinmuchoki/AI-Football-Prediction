@@ -109,33 +109,126 @@ def _open_rows(payload: dict[str, Any], *, season: int) -> dict[str, dict[str, A
     return out
 
 
-def _statuses(primary: dict[str, Any] | None, secondary: dict[str, Any] | None) -> tuple[str, str, str]:
+def _statuses(
+    primary: dict[str, Any] | None,
+    secondary: dict[str, Any] | None,
+) -> tuple[str, str, str]:
+    """Classify fixture/date/result agreement between providers.
+
+    v1.0.7:
+    A future schedule-only disagreement of no more than two calendar
+    days is SOURCE_LAG only when the fixture is unfinished and both
+    sources are scoreless.
+
+    Finished/result conflicts, historical date disagreements and
+    differences greater than two days remain CONFLICT.
+    """
     if primary is None:
         return "MISSING_PRIMARY", "NOT_COMPARABLE", "MISSING_PRIMARY"
+
     if secondary is None:
         return "MISSING_SECONDARY", "NOT_COMPARABLE", "MISSING_SECONDARY"
 
-    date_status = "MATCH" if primary.get("date") == secondary.get("date") else "CONFLICT"
+    from datetime import date as _date
+    from datetime import datetime as _datetime
+    from datetime import timezone as _timezone
+
+    def _fixture_date(value: Any) -> _date | None:
+        if value is None:
+            return None
+
+        if isinstance(value, _datetime):
+            return value.date()
+
+        if isinstance(value, _date):
+            return value
+
+        text = str(value).strip()
+
+        if not text:
+            return None
+
+        try:
+            return _datetime.fromisoformat(
+                text.replace("Z", "+00:00")
+            ).date()
+        except (TypeError, ValueError):
+            pass
+
+        try:
+            return _date.fromisoformat(text[:10])
+        except (TypeError, ValueError):
+            return None
+
+    primary_date_raw = primary.get("date")
+    secondary_date_raw = secondary.get("date")
+
+    if primary_date_raw == secondary_date_raw:
+        date_status = "MATCH"
+
+    else:
+        primary_date = _fixture_date(primary_date_raw)
+        secondary_date = _fixture_date(secondary_date_raw)
+
+        primary_score = primary.get("score")
+        secondary_score = secondary.get("score")
+
+        today_utc = _datetime.now(_timezone.utc).date()
+
+        if primary_date is not None and secondary_date is not None:
+            variance_days = abs(
+                (primary_date - secondary_date).days
+            )
+        else:
+            variance_days = None
+
+        schedule_only_lag = (
+            not bool(primary.get("finished"))
+            and primary_score is None
+            and secondary_score is None
+            and primary_date is not None
+            and secondary_date is not None
+            and primary_date >= today_utc
+            and secondary_date >= today_utc
+            and variance_days is not None
+            and 1 <= variance_days <= 2
+        )
+
+        if schedule_only_lag:
+            date_status = "SOURCE_LAG"
+        else:
+            date_status = "CONFLICT"
 
     primary_score = primary.get("score")
     secondary_score = secondary.get("score")
+
     if not primary.get("finished"):
         result_status = "PENDING"
+
     elif primary_score is None and secondary_score is None:
         result_status = "INCOMPLETE"
+
     elif primary_score is None or secondary_score is None:
         result_status = "SOURCE_LAG"
+
     elif primary_score == secondary_score:
         result_status = "MATCH"
+
     else:
         result_status = "CONFLICT"
 
     if date_status == "CONFLICT" or result_status == "CONFLICT":
         overall = "CONFLICT"
-    elif result_status in {"SOURCE_LAG", "INCOMPLETE"}:
+
+    elif (
+        date_status == "SOURCE_LAG"
+        or result_status in {"SOURCE_LAG", "INCOMPLETE"}
+    ):
         overall = "SOURCE_LAG"
+
     else:
         overall = "MATCH"
+
     return date_status, result_status, overall
 
 
