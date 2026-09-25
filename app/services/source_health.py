@@ -98,6 +98,18 @@ async def run_source_health_checks(
                 and retired_sources
                 and slug in retired_sources
             ):
+                # Retained for legacy/manual diagnostics, but no longer
+                # polled by scheduled production source-health checks.
+                #
+                # Persist the retirement state so source_health_summary()
+                # does not reinterpret the last historical OK state as
+                # STALE. Preserve last_success_at because it represents
+                # the last genuine provider poll.
+                source.health_status = "RETIRED"
+                source.last_checked_at = checked_at
+                source.consecutive_failures = 0
+                source.error_message = None
+
                 status = "RETIRED"
                 detail = "retired_from_runtime"
 
