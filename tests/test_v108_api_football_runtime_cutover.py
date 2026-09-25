@@ -32,7 +32,7 @@ def _summary():
 
 def test_v108_version():
 
-    assert app.__version__ == "1.0.8"
+    assert app.__version__ == "1.0.9"
 
 
 def test_legacy_verifier_default_preserved():

@@ -5,6 +5,9 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.services.market_refresh import (
+    _reconciliation_prediction_lock_decision,
+)
 from app.services.result_verification import composite_reconciliation_summary
 
 
@@ -76,30 +79,36 @@ def reconciliation_health(
             freshness = "INVALID_TIMESTAMP"
             effective_gate = "STALE"
 
-    if effective_gate == "PASS":
+    (
+        prediction_lock_blocked,
+        prediction_block_reason,
+    ) = _reconciliation_prediction_lock_decision(
+        effective_gate,
+        summary.get(
+            "fixture_agreement_rate"
+        ),
+    )
+
+    prediction_lock_allowed = (
+        not prediction_lock_blocked
+    )
+
+    if prediction_lock_blocked:
+        operational_status = "BLOCKED"
+        action = "BLOCK_NEW_PREDICTIONS"
+
+    elif effective_gate == "PASS":
         operational_status = "HEALTHY"
-        prediction_lock_allowed = True
         action = "ALLOW"
 
     elif effective_gate == "WARN":
         operational_status = "DEGRADED"
-        prediction_lock_allowed = True
         action = "ALLOW_DEGRADED"
 
-    elif effective_gate == "FAIL":
+    else:
         operational_status = "BLOCKED"
         prediction_lock_allowed = False
         action = "BLOCK_NEW_PREDICTIONS"
-
-    elif effective_gate == "STALE":
-        operational_status = "STALE"
-        prediction_lock_allowed = True
-        action = "ALLOW_UNVERIFIED"
-
-    else:
-        operational_status = "UNINITIALIZED"
-        prediction_lock_allowed = True
-        action = "ALLOW_UNVERIFIED"
 
     counts = dict(summary.get("overall_counts") or {})
 
@@ -129,6 +138,7 @@ def reconciliation_health(
         "operational_status": operational_status,
         "prediction_lock_allowed": prediction_lock_allowed,
         "action": action,
+        "prediction_block_reason": prediction_block_reason,
 
         "quality_gate": effective_gate,
         "reported_quality_gate": reported_gate,
