@@ -18,7 +18,7 @@ from app.models import Fixture, FixtureReconciliation
 
 from app.services.result_verification import (
     API_FOOTBALL_SOURCE,
-    LIVE_SCORE_SOURCE,
+    OPENFOOTBALL_SOURCE,
 )
 
 from app.services.sportsq_result_intelligence import (
@@ -595,14 +595,14 @@ def _insert_verification(
         ),
 
         primary_source=API_FOOTBALL_SOURCE,
-        secondary_source=LIVE_SCORE_SOURCE,
+        secondary_source=OPENFOOTBALL_SOURCE,
 
         primary_fixture_id=int(
             fixture.provider_fixture_id
         ),
 
         secondary_entity_key=(
-            "live-score-test-"
+            "openfootball-test-"
             f"{fixture.provider_fixture_id}"
         ),
 
@@ -914,7 +914,7 @@ def test_verified_match_creates_grade(
         grade[
             "verification_secondary_source"
         ]
-        == LIVE_SCORE_SOURCE
+        == OPENFOOTBALL_SOURCE
     )
 
     assert (

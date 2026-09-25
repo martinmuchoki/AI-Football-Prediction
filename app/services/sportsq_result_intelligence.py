@@ -22,7 +22,7 @@ from sqlalchemy.orm import Session
 from app.models import Fixture, FixtureReconciliation
 from app.services.result_verification import (
     API_FOOTBALL_SOURCE,
-    LIVE_SCORE_SOURCE,
+    OPENFOOTBALL_SOURCE,
 )
 from app.services.sportsq_scorecall import (
     SCORECALL_TABLE_NAME,
@@ -249,7 +249,7 @@ def ensure_scorecall_grading_schema(
         "grading_version": GRADING_VERSION,
         "verified_results_only": True,
         "verification_primary_source": API_FOOTBALL_SOURCE,
-        "verification_secondary_source": LIVE_SCORE_SOURCE,
+        "verification_secondary_source": OPENFOOTBALL_SOURCE,
         "scorecall_lock_table_modified": False,
         "prediction_engine_rewritten": False,
         "final_holdout_touched": False,
@@ -287,7 +287,7 @@ def grade_verified_scorecall_locks(
         "verified_results_only": True,
 
         "verification_primary_source": API_FOOTBALL_SOURCE,
-        "verification_secondary_source": LIVE_SCORE_SOURCE,
+        "verification_secondary_source": OPENFOOTBALL_SOURCE,
 
         "scorecall_lock_table_modified": False,
         "prediction_engine_rewritten": False,
@@ -358,7 +358,7 @@ def grade_verified_scorecall_locks(
                 == API_FOOTBALL_SOURCE,
 
                 FixtureReconciliation.secondary_source
-                == LIVE_SCORE_SOURCE,
+                == OPENFOOTBALL_SOURCE,
 
                 FixtureReconciliation.primary_fixture_id
                 == int(lock["provider_fixture_id"]),

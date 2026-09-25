@@ -74,6 +74,7 @@ async def run_source_health_checks(
     settings: Settings,
     *,
     only_slug: str | None = None,
+    retired_sources: set[str] | None = None,
 ) -> dict[str, Any]:
     """Check registered providers without exposing credentials in diagnostics."""
     seed_default_sources(session)
@@ -92,7 +93,15 @@ async def run_source_health_checks(
         status = "UNKNOWN"
         detail = None
         try:
-            if slug == "live-score-api":
+            if (
+                slug == "live-score-api"
+                and retired_sources
+                and slug in retired_sources
+            ):
+                status = "RETIRED"
+                detail = "retired_from_runtime"
+
+            elif slug == "live-score-api":
                 if not settings.ls_api_key.strip() or not settings.ls_api_secret.strip():
                     mark_source_config_required(session, source, "Live Score credentials are not configured", checked_at=checked_at)
                     status = "CONFIG_REQUIRED"

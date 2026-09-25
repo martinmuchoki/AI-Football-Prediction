@@ -197,10 +197,34 @@ async def live_market_job() -> None:
                 and result_refresh.get("status") == "success"
             ):
                 try:
+                    verifier_kwargs = {}
+
+                    try:
+                        import inspect
+
+                        if (
+                            "verification_mode"
+                            in inspect.signature(
+                                reconcile_stored_provider_pair
+                            ).parameters
+                        ):
+                            verifier_kwargs[
+                                "verification_mode"
+                            ] = (
+                                "api-football-openfootball-only"
+                            )
+
+                    except (
+                        TypeError,
+                        ValueError,
+                    ):
+                        pass
+
                     result_verification = reconcile_stored_provider_pair(
                         session,
                         competition_id=competition,
                         season=season,
+                        **verifier_kwargs,
                     )
                     if (
                         isinstance(result_verification, dict)
@@ -243,7 +267,7 @@ async def live_market_job() -> None:
             else:
                 result_verification = {
                     "status": "skipped",
-                    "reason": "live_score_result_refresh_not_successful",
+                    "reason": "primary_result_refresh_not_successful",
                     "final_holdout_touched": False,
                 }
                 result_intelligence = {
@@ -470,7 +494,34 @@ async def live_market_job() -> None:
 
 async def source_health_job() -> None:
     with SessionLocal() as session:
-        result = await run_source_health_checks(session, settings)
+        health_kwargs = {}
+
+        try:
+            import inspect
+
+            if (
+                "retired_sources"
+                in inspect.signature(
+                    run_source_health_checks
+                ).parameters
+            ):
+                health_kwargs[
+                    "retired_sources"
+                ] = {
+                    "live-score-api"
+                }
+
+        except (
+            TypeError,
+            ValueError,
+        ):
+            pass
+
+        result = await run_source_health_checks(
+            session,
+            settings,
+            **health_kwargs,
+        )
         safe = {
             "status": result.get("status"),
             "checked_at": result.get("checked_at"),

@@ -159,10 +159,60 @@ def reconcile_stored_provider_pair(
     primary_source: str = API_FOOTBALL_SOURCE,
     secondary_source: str = LIVE_SCORE_SOURCE,
     secondary_competition_id: int = LIVE_SCORE_EPL_COMPETITION_ID,
+    verification_mode: str | None = None,
     checked_at: datetime | None = None,
 ) -> dict[str, Any]:
 
     when = checked_at or _utcnow()
+
+    # SPORTSQ_V108_API_FOOTBALL_ONLY
+    #
+    # Default legacy/manual behaviour remains below.
+    # Production must explicitly request this mode.
+    if (
+        verification_mode
+        == "api-football-openfootball-only"
+    ):
+        base = dict(
+            reconciliation_summary(
+                session,
+                competition_id=int(
+                    competition_id
+                ),
+                season=int(season),
+                primary_source=(
+                    API_FOOTBALL_SOURCE
+                ),
+            )
+        )
+
+        base.update(
+            {
+                "primary_source":
+                    API_FOOTBALL_SOURCE,
+
+                "secondary_source":
+                    OPENFOOTBALL_SOURCE,
+
+                "secondary_competition_id":
+                    39,
+
+                "verification_mode":
+                    "api-football-openfootball-only",
+
+                "retired_secondary_source":
+                    LIVE_SCORE_SOURCE,
+
+                "inserted": 0,
+                "updated": 0,
+                "removed_stale": 0,
+
+                "final_holdout_touched":
+                    False,
+            }
+        )
+
+        return base
 
     primary = _live_rows(
         session,
@@ -405,6 +455,79 @@ def composite_reconciliation_summary(
     schedule_source: str = OPENFOOTBALL_SOURCE,
     result_verifier_source: str = LIVE_SCORE_SOURCE,
 ) -> dict[str, Any]:
+
+    # SPORTSQ_V108_API_FOOTBALL_ONLY
+    #
+    # Production reconciliation health uses only:
+    # API-Football + OpenFootball.
+    if (
+        int(competition_id) == 39
+        and str(primary_source)
+        == API_FOOTBALL_SOURCE
+        and str(schedule_source)
+        == OPENFOOTBALL_SOURCE
+    ):
+        base = dict(
+            reconciliation_summary(
+                session,
+                competition_id=int(
+                    competition_id
+                ),
+                season=int(season),
+                primary_source=(
+                    API_FOOTBALL_SOURCE
+                ),
+            )
+        )
+
+        counts = dict(
+            base.get(
+                "overall_counts"
+            )
+            or {}
+        )
+
+        base.update(
+            {
+                "primary_source":
+                    API_FOOTBALL_SOURCE,
+
+                "secondary_source":
+                    OPENFOOTBALL_SOURCE,
+
+                "schedule_source":
+                    OPENFOOTBALL_SOURCE,
+
+                "result_verifier_source":
+                    None,
+
+                "verification_mode":
+                    "api-football-openfootball-only",
+
+                "fallback_verified_count":
+                    0,
+
+                "verifier_conflict_count":
+                    0,
+
+                "unverified_result_lag_count":
+                    int(
+                        counts.get(
+                            "SOURCE_LAG",
+                            0,
+                        )
+                    ),
+
+                "result_verifier_pair_count":
+                    0,
+
+                "final_holdout_touched":
+                    False,
+            }
+        )
+
+        return base
+
 
     base_rows = list(
         session.scalars(
