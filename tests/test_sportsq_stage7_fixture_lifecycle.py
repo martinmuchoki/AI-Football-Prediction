@@ -16,15 +16,28 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def _sha256(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    """Hash canonical source content instead of checkout-specific bytes.
+
+    UTF-8 BOM and CRLF/CR versus LF representation are intentionally
+    normalized. Substantive source changes still alter the SHA256.
+    """
+    data = path.read_bytes()
+
+    if data.startswith(b"\xef\xbb\xbf"):
+        data = data[3:]
+
+    data = (
+        data
+        .replace(b"\r\n", b"\n")
+        .replace(b"\r", b"\n")
+    )
+
+    return hashlib.sha256(data).hexdigest()
+
 
 
 def test_stage7_version():
-    assert __version__ == "1.0.10"
+    assert __version__ == "1.0.11"
 
 
 def test_stage7_history_adapter_signature_is_supported():
@@ -82,13 +95,13 @@ def test_live_market_scheduler_keeps_refresh_and_adds_stage7():
 def test_stage6_protected_core_services_are_unchanged():
     expected = {
         "app/services/live_prediction_engine.py":
-            "7190cb7978d0043005198a7628ab2775b17d68471cce642a64131a9289e4cde2",
+            "76ff34f3f68a391cc9097a43392ee19f1050b7cfa40ed00f3634e8b248d75995",
         "app/services/prediction_grading.py":
             "593300da77b912a9efa593f139f0652c2d263477ea164317969344ddbaa4f7e9",
         "app/services/social_content.py":
             "2678e8a9c000b077ecf495d727e509387985b774f27888787440c02d174f310c",
         "app/services/sportsq_intelligence.py":
-            "3487355e2198bb4b0a7f4eff4591720789cdf8c343c03f145e32da7d8464daef",
+            "543ca7ed32c93e39c590d4b68b78acb2e5e070a12e934e5cd7915d04e786bdc3",
         "app/services/sportsq_scorecall.py":
             "9f8af0581272a8aa1fc24630723b5230442a48f02ae38b9c8ce5f5f571ef51ab",
         "app/services/sportsq_news_impact.py":
@@ -96,3 +109,26 @@ def test_stage6_protected_core_services_are_unchanged():
     }
     for rel, digest in expected.items():
         assert _sha256(ROOT / rel) == digest
+
+
+
+def test_stage6_protected_hash_is_eol_and_bom_independent(tmp_path):
+    lf = tmp_path / "lf.py"
+    crlf = tmp_path / "crlf.py"
+    bom_crlf = tmp_path / "bom_crlf.py"
+
+    lf.write_bytes(
+        b"alpha = 1\nbeta = 2\n"
+    )
+
+    crlf.write_bytes(
+        b"alpha = 1\r\nbeta = 2\r\n"
+    )
+
+    bom_crlf.write_bytes(
+        b"\xef\xbb\xbf"
+        b"alpha = 1\r\nbeta = 2\r\n"
+    )
+
+    assert _sha256(lf) == _sha256(crlf)
+    assert _sha256(lf) == _sha256(bom_crlf)

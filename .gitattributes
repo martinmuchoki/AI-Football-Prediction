@@ -1,0 +1,2 @@
+# MDRN SportsQ deterministic Python checkout policy
+*.py text eol=lf

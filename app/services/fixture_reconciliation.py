@@ -28,12 +28,25 @@ def _score_text(home: Any, away: Any) -> str | None:
 
 
 def _openfootball_score(item: dict[str, Any]) -> str | None:
+    """Return an OpenFootball full-time score without losing zero values.
+
+    OpenFootball season payloads may represent the score either as the
+    historical {"ft": [home, away]} mapping or directly as [home, away].
+    Both shapes are valid and a 0-0 result must remain a real score rather
+    than being treated as missing provider data.
+    """
     score = item.get("score")
-    if not isinstance(score, dict):
+
+    if isinstance(score, dict):
+        ft = score.get("ft")
+    elif isinstance(score, (list, tuple)):
+        ft = score
+    else:
         return None
-    ft = score.get("ft")
+
     if not isinstance(ft, (list, tuple)) or len(ft) != 2:
         return None
+
     return _score_text(ft[0], ft[1])
 
 
