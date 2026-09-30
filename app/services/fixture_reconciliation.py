@@ -360,6 +360,42 @@ def reconcile_openfootball_payload(
     }
 
 
+def _prediction_gate_agreement_rate(rows) -> float | None:
+    """Agreement metric used only by the new-prediction safety gate.
+
+    v1.0.12:
+    Keep fixture_agreement_rate strict and diagnostic (MATCH only).
+
+    For prediction-lock purposes, also accept the narrow schedule-only
+    SOURCE_LAG classification created by _statuses():
+
+        date_status == "SOURCE_LAG"
+        result_status == "PENDING"
+
+    This does not accept result-source lag, missing-source rows,
+    incomplete finished results, or conflicts.
+    """
+    rows = list(rows)
+
+    if not rows:
+        return None
+
+    acceptable = sum(
+        1
+        for row in rows
+        if (
+            str(row.overall_status).upper() == "MATCH"
+            or (
+                str(row.overall_status).upper() == "SOURCE_LAG"
+                and str(row.date_status).upper() == "SOURCE_LAG"
+                and str(row.result_status).upper() == "PENDING"
+            )
+        )
+    )
+
+    return round(acceptable / len(rows), 6)
+
+
 def reconciliation_summary(
     session: Session,
     *,
@@ -406,6 +442,7 @@ def reconciliation_summary(
         "total": total,
         "overall_counts": counts,
         "fixture_agreement_rate": round(clean / total, 6),
+        "prediction_gate_agreement_rate": _prediction_gate_agreement_rate(rows),
         "quality_gate": gate,
         "last_checked_at": latest.isoformat(),
         "final_holdout_touched": False,

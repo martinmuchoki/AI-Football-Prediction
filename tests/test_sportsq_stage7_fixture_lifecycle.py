@@ -37,7 +37,7 @@ def _sha256(path: Path) -> str:
 
 
 def test_stage7_version():
-    assert __version__ == "1.0.11"
+    assert __version__ == "1.0.12"
 
 
 def test_stage7_history_adapter_signature_is_supported():

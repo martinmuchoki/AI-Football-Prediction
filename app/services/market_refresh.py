@@ -129,7 +129,10 @@ async def _refresh_live_score_market_legacy(
     ) = _reconciliation_prediction_lock_decision(
         quality_gate,
         reconciliation.get(
-            "fixture_agreement_rate"
+            "prediction_gate_agreement_rate",
+            reconciliation.get(
+                "fixture_agreement_rate"
+            ),
         ),
     )
 
@@ -471,7 +474,10 @@ async def _refresh_api_football_market(
     ) = _reconciliation_prediction_lock_decision(
         quality_gate,
         reconciliation.get(
-            "fixture_agreement_rate"
+            "prediction_gate_agreement_rate",
+            reconciliation.get(
+                "fixture_agreement_rate"
+            ),
         ),
     )
     
