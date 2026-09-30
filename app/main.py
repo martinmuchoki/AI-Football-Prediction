@@ -540,6 +540,103 @@ def api_v1_reconciliation_issues(
 # MDRN SportsQ v0.12.0 Prediction Intelligence
 # ======================================================================
 
+
+# ======================================================================
+# MDRN SportsQ Public Read-Only Intelligence
+# ======================================================================
+
+
+def _sportsq_public_item(item: dict) -> dict:
+    """
+    Explicit public whitelist.
+
+    Internal prediction-lock, safety, provider identifiers, source
+    metadata and model implementation details are intentionally omitted.
+    """
+
+    fixture = item.get("fixture") or {}
+    predict = item.get("sportsq_predict") or {}
+    score_call = item.get("sportsq_score_call") or {}
+    confidence = item.get("sportsq_confidence") or {}
+    form = item.get("sportsq_form_index") or {}
+    news = item.get("sportsq_news_impact") or {}
+
+    home_form = form.get("home") or {}
+    away_form = form.get("away") or {}
+
+    return {
+        "fixture": {
+            "home_team": fixture.get("home_team"),
+            "away_team": fixture.get("away_team"),
+            "kickoff_utc": fixture.get("kickoff_utc"),
+        },
+        "sportsq_predict": {
+            "prediction": predict.get("prediction"),
+            "status": predict.get("status"),
+        },
+        "sportsq_score_call": {
+            "score": score_call.get("score"),
+            "status": score_call.get("status"),
+        },
+        "sportsq_confidence": {
+            "percent": confidence.get("percent"),
+            "band": confidence.get("band"),
+            "status": confidence.get("status"),
+        },
+        "sportsq_form_index": {
+            "window": form.get("window"),
+            "home": {
+                "team": home_form.get("team"),
+                "index": home_form.get("index"),
+                "band": home_form.get("band"),
+            },
+            "away": {
+                "team": away_form.get("team"),
+                "index": away_form.get("index"),
+                "band": away_form.get("band"),
+            },
+        },
+        "sportsq_news_impact": {
+            "status": news.get("status"),
+            "direction": news.get("direction"),
+            "verified": bool(news.get("verified")),
+            "note": news.get("note"),
+        },
+    }
+
+
+@app.get("/api/v1/public/sportsq")
+def api_v1_public_sportsq(
+    competition: int = Query(default=2),
+    season: int = Query(default=2026),
+    limit: int = Query(default=40, ge=1, le=100),
+) -> dict:
+    with SessionLocal() as session:
+        result = list_sportsq_intelligence(
+            session,
+            competition_id=competition,
+            season=season,
+            limit=limit,
+        )
+
+    items = result.get("items") or []
+
+    # The existing immutable publication decision remains authoritative.
+    public_items = [
+        _sportsq_public_item(item)
+        for item in items
+        if (item.get("prediction_lock") or {}).get("publish") is True
+    ]
+
+    return {
+        "status": result.get("status"),
+        "brand": "MDRN SportsQ",
+        "competition_id": competition,
+        "season": season,
+        "count": len(public_items),
+        "items": public_items,
+    }
+
 @app.get(
     "/api/v1/sportsq/intelligence",
     dependencies=[Depends(_own_api_guard)],
@@ -694,6 +791,19 @@ def api_v1_sportsq_capabilities() -> dict:
 _STAGE3_APP_DIR = _Stage3Path(__file__).resolve().parent
 _STAGE3_STATIC_DIR = _STAGE3_APP_DIR / "static" / "sportsq"
 _STAGE3_PACKAGES_DIR = _STAGE3_APP_DIR.parent / "data" / "sportsq_stage3" / "packages"
+
+_PUBLIC_UI_DIR = _Stage3Path(__file__).resolve().parent / "static" / "public"
+
+app.mount(
+    "/public",
+    Stage3StaticFiles(directory=str(_PUBLIC_UI_DIR)),
+    name="sportsq-public-static",
+)
+
+
+@app.get("/", include_in_schema=False)
+def sportsq_public_home():
+    return Stage3FileResponse(_PUBLIC_UI_DIR / "index.html")
 
 app.mount(
     "/sportsq/static",
@@ -1045,5 +1155,6 @@ def api_v1_sportsq_stage7_fixtures(
         "read_only": True,
         "historical_holdout_touched": False,
     }
+
 
 

@@ -1,0 +1,286 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+
+  <title>MDRN SportsQ | Football Intelligence</title>
+
+  <meta
+    name="description"
+    content="MDRN SportsQ football intelligence: predictions, score calls, confidence, form and verified news impact."
+  >
+
+  <link rel="stylesheet" href="/public/styles.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="shell header-inner">
+
+    <a class="brand" href="/" aria-label="MDRN SportsQ home">
+      <span class="brand-mark">SQ</span>
+
+      <span class="brand-copy">
+        <strong>MDRN SportsQ</strong>
+        <small>Football Intelligence</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="#matches">Matches</a>
+      <a href="#method">How it works</a>
+      <a href="#about">About</a>
+    </nav>
+
+  </div>
+</header>
+
+
+<main>
+
+  <section class="hero">
+
+    <div class="shell hero-grid">
+
+      <div class="hero-copy">
+
+        <div class="eyebrow">
+          DATA-DRIVEN FOOTBALL INTELLIGENCE
+        </div>
+
+        <h1>
+          See the match
+          <span>before kickoff.</span>
+        </h1>
+
+        <p class="hero-text">
+          MDRN SportsQ combines match predictions, score calls,
+          confidence ratings, recent-form intelligence and verified
+          team-news impact in one clear match view.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button primary" href="#matches">
+            View predictions
+          </a>
+
+          <a class="button secondary" href="#method">
+            How SportsQ works
+          </a>
+        </div>
+
+        <p class="responsible-note">
+          SportsQ provides analytical information, not guaranteed outcomes.
+        </p>
+
+      </div>
+
+
+      <aside class="hero-panel">
+
+        <div class="live-pill">
+          <span class="pulse"></span>
+          SportsQ Intelligence
+        </div>
+
+        <div class="hero-stat">
+          <span>SportsQ Predict</span>
+          <strong>1X2 outlook</strong>
+        </div>
+
+        <div class="hero-stat">
+          <span>ScoreCall</span>
+          <strong>Projected score</strong>
+        </div>
+
+        <div class="hero-stat">
+          <span>Confidence</span>
+          <strong>Model conviction</strong>
+        </div>
+
+        <div class="hero-stat">
+          <span>Form Index</span>
+          <strong>Recent performance</strong>
+        </div>
+
+        <div class="hero-stat">
+          <span>News Impact</span>
+          <strong>Verified availability context</strong>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </section>
+
+
+  <section id="matches" class="matches-section">
+
+    <div class="shell">
+
+      <div class="section-heading">
+
+        <div>
+          <div class="eyebrow">SPORTSQ MATCH CENTRE</div>
+          <h2>Match intelligence</h2>
+        </div>
+
+        <div class="controls">
+
+          <label>
+            Competition
+            <input
+              id="competition"
+              type="number"
+              value="2"
+              min="1"
+              inputmode="numeric"
+            >
+          </label>
+
+          <label>
+            Season
+            <input
+              id="season"
+              type="number"
+              value="2026"
+              min="2000"
+              max="2100"
+              inputmode="numeric"
+            >
+          </label>
+
+          <button id="refresh" class="button primary" type="button">
+            Refresh
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div id="status" class="status" role="status">
+        Loading SportsQ intelligence...
+      </div>
+
+
+      <div id="match-grid" class="match-grid" aria-live="polite"></div>
+
+    </div>
+
+  </section>
+
+
+  <section id="method" class="method-section">
+
+    <div class="shell">
+
+      <div class="section-heading simple">
+        <div>
+          <div class="eyebrow">THE SPORTSQ MODEL</div>
+          <h2>One match. Five intelligence layers.</h2>
+        </div>
+      </div>
+
+
+      <div class="method-grid">
+
+        <article>
+          <span>01</span>
+          <h3>SportsQ Predict</h3>
+          <p>
+            The primary match-outcome view produced by the SportsQ
+            prediction system.
+          </p>
+        </article>
+
+        <article>
+          <span>02</span>
+          <h3>SportsQ ScoreCall</h3>
+          <p>
+            A projected scoreline shown alongside the primary prediction.
+          </p>
+        </article>
+
+        <article>
+          <span>03</span>
+          <h3>SportsQ Confidence</h3>
+          <p>
+            A clear percentage and confidence band for the prediction.
+          </p>
+        </article>
+
+        <article>
+          <span>04</span>
+          <h3>SportsQ Form Index</h3>
+          <p>
+            Recent performance indicators for both teams using
+            pre-kickoff information.
+          </p>
+        </article>
+
+        <article>
+          <span>05</span>
+          <h3>SportsQ News Impact</h3>
+          <p>
+            Verified team-availability context with look-ahead protection.
+          </p>
+        </article>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section id="about" class="about-section">
+
+    <div class="shell about-grid">
+
+      <div>
+        <div class="eyebrow">MDRN SPORTSQ</div>
+        <h2>Built for clarity, not noise.</h2>
+      </div>
+
+      <p>
+        SportsQ brings multiple football intelligence signals together
+        while preserving the underlying prediction and historical
+        integrity controls. Public match views intentionally expose only
+        the information needed to understand the current outlook.
+      </p>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer class="site-footer">
+
+  <div class="shell footer-inner">
+
+    <div>
+      <strong>MDRN SportsQ</strong>
+      <span>Football Intelligence</span>
+    </div>
+
+    <p>
+      Predictions are informational and may be wrong.
+      Always make your own decisions.
+    </p>
+
+  </div>
+
+</footer>
+
+
+<script src="/public/app.js" defer></script>
+
+</body>
+</html>
