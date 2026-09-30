@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import hashlib
 import inspect
@@ -37,7 +37,7 @@ def _sha256(path: Path) -> str:
 
 
 def test_stage7_version():
-    assert __version__ == "1.0.12"
+    assert __version__ == "1.0.13"
 
 
 def test_stage7_history_adapter_signature_is_supported():
@@ -132,3 +132,4 @@ def test_stage6_protected_hash_is_eol_and_bom_independent(tmp_path):
 
     assert _sha256(lf) == _sha256(crlf)
     assert _sha256(lf) == _sha256(bom_crlf)
+
