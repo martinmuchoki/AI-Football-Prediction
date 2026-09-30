@@ -118,7 +118,12 @@
   </section>
 
 
-  <section id="matches" class="matches-section">
+  <div id="feed-status"
+           class="feed-status"
+           role="status"
+           aria-live="polite"></div>
+
+      <section id="matches" class="matches-section">
 
     <div class="shell">
 
@@ -131,16 +136,13 @@
 
         <div class="controls">
 
-          <label>
-            Competition
-            <input
-              id="competition"
-              type="number"
-              value="2"
-              min="1"
-              inputmode="numeric"
-            >
-          </label>
+          <div class="field competition-field">
+          <label for="competition">Competition</label>
+          <select id="competition" name="competition" aria-label="Competition">
+            <option value="39" selected>Premier League</option>
+          </select>
+          <span class="field-hint">API-Football ? England</span>
+        </div>
 
           <label>
             Season

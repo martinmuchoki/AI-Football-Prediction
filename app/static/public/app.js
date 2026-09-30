@@ -1,271 +1,372 @@
 ﻿"use strict";
 
-const $ = (selector) => document.querySelector(selector);
+(() => {
+  const DEFAULT_COMPETITION = 39;
+  const DEFAULT_SEASON = 2026;
+  const DEFAULT_LIMIT = 40;
 
-const grid = $("#match-grid");
-const statusBox = $("#status");
-const competitionInput = $("#competition");
-const seasonInput = $("#season");
-const refreshButton = $("#refresh");
+  const competitionControl = document.getElementById("competition");
+  const seasonControl = document.getElementById("season");
+  const refreshButton =
+    document.getElementById("refresh") ||
+    document.getElementById("refresh-button") ||
+    document.querySelector("[data-action='refresh']");
 
+  const feedStatus = document.getElementById("feed-status");
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+  const matchContainer =
+    document.getElementById("match-list") ||
+    document.getElementById("matches") ||
+    document.querySelector(".match-grid") ||
+    document.querySelector(".matches-grid") ||
+    document.querySelector("[data-match-list]");
 
-
-function display(value, fallback = "Pending") {
-  if (value === null || value === undefined || value === "") {
-    return fallback;
+  function numberOrDefault(value, fallback) {
+    const parsed = Number.parseInt(String(value ?? ""), 10);
+    return Number.isFinite(parsed) ? parsed : fallback;
   }
 
-  return String(value);
-}
-
-
-function formatKickoff(value) {
-  if (!value) {
-    return "Kickoff pending";
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return display(value);
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
-
-
-function confidenceText(confidence) {
-  if (!confidence) {
-    return "Pending";
-  }
-
-  const percent =
-    confidence.percent === null ||
-    confidence.percent === undefined
-      ? null
-      : Number(confidence.percent);
-
-  const band = display(confidence.band, "");
-
-  if (percent === null || Number.isNaN(percent)) {
-    return band || "Pending";
-  }
-
-  return `${percent.toFixed(1)}%${band ? ` · ${band}` : ""}`;
-}
-
-
-function formMarkup(form) {
-  if (!form) {
-    return `<p class="news-note">Form data pending.</p>`;
-  }
-
-  const home = form.home || {};
-  const away = form.away || {};
-
-  return `
-    <div class="form-row">
-      <span>${escapeHtml(display(home.team, "Home"))}</span>
-      <strong>${escapeHtml(display(home.index, "—"))}</strong>
-    </div>
-
-    <div class="form-row">
-      <span>${escapeHtml(display(away.team, "Away"))}</span>
-      <strong>${escapeHtml(display(away.index, "—"))}</strong>
-    </div>
-
-    <div class="news-meta">
-      Recent ${escapeHtml(display(form.window, "—"))}-match window
-    </div>
-  `;
-}
-
-
-function newsMarkup(news) {
-  if (!news) {
-    return `<p class="news-note">News impact pending.</p>`;
-  }
-
-  const note = display(news.note, "No verified news-impact note available.");
-  const direction = display(news.direction, "neutral");
-
-  return `
-    <p class="news-note">${escapeHtml(note)}</p>
-
-    <div class="news-meta">
-      Direction: ${escapeHtml(direction)}
-      ${news.verified === true ? " · Verified" : ""}
-    </div>
-  `;
-}
-
-
-function cardMarkup(item) {
-  const fixture = item.fixture || {};
-  const predict = item.sportsq_predict || {};
-  const scoreCall = item.sportsq_score_call || {};
-  const confidence = item.sportsq_confidence || {};
-
-  return `
-    <article class="match-card">
-
-      <div class="match-top">
-
-        <div class="kickoff">
-          ${escapeHtml(formatKickoff(fixture.kickoff_utc))}
-        </div>
-
-        <div class="teams">
-          <span>${escapeHtml(display(fixture.home_team, "Home"))}</span>
-          <span class="versus">VS</span>
-          <span>${escapeHtml(display(fixture.away_team, "Away"))}</span>
-        </div>
-
-      </div>
-
-
-      <div class="prediction-strip">
-
-        <div class="metric">
-          <span>SportsQ Predict</span>
-          <strong class="lime">
-            ${escapeHtml(display(predict.prediction))}
-          </strong>
-        </div>
-
-        <div class="metric">
-          <span>ScoreCall</span>
-          <strong>
-            ${escapeHtml(display(scoreCall.score))}
-          </strong>
-        </div>
-
-        <div class="metric">
-          <span>Confidence</span>
-          <strong>
-            ${escapeHtml(confidenceText(confidence))}
-          </strong>
-        </div>
-
-      </div>
-
-
-      <div class="detail-grid">
-
-        <div class="detail">
-          <h4>SportsQ Form Index</h4>
-          ${formMarkup(item.sportsq_form_index)}
-        </div>
-
-        <div class="detail">
-          <h4>SportsQ News Impact</h4>
-          ${newsMarkup(item.sportsq_news_impact)}
-        </div>
-
-      </div>
-
-    </article>
-  `;
-}
-
-
-async function loadMatches() {
-  const competition = Number(competitionInput.value);
-  const season = Number(seasonInput.value);
-
-  if (!Number.isInteger(competition) || competition < 1) {
-    statusBox.textContent = "Enter a valid competition.";
-    statusBox.classList.add("error");
-    return;
-  }
-
-  if (!Number.isInteger(season) || season < 2000 || season > 2100) {
-    statusBox.textContent = "Enter a valid season.";
-    statusBox.classList.add("error");
-    return;
-  }
-
-  statusBox.classList.remove("error");
-  statusBox.textContent = "Loading SportsQ intelligence...";
-  grid.innerHTML = "";
-  refreshButton.disabled = true;
-
-  try {
-    const params = new URLSearchParams({
-      competition: String(competition),
-      season: String(season),
-      limit: "40",
-    });
-
-    const response = await fetch(
-      `/api/v1/public/sportsq?${params.toString()}`,
-      {
-        headers: {
-          "Accept": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Request failed (${response.status})`);
+  function selectedCompetition() {
+    if (!competitionControl) {
+      return DEFAULT_COMPETITION;
     }
 
-    const payload = await response.json();
-    const items = Array.isArray(payload.items) ? payload.items : [];
+    return numberOrDefault(
+      competitionControl.value,
+      DEFAULT_COMPETITION
+    );
+  }
 
-    if (!items.length) {
-      statusBox.textContent = "No published SportsQ intelligence is currently available.";
+  function selectedSeason() {
+    if (!seasonControl) {
+      return DEFAULT_SEASON;
+    }
 
-      grid.innerHTML = `
-        <div class="empty">
-          No match intelligence is available for this competition and season yet.
+    return numberOrDefault(
+      seasonControl.value,
+      DEFAULT_SEASON
+    );
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function formatKickoff(raw) {
+    if (!raw) {
+      return "Kickoff time unavailable";
+    }
+
+    let normalized = String(raw);
+
+    // SQLite-style UTC timestamps have no timezone suffix. The public
+    // API's kickoff_utc field is UTC, so make that explicit for browsers.
+    if (
+      /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(normalized) &&
+      !/[zZ]|[+-]\d{2}:\d{2}$/.test(normalized)
+    ) {
+      normalized = normalized.replace(" ", "T") + "Z";
+    }
+
+    const date = new Date(normalized);
+
+    if (Number.isNaN(date.getTime())) {
+      return escapeHtml(raw);
+    }
+
+    return new Intl.DateTimeFormat(undefined, {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    }).format(date);
+  }
+
+  function predictionLabel(value) {
+    const normalized = String(value ?? "").toUpperCase();
+
+    if (normalized === "H" || normalized === "HOME") {
+      return "Home win";
+    }
+
+    if (normalized === "A" || normalized === "AWAY") {
+      return "Away win";
+    }
+
+    if (normalized === "D" || normalized === "DRAW") {
+      return "Draw";
+    }
+
+    return value || "Pending";
+  }
+
+  function confidenceText(confidence) {
+    if (!confidence) {
+      return "Pending";
+    }
+
+    const percent = confidence.percent;
+    const band = confidence.band;
+
+    if (percent === null || percent === undefined) {
+      return band || "Pending";
+    }
+
+    return `${escapeHtml(percent)}%${
+      band ? ` • ${escapeHtml(band)}` : ""
+    }`;
+  }
+
+  function formSide(side) {
+    if (!side) {
+      return "Pending";
+    }
+
+    const team = escapeHtml(side.team || "Team");
+    const index =
+      side.index === null || side.index === undefined
+        ? "—"
+        : escapeHtml(side.index);
+    const band = side.band ? ` • ${escapeHtml(side.band)}` : "";
+
+    return `${team}: ${index}${band}`;
+  }
+
+  function matchCard(item) {
+    const fixture = item.fixture || {};
+    const predict = item.sportsq_predict || {};
+    const scoreCall = item.sportsq_score_call || {};
+    const confidence = item.sportsq_confidence || {};
+    const form = item.sportsq_form_index || {};
+    const news = item.sportsq_news_impact || {};
+
+    const home = escapeHtml(fixture.home_team || "Home");
+    const away = escapeHtml(fixture.away_team || "Away");
+
+    const newsDirection =
+      news.direction && news.direction !== "UNVERIFIED"
+        ? escapeHtml(news.direction)
+        : "No verified impact";
+
+    return `
+      <article class="match-card upcoming-match-card">
+        <div class="match-card__topline">
+          <span class="competition-pill">Premier League</span>
+          <span class="upcoming-pill">Upcoming</span>
         </div>
-      `;
 
+        <div class="match-kickoff">
+          ${formatKickoff(fixture.kickoff_utc)}
+        </div>
+
+        <h3 class="match-teams">
+          <span>${home}</span>
+          <span class="match-vs">vs</span>
+          <span>${away}</span>
+        </h3>
+
+        <div class="intelligence-grid">
+          <div class="intelligence-item intelligence-item--primary">
+            <span class="intelligence-label">SportsQ Predict</span>
+            <strong>${escapeHtml(
+              predictionLabel(predict.prediction)
+            )}</strong>
+          </div>
+
+          <div class="intelligence-item">
+            <span class="intelligence-label">ScoreCall</span>
+            <strong>${escapeHtml(scoreCall.score || "Pending")}</strong>
+          </div>
+
+          <div class="intelligence-item">
+            <span class="intelligence-label">Confidence</span>
+            <strong>${confidenceText(confidence)}</strong>
+          </div>
+
+          <div class="intelligence-item">
+            <span class="intelligence-label">Form Index</span>
+            <strong>${formSide(form.home)}</strong>
+            <small>${formSide(form.away)}</small>
+          </div>
+
+          <div class="intelligence-item">
+            <span class="intelligence-label">News Impact</span>
+            <strong>${newsDirection}</strong>
+            ${
+              news.note
+                ? `<small>${escapeHtml(news.note)}</small>`
+                : ""
+            }
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function setStatus(message, state = "") {
+    if (!feedStatus) {
       return;
     }
 
-    statusBox.textContent =
-      `${items.length} match${items.length === 1 ? "" : "es"} available`;
+    feedStatus.className = `feed-status${
+      state ? ` feed-status--${state}` : ""
+    }`;
 
-    grid.innerHTML = items.map(cardMarkup).join("");
+    feedStatus.textContent = message;
+  }
 
-  } catch (error) {
-    console.error(error);
+  function renderLoading() {
+    setStatus(
+      "Loading upcoming Premier League intelligence…",
+      "loading"
+    );
 
-    statusBox.textContent =
-      "SportsQ intelligence is temporarily unavailable.";
+    if (matchContainer) {
+      matchContainer.innerHTML = `
+        <div class="feed-message feed-message--loading">
+          <strong>Loading match intelligence</strong>
+          <span>Checking publication-approved upcoming fixtures.</span>
+        </div>
+      `;
+    }
+  }
 
-    statusBox.classList.add("error");
+  function renderEmpty() {
+    setStatus(
+      "No publication-approved upcoming intelligence is available yet.",
+      "empty"
+    );
 
-    grid.innerHTML = `
-      <div class="empty">
-        Please try again shortly.
+    if (!matchContainer) {
+      return;
+    }
+
+    matchContainer.innerHTML = `
+      <div class="feed-message feed-message--empty">
+        <strong>No upcoming intelligence published yet</strong>
+        <p>
+          MDRN SportsQ only displays future fixtures that have passed
+          the publication safety gate. Upcoming predictions will appear
+          here automatically when approved.
+        </p>
       </div>
     `;
-
-  } finally {
-    refreshButton.disabled = false;
   }
-}
 
+  function renderError() {
+    setStatus(
+      "Match intelligence is temporarily unavailable.",
+      "error"
+    );
 
-refreshButton.addEventListener("click", loadMatches);
+    if (!matchContainer) {
+      return;
+    }
 
-loadMatches();
+    matchContainer.innerHTML = `
+      <div class="feed-message feed-message--error">
+        <strong>Unable to load match intelligence</strong>
+        <p>
+          Please try again shortly. No unverified prediction data will
+          be substituted.
+        </p>
+      </div>
+    `;
+  }
+
+  function renderItems(items) {
+    if (!matchContainer) {
+      return;
+    }
+
+    if (!Array.isArray(items) || items.length === 0) {
+      renderEmpty();
+      return;
+    }
+
+    matchContainer.innerHTML = items.map(matchCard).join("");
+
+    setStatus(
+      `${items.length} publication-approved upcoming ${
+        items.length === 1 ? "fixture" : "fixtures"
+      }.`,
+      "ready"
+    );
+  }
+
+  async function loadPublicIntelligence() {
+    renderLoading();
+
+    const competition = selectedCompetition();
+    const season = selectedSeason();
+
+    const params = new URLSearchParams({
+      competition: String(competition),
+      season: String(season),
+      limit: String(DEFAULT_LIMIT),
+    });
+
+    try {
+      const response = await fetch(
+        `/api/v1/public/sportsq?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const payload = await response.json();
+
+      if (
+        payload.status !== "success" ||
+        !Array.isArray(payload.items)
+      ) {
+        throw new Error("Invalid public feed response");
+      }
+
+      renderItems(payload.items);
+    } catch (error) {
+      console.error("MDRN SportsQ public feed error:", error);
+      renderError();
+    }
+  }
+
+  if (competitionControl) {
+    competitionControl.value = String(DEFAULT_COMPETITION);
+    competitionControl.addEventListener(
+      "change",
+      loadPublicIntelligence
+    );
+  }
+
+  if (seasonControl) {
+    seasonControl.value = String(DEFAULT_SEASON);
+    seasonControl.addEventListener(
+      "change",
+      loadPublicIntelligence
+    );
+  }
+
+  if (refreshButton) {
+    refreshButton.addEventListener(
+      "click",
+      loadPublicIntelligence
+    );
+  }
+
+  loadPublicIntelligence();
+})();

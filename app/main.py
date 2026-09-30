@@ -607,25 +607,71 @@ def _sportsq_public_item(item: dict) -> dict:
 
 @app.get("/api/v1/public/sportsq")
 def api_v1_public_sportsq(
-    competition: int = Query(default=2),
+    competition: int = Query(default=39),
     season: int = Query(default=2026),
     limit: int = Query(default=40, ge=1, le=100),
 ) -> dict:
     with SessionLocal() as session:
+        # Public limit semantics are applied after publication/upcoming
+        # filtering. Retrieve the service's full supported candidate window
+        # so historical rows cannot consume the caller's public result limit.
         result = list_sportsq_intelligence(
             session,
             competition_id=competition,
             season=season,
-            limit=limit,
+            limit=1000,
         )
 
     items = result.get("items") or []
 
     # The existing immutable publication decision remains authoritative.
+    # Public Match Intelligence is forward-looking: historical or already
+    # kicked-off fixtures remain available to internal intelligence/history,
+    # but they are not exposed in the public upcoming-fixture feed.
+    now_utc = datetime.now(timezone.utc)
+
+    def _public_upcoming_kickoff(item: dict):
+        fixture = item.get("fixture") or {}
+        raw_kickoff = fixture.get("kickoff_utc")
+
+        if not raw_kickoff:
+            return None
+
+        if isinstance(raw_kickoff, datetime):
+            kickoff = raw_kickoff
+        else:
+            try:
+                kickoff = datetime.fromisoformat(
+                    str(raw_kickoff).replace("Z", "+00:00")
+                )
+            except (TypeError, ValueError):
+                return None
+
+        if kickoff.tzinfo is None:
+            kickoff = kickoff.replace(tzinfo=timezone.utc)
+        else:
+            kickoff = kickoff.astimezone(timezone.utc)
+
+        return kickoff
+
+    upcoming_items = []
+
+    for item in items:
+        if (item.get("prediction_lock") or {}).get("publish") is not True:
+            continue
+
+        kickoff = _public_upcoming_kickoff(item)
+
+        if kickoff is None or kickoff <= now_utc:
+            continue
+
+        upcoming_items.append((kickoff, item))
+
+    upcoming_items.sort(key=lambda pair: pair[0])
+
     public_items = [
         _sportsq_public_item(item)
-        for item in items
-        if (item.get("prediction_lock") or {}).get("publish") is True
+        for _, item in upcoming_items[:limit]
     ]
 
     return {
