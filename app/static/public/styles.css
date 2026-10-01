@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg: #07111f;
   --bg-soft: #0b1728;
   --panel: #101d2e;
@@ -776,4 +776,792 @@ input {
   .match-teams {
     align-items: flex-start;
   }
+}
+/* MDRN SPORTSQ PUBLIC UI STAGE 3 MATCH INTELLIGENCE DETAIL */
+
+.stage3-match-card {
+  overflow: hidden;
+}
+
+.stage3-upcoming-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border: 1px solid rgba(199,255,0,.35);
+  border-radius: 999px;
+  background: rgba(199,255,0,.08);
+  color: var(--lime, #c7ff00);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.stage3-team-row {
+  margin-top: 18px;
+}
+
+.stage3-headline-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.stage3-headline-stat {
+  padding: 15px;
+  border: 1px solid
+    rgba(255,255,255,.08);
+  border-radius: 14px;
+  background: rgba(255,255,255,.025);
+}
+
+.stage3-headline-stat > span {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(255,255,255,.55);
+  font-size: .69rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.stage3-headline-stat strong {
+  display: block;
+  color: #fff;
+  font-size: 1.18rem;
+}
+
+.stage3-headline-stat small {
+  display: block;
+  margin-top: 5px;
+  color: var(--lime, #c7ff00);
+  font-weight: 750;
+}
+
+.stage3-intelligence-detail {
+  margin-top: 20px;
+  border-top: 1px solid
+    rgba(255,255,255,.08);
+}
+
+.stage3-intelligence-detail > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-top: 18px;
+  color: var(--lime, #c7ff00);
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+
+.stage3-intelligence-detail
+> summary::-webkit-details-marker {
+  display: none;
+}
+
+
+
+.stage3-intelligence-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.stage3-intelligence-panel {
+  padding: 17px;
+  border: 1px solid
+    rgba(255,255,255,.08);
+  border-radius: 15px;
+  background: rgba(255,255,255,.025);
+}
+
+.stage3-label {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(255,255,255,.52);
+  font-size: .68rem;
+  font-weight: 850;
+  letter-spacing: .1em;
+}
+
+.stage3-main-value {
+  display: block;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.stage3-intelligence-panel p {
+  margin: 8px 0 0;
+  color: rgba(255,255,255,.62);
+  font-size: .84rem;
+  line-height: 1.55;
+}
+
+.stage3-confidence-band {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--lime, #c7ff00);
+  font-weight: 800;
+}
+
+.stage3-form-panel,
+.stage3-news-panel {
+  grid-column: 1 / -1;
+}
+
+.stage3-form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stage3-form-grid > div {
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(0,0,0,.16);
+}
+
+.stage3-form-grid span,
+.stage3-form-grid small {
+  display: block;
+}
+
+.stage3-form-grid span {
+  color: rgba(255,255,255,.65);
+  font-size: .82rem;
+}
+
+.stage3-form-grid strong {
+  display: block;
+  margin: 5px 0;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.stage3-form-grid small {
+  color: var(--lime, #c7ff00);
+  font-weight: 750;
+}
+
+.stage3-news-title {
+  display: block;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.stage3-news-status {
+  display: inline-block;
+  margin-top: 6px;
+  color: rgba(255,255,255,.46);
+  font-size: .68rem;
+}
+
+@media (max-width: 720px) {
+
+  .stage3-headline-grid,
+  .stage3-intelligence-grid,
+  .stage3-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stage3-form-panel,
+  .stage3-news-panel {
+    grid-column: auto;
+  }
+}
+
+/* BEGIN MDRN SPORTSQ STAGE 3 CANONICAL MATCH LAYOUT */
+
+/*
+ * CANONICAL STAGE 3 ARCHITECTURE
+ *
+ * matches-section:
+ *     full viewport-width background only
+ *
+ * matches-inner:
+ *     single centered editorial rail
+ *
+ * match-grid / cards:
+ *     contained entirely inside matches-inner
+ */
+
+
+/* ==========================================================
+   MATCH CENTRE BACKGROUND
+   ========================================================== */
+
+.matches-section {
+  box-sizing: border-box !important;
+
+  width: 100% !important;
+  max-width: none !important;
+
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+
+  /*
+   * Preserve approved responsive vertical editorial rhythm.
+   * Horizontal padding stays ZERO because horizontal
+   * containment belongs exclusively to matches-inner.
+   */
+  padding-top: clamp(32px, 6vw, 72px);
+  padding-bottom: clamp(32px, 6vw, 72px);
+
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+
+  transform: none !important;
+
+  overflow-x: clip;
+
+  scroll-margin-top: 92px;
+}
+
+
+/* ==========================================================
+   SINGLE AUTHORITATIVE EDITORIAL RAIL
+   ========================================================== */
+
+.matches-section > .matches-inner {
+  box-sizing: border-box !important;
+
+  width: min(1180px, calc(100% - 36px)) !important;
+  max-width: 1180px !important;
+
+  min-width: 0 !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+
+  transform: none !important;
+}
+
+
+/* ==========================================================
+   RAIL CONTAINMENT
+   ========================================================== */
+
+.matches-inner > * {
+  box-sizing: border-box;
+
+  min-width: 0;
+
+  max-width: 100%;
+}
+
+
+.matches-inner .match-grid {
+  box-sizing: border-box !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  min-width: 0 !important;
+
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+
+  transform: none !important;
+}
+
+
+.matches-inner .match-card,
+.matches-inner .stage3-match-card {
+  box-sizing: border-box !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  min-width: 0 !important;
+
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+
+  transform: none !important;
+}
+
+
+/* ==========================================================
+   MATCH HEADER
+   ========================================================== */
+
+.matches-inner .stage3-match-card {
+  position: relative;
+
+  overflow: hidden;
+
+  padding-top: 24px;
+}
+
+
+.matches-inner .stage3-match-card .match-card__topline {
+  position: static !important;
+
+  right: auto !important;
+  left: auto !important;
+
+  transform: none !important;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  width: 100%;
+
+  margin: 0 0 18px;
+}
+
+
+.matches-inner .stage3-match-card .stage3-upcoming-pill {
+  position: static !important;
+
+  transform: none !important;
+}
+
+
+.matches-inner .stage3-match-card .match-kickoff {
+  display: block;
+
+  margin: 0;
+
+  text-align: right;
+}
+
+
+.matches-inner .stage3-match-card .stage3-team-row {
+  margin-top: 0;
+}
+
+
+/* ==========================================================
+   THREE PRIMARY INTELLIGENCE CARDS
+   ========================================================== */
+
+.matches-inner .stage3-headline-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 14px;
+
+  width: 100%;
+  max-width: 100%;
+
+  min-width: 0;
+
+  margin-top: 22px;
+}
+
+
+.matches-inner .stage3-headline-stat {
+  box-sizing: border-box;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  min-width: 0;
+
+  min-height: 118px;
+
+  padding: 20px 20px 17px;
+}
+
+
+.matches-inner .stage3-headline-stat .stage3-label {
+  display: block;
+
+  min-height: 16px;
+
+  margin: 0 0 13px;
+}
+
+
+.matches-inner .stage3-headline-stat strong {
+  display: block;
+
+  min-height: 25px;
+
+  margin: 0;
+
+  line-height: 1.2;
+}
+
+
+/*
+ * Real data band.
+ *
+ * Confidence already renders HIGH/MEDIUM/etc as a real
+ * <small> element. Preserve it. Do not replace it with
+ * generated presentation text.
+ */
+
+.matches-inner .stage3-headline-stat > small {
+  display: block;
+
+  margin-top: auto;
+
+  padding-top: 8px;
+
+  color: var(--lime, #c7ff2e);
+
+  font-size: 0.70rem;
+
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  letter-spacing: 0.035em;
+
+  text-transform: uppercase;
+}
+
+
+/*
+ * Presentation-only descriptors for Predict and ScoreCall.
+ */
+
+.matches-inner .stage3-headline-stat:nth-child(1)::after {
+  content: "1X2 OUTLOOK";
+
+  display: block;
+
+  margin-top: auto;
+
+  padding-top: 8px;
+
+  color: var(--lime, #c7ff2e);
+
+  font-size: 0.70rem;
+
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  letter-spacing: 0.035em;
+
+  text-transform: uppercase;
+}
+
+
+.matches-inner .stage3-headline-stat:nth-child(2)::after {
+  content: "PROJECTED SCORE";
+
+  display: block;
+
+  margin-top: auto;
+
+  padding-top: 8px;
+
+  color: var(--lime, #c7ff2e);
+
+  font-size: 0.70rem;
+
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  letter-spacing: 0.035em;
+
+  text-transform: uppercase;
+}
+
+
+.matches-inner .stage3-headline-stat:nth-child(3)::after {
+  content: none;
+}
+
+
+/* ==========================================================
+   DEEPER INTELLIGENCE
+   ========================================================== */
+
+.matches-inner .stage3-deeper-detail,
+.matches-inner .stage3-deeper-grid,
+.matches-inner .stage3-form-panel,
+.matches-inner .stage3-news-panel,
+.matches-inner .stage3-form-grid {
+  box-sizing: border-box;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  min-width: 0;
+}
+
+
+.matches-inner .stage3-deeper-detail {
+  margin-top: 22px;
+}
+
+
+.matches-inner .stage3-deeper-grid {
+  display: grid;
+
+  grid-template-columns: 1fr;
+
+  gap: 14px;
+
+  margin-top: 18px;
+}
+
+
+.matches-inner .stage3-form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+
+/* ==========================================================
+   HEADER / NAV RESPONSIVE BEHAVIOUR
+   ========================================================== */
+
+@media (max-width: 1100px) {
+
+  .site-header .header-inner {
+    gap: 18px;
+  }
+
+
+  .main-nav {
+    gap: 14px;
+  }
+}
+
+
+/* ==========================================================
+   DESKTOP RAIL
+   ========================================================== */
+
+@media (min-width: 1217px) {
+
+  .matches-section > .matches-inner {
+    width: 1180px !important;
+  }
+}
+
+
+/* ==========================================================
+   FLUID RAIL
+   ========================================================== */
+
+@media (max-width: 1216px) {
+
+  .matches-section > .matches-inner {
+    width: calc(100% - 36px) !important;
+    max-width: calc(100% - 36px) !important;
+  }
+}
+
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 720px) {
+
+  .matches-section {
+    scroll-margin-top: 78px;
+  }
+
+
+  .matches-section > .matches-inner {
+    width: calc(100% - 28px) !important;
+    max-width: calc(100% - 28px) !important;
+  }
+
+
+  .matches-inner .stage3-match-card {
+    padding-top: 20px;
+  }
+
+
+  .matches-inner .stage3-match-card .match-card__topline {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 8px;
+
+    margin-bottom: 16px;
+  }
+
+
+  .matches-inner .stage3-match-card .match-kickoff {
+    text-align: left;
+  }
+
+
+  .matches-inner .stage3-headline-grid,
+  .matches-inner .stage3-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .matches-inner .stage3-headline-stat {
+    min-height: 104px;
+  }
+}
+
+
+/* ==========================================================
+   SMALL MOBILE
+   ========================================================== */
+
+@media (max-width: 420px) {
+
+  .matches-section > .matches-inner {
+    width: calc(100% - 24px) !important;
+    max-width: calc(100% - 24px) !important;
+  }
+}
+
+/* END MDRN SPORTSQ STAGE 3 CANONICAL MATCH LAYOUT */
+
+/* BEGIN MDRN SPORTSQ STAGE 3 FINAL RAIL ALIGNMENT */
+
+/*
+ * Final visual alignment.
+ *
+ * The section background may span the viewport.
+ * All visible Match Centre content remains inside
+ * the same centered editorial rail.
+ */
+
+
+/* The inner shell must use the complete editorial rail. */
+
+.matches-section > .matches-inner > .shell {
+  box-sizing: border-box;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  min-width: 0;
+
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+
+/* Feed/publication status belongs to Match Centre. */
+
+.matches-inner #feed-status {
+  box-sizing: border-box;
+
+  width: 100%;
+  max-width: 100%;
+
+  margin: 18px 0 12px;
+
+  padding: 0;
+
+  color: rgba(255,255,255,.66);
+
+  font-size: .82rem;
+
+  line-height: 1.45;
+}
+
+
+/*
+ * One publication-approved fixture:
+ * use the complete rail rather than the historical
+ * two-column match-grid layout.
+ */
+
+.matches-inner #match-grid {
+  grid-template-columns: minmax(0, 1fr) !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+
+/* The fixture itself fills its grid track. */
+
+.matches-inner #match-grid > .stage3-match-card,
+.matches-inner #match-grid > .match-card {
+  width: 100% !important;
+  max-width: 100% !important;
+
+  min-width: 0;
+
+  justify-self: stretch;
+}
+
+
+/*
+ * Preserve the three primary intelligence columns
+ * inside the full-width fixture card.
+ */
+
+.matches-inner .stage3-headline-grid {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+}
+
+
+/* Mobile remains single-column. */
+
+@media (max-width: 720px) {
+
+  .matches-inner .stage3-headline-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .matches-inner #feed-status {
+    margin-top: 14px;
+  }
+}
+
+/* END MDRN SPORTSQ STAGE 3 FINAL RAIL ALIGNMENT */
+
+
+/* STAGE3 DISCLOSURE NATIVE MARKER LOCK */
+.stage3-match-card summary {
+  list-style: none;
+}
+
+.stage3-match-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.stage3-match-card summary::marker {
+  content: "";
+}
+
+
+/* STAGE3 FINAL DISCLOSURE STATE */
+.stage3-disclosure-icon::before {
+  content: "+";
+}
+
+.stage3-match-card details[open] .stage3-disclosure-icon::before {
+  content: "-";
 }

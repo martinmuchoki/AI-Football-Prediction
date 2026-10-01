@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import hashlib
 import inspect
@@ -37,7 +37,7 @@ def _sha256(path: Path) -> str:
 
 
 def test_stage7_version():
-    assert __version__ == "1.0.13"
+    assert __version__ == "1.0.14"
 
 
 def test_stage7_history_adapter_signature_is_supported():

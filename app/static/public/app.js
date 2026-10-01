@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 (() => {
   const DEFAULT_COMPETITION = 39;
@@ -15,8 +15,8 @@
   const feedStatus = document.getElementById("feed-status");
 
   const matchContainer =
+    document.getElementById("match-grid") ||
     document.getElementById("match-list") ||
-    document.getElementById("matches") ||
     document.querySelector(".match-grid") ||
     document.querySelector(".matches-grid") ||
     document.querySelector("[data-match-list]");
@@ -25,6 +25,20 @@
     const parsed = Number.parseInt(String(value ?? ""), 10);
     return Number.isFinite(parsed) ? parsed : fallback;
   }
+
+  function clearSuccessfulLoadingState() {
+    const statusElement =
+      document.getElementById("status");
+
+    if (!statusElement) {
+      return;
+    }
+
+    statusElement.textContent = "";
+    statusElement.hidden = true;
+    statusElement.setAttribute("aria-hidden", "true");
+  }
+
 
   function selectedCompetition() {
     if (!competitionControl) {
@@ -157,57 +171,174 @@
         : "No verified impact";
 
     return `
-      <article class="match-card upcoming-match-card">
-        <div class="match-card__topline">
-          <span class="competition-pill">Premier League</span>
-          <span class="upcoming-pill">Upcoming</span>
-        </div>
+      <article class="match-card upcoming-match-card stage3-match-card">
 
-        <div class="match-kickoff">
+      <!-- MDRN SPORTSQ PUBLIC UI STAGE 3 MATCH INTELLIGENCE DETAIL -->
+
+      <div class="match-card__topline">
+        <span class="stage3-upcoming-pill">
+          UPCOMING
+        </span>
+
+        <span class="match-kickoff">
           ${formatKickoff(fixture.kickoff_utc)}
+        </span>
+      </div>
+
+      <div class="match-teams stage3-team-row">
+        <strong>
+          ${escapeHtml(fixture.home_team || "Home")}
+        </strong>
+
+        <span class="match-vs">
+          vs
+        </span>
+
+        <strong>
+          ${escapeHtml(fixture.away_team || "Away")}
+        </strong>
+      </div>
+
+      <div class="stage3-headline-grid">
+
+        <div class="stage3-headline-stat">
+          <span>
+            SportsQ Predict
+          </span>
+
+          <strong>
+            ${escapeHtml(predict.prediction || "?")}
+          </strong>
         </div>
 
-        <h3 class="match-teams">
-          <span>${home}</span>
-          <span class="match-vs">vs</span>
-          <span>${away}</span>
-        </h3>
+        <div class="stage3-headline-stat">
+          <span>
+            ScoreCall
+          </span>
 
-        <div class="intelligence-grid">
-          <div class="intelligence-item intelligence-item--primary">
-            <span class="intelligence-label">SportsQ Predict</span>
-            <strong>${escapeHtml(
-              predictionLabel(predict.prediction)
-            )}</strong>
-          </div>
+          <strong>
+            ${escapeHtml(scoreCall.score || "?")}
+          </strong>
+        </div>
 
-          <div class="intelligence-item">
-            <span class="intelligence-label">ScoreCall</span>
-            <strong>${escapeHtml(scoreCall.score || "Pending")}</strong>
-          </div>
+        <div class="stage3-headline-stat">
+          <span>
+            Confidence
+          </span>
 
-          <div class="intelligence-item">
-            <span class="intelligence-label">Confidence</span>
-            <strong>${confidenceText(confidence)}</strong>
-          </div>
-
-          <div class="intelligence-item">
-            <span class="intelligence-label">Form Index</span>
-            <strong>${formSide(form.home)}</strong>
-            <small>${formSide(form.away)}</small>
-          </div>
-
-          <div class="intelligence-item">
-            <span class="intelligence-label">News Impact</span>
-            <strong>${newsDirection}</strong>
+          <strong>
             ${
-              news.note
-                ? `<small>${escapeHtml(news.note)}</small>`
-                : ""
+              confidence.percent != null
+                ? escapeHtml(confidence.percent) + "%"
+                : "?"
             }
-          </div>
+          </strong>
+
+          <small>
+            ${escapeHtml(confidence.band || "?")}
+          </small>
         </div>
-      </article>
+
+      </div>
+
+      <details class="stage3-intelligence-detail stage3-deeper-detail">
+
+        <summary>
+          <span>
+            View deeper intelligence
+          </span>
+        
+          
+          <span class="stage3-disclosure-icon" aria-hidden="true"></span>
+        </summary>
+
+        <!-- MDRN SPORTSQ STAGE 3 FINAL CLEANUP - DEEPER INTELLIGENCE ONLY -->
+
+        <div class="stage3-deeper-grid">
+
+          <section class="stage3-intelligence-panel stage3-form-panel">
+            <span class="stage3-label">
+              SPORTSQ FORM INDEX
+            </span>
+
+            <div class="stage3-form-grid">
+
+              <div>
+                <span>
+                  ${escapeHtml(fixture.home_team || "Home")}
+                </span>
+
+                <strong>
+                  ${
+                    form.home?.index != null
+                      ? escapeHtml(form.home.index)
+                      : "?"
+                  }
+                </strong>
+
+                <small>
+                  ${escapeHtml(form.home?.band || "?")}
+                </small>
+              </div>
+
+              <div>
+                <span>
+                  ${escapeHtml(fixture.away_team || "Away")}
+                </span>
+
+                <strong>
+                  ${
+                    form.away?.index != null
+                      ? escapeHtml(form.away.index)
+                      : "?"
+                  }
+                </strong>
+
+                <small>
+                  ${escapeHtml(form.away?.band || "?")}
+                </small>
+              </div>
+
+            </div>
+          </section>
+
+          <section class="stage3-intelligence-panel stage3-news-panel">
+            <span class="stage3-label">
+              SPORTSQ NEWS IMPACT
+            </span>
+
+            <strong class="stage3-news-title">
+              ${
+                news.verified === true
+                  ? escapeHtml(
+                      news.direction ||
+                      "Verified team-news impact"
+                    )
+                  : "No verified team-news impact"
+              }
+            </strong>
+
+            <small class="stage3-news-status">
+              ${escapeHtml(news.status || "UNVERIFIED")}
+            </small>
+
+            <p>
+              ${
+                news.verified === true
+                  ? escapeHtml(
+                      news.note ||
+                      "Verified structured team-news information is available."
+                    )
+                  : "No verified structured team-news input is available. No injury or news impact is inferred."
+              }
+            </p>
+          </section>
+
+        </div>
+
+      </details>
+
+    </article>
     `;
   }
 
@@ -236,6 +367,7 @@
           <span>Checking publication-approved upcoming fixtures.</span>
         </div>
       `;
+
     }
   }
 
@@ -300,6 +432,8 @@
       }.`,
       "ready"
     );
+
+    clearSuccessfulLoadingState();
   }
 
   async function loadPublicIntelligence() {

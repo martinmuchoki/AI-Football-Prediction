@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import inspect
 
@@ -32,7 +32,7 @@ def _summary():
 
 def test_v108_version():
 
-    assert app.__version__ == "1.0.13"
+    assert app.__version__ == "1.0.14"
 
 
 def test_legacy_verifier_default_preserved():

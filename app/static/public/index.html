@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -117,13 +117,8 @@
 
   </section>
 
-
-  <div id="feed-status"
-           class="feed-status"
-           role="status"
-           aria-live="polite"></div>
-
-      <section id="matches" class="matches-section">
+<section id="matches" class="matches-section">
+  <div class="matches-inner">
 
     <div class="shell">
 
@@ -141,7 +136,7 @@
           <select id="competition" name="competition" aria-label="Competition">
             <option value="39" selected>Premier League</option>
           </select>
-          <span class="field-hint">API-Football ? England</span>
+          <span class="field-hint">API-Football | England</span>
         </div>
 
           <label>
@@ -165,16 +160,21 @@
       </div>
 
 
-      <div id="status" class="status" role="status">
-        Loading SportsQ intelligence...
-      </div>
+            <div id="feed-status"
+      class="feed-status"
+      role="status"
+      aria-live="polite"></div>
+
+      <div id="status" class="status" role="status" hidden aria-hidden="true"></div>
 
 
       <div id="match-grid" class="match-grid" aria-live="polite"></div>
 
     </div>
 
-  </section>
+  
+  </div>
+</section>
 
 
   <section id="method" class="method-section">
